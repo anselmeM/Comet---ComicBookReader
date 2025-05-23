@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comet - CBZ Web Reader</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff"> <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        /* Base Styles */
+        html, body { height: 100%; margin: 0; overflow: hidden; /* Prevent body scroll */ }
+        body { font-family: Manrope, "Noto Sans", sans-serif; font-size: 16px; /* Base font size */ }
+        .view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; } /* Prevent view scroll */
+        .view.active { display: flex; }
+
+        /* Specific for Upload View to allow its content to scroll */
+        #uploadView > .content-wrapper {
+            flex-grow: 1; /* Allows this div to take available space */
+            overflow-y: auto; /* Allows only vertical scroll for this specific div */
+            display: flex;
+            flex-direction: column;
+        }
+         #uploadView > .content-wrapper > .main-content {
+            flex-grow: 1; /* Ensures main content pushes footer down */
+        }
+
+
+        /* HUD Styles */
+        #readerView { background-color: #000; }
+        /* This is the layer for the VISIBLE HUD bars */
+        .hud-overlay { position: absolute; inset: 0; z-index: 20; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; /* None by default so it doesn't block image container */ }
+        .hud-overlay.visible { opacity: 1; pointer-events: auto; /* Auto when visible so buttons inside are clickable */ }
+        .hud-bar { position: absolute; left: 0; right: 0; background: rgba(13, 20, 28, 0.75); backdrop-filter: blur(8px); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; color: #e7edf4;}
+        .hud-bar.top { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .hud-icon { background: transparent; border: none; color: #e7edf4; padding: 6px; border-radius: 50%; cursor: pointer; transition: background 0.2s ease; }
+        .hud-icon svg { width: 24px; height: 24px; }
+        .hud-icon:hover { background: rgba(255, 255, 255, 0.15); }
+        #pageIndicatorHud { font-size: 0.875rem; sm:font-size: 1rem; }
+        
+        /* NO LONGER USING SEPARATE CLICK ZONE DIVS for prev/next/hudToggle. Clicks handled by #imageContainer */
+
+
+        /* Panel Styles */
+        .panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 360px; sm:max-width: 400px; height: 100%; background-color: #f8fafc; z-index: 50; transition: right 0.4s ease-in-out; overflow-y: auto; color: #0d141c; box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
+        .panel.visible { right: 0; }
+        .panel h2 { color: #0d141c; font-size: 20px; sm:font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em; padding-left: 1rem; padding-right: 1rem; text-align: left; padding-bottom: 0.5rem; padding-top: 1.25rem; }
+        .panel h3 { color: #0d141c; font-size: 1rem; sm:font-size: 1.125rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em; padding-left: 1rem; padding-right: 1rem; padding-bottom: 0.5rem; padding-top: 1rem; }
+
+        /* Corrected Toggle Switch Styles */
+        .toggle-label { position: relative; display: flex; height: 31px; width: 51px; cursor: pointer; border-radius: 9999px; }
+        .toggle-bg { display: flex; align-items: center; width: 100%; height: 100%; border-radius: 9999px; transition: all 0.2s ease; padding: 2px; background-color: #e7edf4; }
+        .toggle-switch { height: 27px; width: 27px; border-radius: 9999px; background-color: white; box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px; transition: transform 0.2s ease; }
+        .toggle-label input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
+        .toggle-label input:checked + .toggle-bg .toggle-switch { transform: translateX(20px); }
+
+        /* Corrected Fit Button Styles */
+        .fit-label { font-size: 0.875rem; sm:font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #cedbe8; padding: 0 12px; sm:padding: 0 16px; height: 40px; sm:height: 44px; color: #0d141c; position: relative; cursor: pointer; transition: all 0.2s ease; }
+        .fit-label.checked { border-width: 2px; sm:border-width: 3px; padding: 0 10.66px; sm:padding: 0 14.66px; border-color: #3d98f4; }
+        .fit-label input { appearance: none; position: absolute; inset: 0; }
+
+        /* Reader Styles */
+        #imageContainer { 
+            overflow: auto; 
+            flex-grow: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* UPDATED: Ensures top of image is aligned at scroll top */
+            background-color: #000; 
+            position: relative; 
+            cursor: pointer; 
+            padding-top: 0; 
+            transition: padding-top 0.3s ease-in-out; 
+        }
+        #comicImage { 
+            max-width: none; 
+            max-height: none; 
+            display: block; 
+            opacity: 1; 
+            transition: opacity 0.2s; 
+            image-rendering: -webkit-optimize-contrast; 
+            pointer-events: none; 
+        }
+        #readerMessage { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.75); z-index: 40; color: white; font-size: 1.125rem; sm:font-size: 1.25rem; text-align: center; padding: 20px;}
+        #readerMessage.flex { display: flex; }
+
+        /* Upload Styles */
+        #uploadView { background-color: #f8fafc; }
+        #dropZone { background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://images.unsplash.com/photo-1505664194779-8be68b5c9d48?auto=format&fit=crop&q=80&w=1770"); transition: all 0.3s ease; min-height: 300px; sm:min-height: 400px; md:min-height: 480px; }
+        #dropZone.dragging { border: 4px dashed #3d98f4; opacity: 0.8; transform: scale(1.02); }
+
+        /* Mobile Menu Styles */
+        #mobileMenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 40;
+            border-bottom: 1px solid #e7edf4;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        #mobileMenu.open {
+            max-height: 500px;
+        }
+        #mobileMenu a, #mobileMenu button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1.5rem;
+            color: #0d141c;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        #mobileMenu a:hover, #mobileMenu button:hover {
+            background-color: #f3f4f6;
+            color: #3D98F4;
+        }
+         :root {
+            --hud-top-bar-height: 50px; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <input type="file" id="fileInput" accept=".cbz" class="hidden">
+
+    <div id="uploadView" class="view active">
+        <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-4 md:px-10 py-3 bg-white flex-shrink-0 z-50">
+          <a href="index.html" class="flex items-center gap-3 sm:gap-4 text-[#0d141c] hover:opacity-80 transition-opacity" aria-label="Comet Home">
+            <div class="size-5 sm:size-6 text-[#3d98f4]"> <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
+            </div>
+            <h2 class="text-[#0d141c] text-md sm:text-lg font-bold leading-tight tracking-[-0.015em]">Comet</h2>
+          </a>
+          <nav class="hidden md:flex items-center gap-6 lg:gap-9">
+            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="features.html">Features</a>
+            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="pricing.html">Pricing</a>
+            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="support.html">Support</a>
+          </nav>
+          <div class="flex items-center gap-2 md:gap-4">
+            <div class="hidden md:flex items-center gap-2">
+                 <button id="uploadButtonHeader" class="flex min-w-[70px] sm:min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3d98f4] text-slate-50 text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+                    <span class="truncate">Upload</span>
+                </button>
+                <button aria-label="Help" class="hidden md:flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#e7edf4] text-[#0d141c] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-300 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path></svg>
+                </button>
+                <div class="hidden md:block bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 sm:size-10" style='background-image: url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1064");'></div>
+            </div>
+            <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-md text-[#0d141c] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#3d98f4]">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+          </div>
+          <div id="mobileMenu" class="md:hidden">
+              <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
+                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
+                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
+                  <button id="uploadButtonHeaderMobile" class="w-full mt-2 flex min-w-[70px] sm:min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3d98f4] text-slate-50 text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+                    <span class="truncate">Upload</span>
+                  </button>
+              </div>
+          </div>
+        </header>
+        <div class="content-wrapper">
+            <div class="main-content px-4 md:px-10 lg:px-40 flex flex-1 justify-center items-center py-5">
+                <div class="flex flex-col w-full max-w-[960px] flex-1">
+                    <div class="@container">
+                        <div id="dropZone" class="flex flex-col gap-4 sm:gap-6 bg-cover bg-center bg-no-repeat rounded-lg items-center justify-center p-6 sm:p-8">
+                            <div class="flex flex-col gap-2 text-center">
+                                <h1 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">Drag and drop your CBZ files here</h1>
+                                <h2 class="text-white text-sm sm:text-base md:text-lg font-normal leading-normal">Or</h2>
+                            </div>
+                            <button id="selectFileButton" class="flex min-w-[100px] sm:min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#3d98f4] text-slate-50 text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+                                <span class="truncate">Select a File</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="flex flex-col gap-4 sm:gap-6 px-5 py-6 text-center bg-white border-t border-solid border-b-[#e7edf4] flex-shrink-0">
+                  <div class="flex flex-wrap items-center justify-center gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-4">
+                    <a class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="privacy.html">Privacy Policy</a>
+                    <a class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="terms.html">Terms of Service</a>
+                  </div>
+                  <div class="flex flex-wrap justify-center gap-4 sm:gap-5">
+                    <a href="#" aria-label="Twitter" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Instagram" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Facebook" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                        </svg>
+                    </a>
+                  </div>
+                  <p class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal">© 2024 Comet. All rights reserved.</p>
+            </footer>
+        </div>
+    </div>
+
+    <div id="readerView" class="view">
+        <div id="imageContainer"> <img id="comicImage" src="" alt="Comic Page">
+        </div>
+        <div id="hudOverlay" class="hud-overlay">
+            <div class="hud-bar top">
+                <button id="backButton" class="hud-icon" aria-label="Back to Upload">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+                <span id="pageIndicatorHud" class="text-sm font-medium">0 / 0</span>
+                <button id="menuButton" class="hud-icon" aria-label="Open Menu">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                </button>
+            </div>
+        </div>
+        <div id="readerMessage" class="hidden"><span>Loading...</span></div>
+    </div>
+
+    <div id="menuPanel" class="panel">
+       <div class="flex justify-between items-center p-4 border-b">
+           <h2 class="text-[#0d141c] text-xl font-bold">Options</h2>
+           <button id="closeMenuButton" class="hud-icon text-black" aria-label="Close Menu">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+           </button>
+       </div>
+       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Settings</h3>
+       <div class="flex flex-col gap-1 p-2">
+            <div class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between">
+                <div class="flex flex-col justify-center grow mr-2">
+                    <p class="text-[#0d141c] text-base font-medium">Two-Page Spread</p>
+                    <p class="text-[#49739c] text-sm font-normal">Display two pages (Desktop Soon!)</p>
+                </div>
+                <label class="toggle-label opacity-50 cursor-not-allowed"><input type="checkbox" id="twoPageToggle" disabled /><div class="toggle-bg"><div class="toggle-switch"></div></div></label>
+            </div>
+            <div class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between">
+                <div class="flex flex-col justify-center grow mr-2">
+                    <p class="text-[#0d141c] text-base font-medium">Manga Mode</p>
+                    <p class="text-[#49739c] text-sm font-normal">Read from right to left</p>
+                </div>
+                <label class="toggle-label"><input type="checkbox" id="mangaModeToggle" /><div class="toggle-bg"><div class="toggle-switch"></div></div></label>
+            </div>
+       </div>
+       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Zoom</h3>
+        <div class="flex flex-1 gap-3 px-4 py-3 justify-between">
+            <button id="zoomOutButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-xl font-bold hover:bg-gray-300 transition-colors" aria-label="Zoom Out">-</button>
+            <button id="zoomInButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-xl font-bold hover:bg-gray-300 transition-colors" aria-label="Zoom In">+</button>
+        </div>
+       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Fit</h3>
+        <div class="grid grid-cols-2 gap-3 p-4">
+            <label class="fit-label checked"><input type="radio" name="fitMode" value="best" checked />Best</label>
+            <label class="fit-label"><input type="radio" name="fitMode" value="width" />Width</label>
+            <label class="fit-label"><input type="radio" name="fitMode" value="height" />Height</label>
+            <label class="fit-label"><input type="radio" name="fitMode" value="original" />Original</label>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const views = {
+                upload: document.getElementById('uploadView'),
+                reader: document.getElementById('readerView')
+            };
+            const fileInput = document.getElementById('fileInput');
+            const dropZone = document.getElementById('dropZone');
+            const selectFileButton = document.getElementById('selectFileButton');
+            const uploadButtonHeader = document.getElementById('uploadButtonHeader');
+            const uploadButtonHeaderMobile = document.getElementById('uploadButtonHeaderMobile');
+            const imageContainer = document.getElementById('imageContainer');
+            const comicImage = document.getElementById('comicImage');
+            const pageIndicatorHud = document.getElementById('pageIndicatorHud');
+            const hudOverlay = document.getElementById('hudOverlay');
+            const backButton = document.getElementById('backButton');
+            const menuButton = document.getElementById('menuButton');
+            const menuPanel = document.getElementById('menuPanel');
+            const closeMenuButton = document.getElementById('closeMenuButton');
+            const mangaModeToggle = document.getElementById('mangaModeToggle');
+            const zoomInButtonPanel = document.getElementById('zoomInButtonPanel');
+            const zoomOutButtonPanel = document.getElementById('zoomOutButtonPanel');
+            const fitLabels = document.querySelectorAll('.fit-label');
+            const readerMessage = document.getElementById('readerMessage');
+            const hamburgerButton = document.getElementById('hamburgerButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+
+            // --- State ---
+            let imageBlobs = [];
+            let originalImageBlobs = [];
+            let currentImageIndex = 0;
+            let currentObjectUrl = null;
+            let previousObjectUrl = null; // To track the URL to revoke
+            let fitMode = 'best';
+            let isMangaModeActive = false;
+            let hudTimer = null;
+            const ZOOM_STEP = 1.25;
+            const HUD_TOP_BAR_HEIGHT = '50px'; 
+
+            // --- PWA Service Worker ---
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                        navigator.serviceWorker.register('/sw.js')
+                            .then(reg => console.log('Service Worker: Registered successfully with scope:', reg.scope))
+                            .catch(err => console.error('Service Worker: Registration failed:', err));
+                    } else {
+                        console.warn('Service Worker: Registration skipped. Service Workers can only be registered from secure origins (HTTPS) or localhost.');
+                    }
+                });
+            }
+
+            // --- View Management ---
+            function showView(viewName) {
+                Object.values(views).forEach(v => v.classList.remove('active'));
+                if (views[viewName]) {
+                    views[viewName].classList.add('active');
+                    const themeColor = viewName === 'reader' ? '#0d141c' : '#ffffff';
+                    document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+                }
+            }
+             function showMessage(msg) {
+                 readerMessage.querySelector('span').textContent = msg;
+                 readerMessage.classList.remove('hidden');
+                 readerMessage.classList.add('flex');
+            }
+            function hideMessage() {
+                readerMessage.classList.add('hidden');
+                readerMessage.classList.remove('flex');
+            }
+
+            // --- File Handling ---
+            async function handleFile(file) {
+                 // Close mobile menu if open
+                if (mobileMenu && mobileMenu.classList.contains('open')) {
+                    mobileMenu.classList.remove('open');
+                    if (hamburgerButton) { 
+                        hamburgerButton.setAttribute('aria-expanded', 'false');
+                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                    }
+                }
+
+                 if (!file || !file.name.toLowerCase().endsWith('.cbz')) {
+                    showMessage('Error: Please select a valid .cbz file.');
+                    setTimeout(() => hideMessage(), 3000);
+                    return;
+                }
+                showView('reader');
+                showMessage('Loading ' + file.name + '...');
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (!window.JSZip) {
+                        throw new Error("JSZip library not loaded.");
+                    }
+                    const zip = await JSZip.loadAsync(arrayBuffer);
+                    const imageFiles = [];
+                    const promises = [];
+
+                    for (const [filename, fileData] of Object.entries(zip.files)) {
+                        if (!fileData.dir && /\.(jpe?g|png|gif|webp)$/i.test(filename) && !filename.startsWith('__MACOSX/')) {
+                            promises.push(
+                                fileData.async("blob").then(blob => imageFiles.push({ name: filename, blob: blob }))
+                            );
+                        }
+                    }
+                    await Promise.all(promises);
+                    imageFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+                    originalImageBlobs = [...imageFiles];
+                    imageBlobs = [...imageFiles];
+                    currentImageIndex = 0;
+
+                    if (imageBlobs.length > 0) {
+                        isMangaModeActive = mangaModeToggle.checked;
+                        if(isMangaModeActive) {
+                            imageBlobs.reverse();
+                        }
+                        displayPage(0);
+                        hideMessage();
+                    } else {
+                        throw new Error('No images found in the CBZ file.');
+                    }
+
+                } catch (err) {
+                    console.error("Error processing CBZ:", err);
+                    showMessage(`Error: ${err.message}`);
+                    setTimeout(() => {
+                        hideMessage();
+                        showView('upload');
+                    }, 3000);
+                }
+            }
+
+            // --- Reader Logic ---
+             function displayPage(index) {
+                if (!imageBlobs || imageBlobs.length === 0 || index < 0 || index >= imageBlobs.length) {
+                    console.warn("DisplayPage called with invalid index or no images:", index, imageBlobs);
+                    return;
+                }
+
+                const localCurrentImageIndex = index; 
+                const imageEntry = imageBlobs[localCurrentImageIndex]; 
+
+                if (!imageEntry || !imageEntry.blob) {
+                    console.error("Invalid image entry or blob at index:", localCurrentImageIndex);
+                    showMessage("Error: Corrupted image data at page " + (localCurrentImageIndex + 1));
+                    return;
+                }
+                const currentBlob = imageEntry.blob;
+                
+                if (previousObjectUrl) {
+                    URL.revokeObjectURL(previousObjectUrl);
+                }
+
+                currentObjectUrl = URL.createObjectURL(currentBlob);
+                previousObjectUrl = currentObjectUrl; 
+
+                comicImage.style.opacity = 0;
+                comicImage.src = currentObjectUrl;
+
+                comicImage.onload = () => {
+                    applyFitMode(fitMode);
+                    comicImage.style.opacity = 1;
+                };
+                comicImage.onerror = () => {
+                    const failedImageName = imageEntry && imageEntry.name ? imageEntry.name : "unknown image";
+                    console.error("Failed to load image:", failedImageName, "at index:", localCurrentImageIndex, "Attempted URL was:", comicImage.src);
+                    showMessage("Error loading page " + (localCurrentImageIndex + 1) + (failedImageName !== "unknown image" ? ` (${failedImageName})` : ""));
+                };
+                
+                currentImageIndex = localCurrentImageIndex; 
+                updateUI();
+                hideHUD(0);
+            }
+
+            function nextPage() { displayPage(currentImageIndex + 1); }
+            function prevPage() { displayPage(currentImageIndex - 1); }
+
+            function applyMangaMode() {
+                const shouldBeManga = mangaModeToggle.checked;
+                if (isMangaModeActive === shouldBeManga) return;
+
+                isMangaModeActive = shouldBeManga;
+                const currentVisibleImageName = (imageBlobs.length > 0 && currentImageIndex >= 0 && currentImageIndex < imageBlobs.length)
+                                              ? imageBlobs[currentImageIndex].name
+                                              : null;
+
+                imageBlobs = [...originalImageBlobs];
+                if (isMangaModeActive) {
+                    imageBlobs.reverse();
+                }
+
+                let newIndex = 0;
+                if (currentVisibleImageName) {
+                    newIndex = imageBlobs.findIndex(img => img.name === currentVisibleImageName);
+                    if (newIndex === -1) {
+                        console.warn("Current image not found after manga mode toggle, resetting to page 0.");
+                        newIndex = 0;
+                    }
+                }
+                displayPage(newIndex);
+            }
+
+            // --- HUD Logic ---
+            function showHUD() {
+                clearTimeout(hudTimer);
+                hudOverlay.classList.add('visible');
+                imageContainer.style.paddingTop = HUD_TOP_BAR_HEIGHT;
+                hudTimer = setTimeout(hideHUD, 4000);
+            }
+            function hideHUD() {
+                clearTimeout(hudTimer);
+                hudOverlay.classList.remove('visible');
+                imageContainer.style.paddingTop = '0px';
+            }
+            function toggleHUD() { hudOverlay.classList.contains('visible') ? hideHUD() : showHUD(); }
+
+            // --- Panel Logic ---
+            function showMenuPanel() { menuPanel.classList.add('visible'); hideHUD(); }
+            function hideMenuPanel() { menuPanel.classList.remove('visible'); }
+
+            // --- Mobile Menu Logic ---
+            if (hamburgerButton && mobileMenu) {
+                hamburgerButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('open');
+                    const isExpanded = mobileMenu.classList.contains('open');
+                    hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
+                    if (isExpanded) {
+                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+                    } else {
+                         hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                    }
+                });
+                document.addEventListener('click', (e) => {
+                    if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                        mobileMenu.classList.remove('open');
+                        hamburgerButton.setAttribute('aria-expanded', 'false');
+                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                    }
+                });
+            }
+
+
+            // --- Zoom & Fit Logic ---
+            function applyFitMode(modeValue) {
+                fitMode = modeValue;
+                const img = comicImage;
+                const container = imageContainer;
+                img.style.width = 'auto'; img.style.height = 'auto';
+                img.style.maxWidth = 'none'; img.style.maxHeight = 'none';
+
+                if (!img.naturalWidth || img.naturalWidth === 0) return;
+
+                switch (fitMode) {
+                    case 'best': img.style.maxWidth = '100%'; img.style.maxHeight = '100%'; break;
+                    case 'width': img.style.width = '100%'; break;
+                    case 'height': img.style.height = `${container.clientHeight}px`; break;
+                    case 'original': img.style.width = `${img.naturalWidth}px`; break;
+                }
+                fitLabels.forEach(label => {
+                    const radio = label.querySelector('input');
+                    const isChecked = radio.value === fitMode;
+                    label.classList.toggle('checked', isChecked);
+                    radio.checked = isChecked;
+                });
+            }
+             function changeZoom(factor) {
+                const img = comicImage;
+                const currentWidth = img.clientWidth;
+                img.style.width = `${currentWidth * factor}px`;
+                img.style.height = 'auto';
+                img.style.maxWidth = 'none'; img.style.maxHeight = 'none';
+                fitMode = 'manual';
+                fitLabels.forEach(label => {
+                    label.classList.remove('checked');
+                    label.querySelector('input').checked = false;
+                });
+            }
+
+            // --- UI Updates ---
+            function updateUI() {
+                pageIndicatorHud.textContent = imageBlobs.length > 0 ? `${currentImageIndex + 1} / ${imageBlobs.length}` : `0 / 0`;
+            }
+
+            // --- Event Listeners ---
+            if (selectFileButton && fileInput) {
+                selectFileButton.addEventListener('click', () => {
+                    console.log("Select a File button clicked. Attempting to trigger file input.");
+                    fileInput.click();
+                });
+            } else {
+                if (!selectFileButton) console.error("ERROR: selectFileButton element not found!");
+                if (!fileInput) console.error("ERROR: fileInput element not found!");
+            }
+
+            if (uploadButtonHeader && fileInput) {
+                uploadButtonHeader.addEventListener('click', () => {
+                    console.log("Header Upload button clicked. Attempting to trigger file input.");
+                    fileInput.click();
+                });
+            }
+
+            if(uploadButtonHeaderMobile && fileInput) {
+                uploadButtonHeaderMobile.addEventListener('click', () => {
+                    console.log("Mobile Menu Upload button clicked. Attempting to trigger file input.");
+                    if (mobileMenu && mobileMenu.classList.contains('open')) {
+                        mobileMenu.classList.remove('open');
+                        if (hamburgerButton) {
+                           hamburgerButton.setAttribute('aria-expanded', 'false');
+                           hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                        }
+                    }
+                    fileInput.click();
+                });
+            }
+            fileInput.addEventListener('change', (e) => { 
+                if (e.target.files && e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    console.log(`File input changed. Selected file: ${file.name}`);
+                    handleFile(file);
+                    e.target.value = ''; // Reset file input value
+                } else {
+                    console.log("File input change event fired, but no files selected.");
+                }
+            });
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragging'); });
+            dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('dragging'); });
+            dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragging'); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
+
+            // Click listener on imageContainer for navigation and HUD toggle
+            imageContainer.addEventListener('click', (event) => {
+                if (menuPanel.classList.contains('visible')) return;
+
+                const scrollbarWidth = 17;
+                if (event.offsetX >= imageContainer.clientWidth - scrollbarWidth ||
+                    event.offsetY >= imageContainer.clientHeight - scrollbarWidth) {
+                    return;
+                }
+
+                let clickedOnInteractiveHudElement = false;
+                if (hudOverlay.classList.contains('visible')) {
+                    if (event.target.closest('.hud-icon')) {
+                        clickedOnInteractiveHudElement = true;
+                    }
+                }
+
+                if (clickedOnInteractiveHudElement) {
+                    showHUD();
+                    return;
+                }
+
+                const rect = imageContainer.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const containerWidth = imageContainer.clientWidth;
+
+                if (x < containerWidth * 0.25) {
+                    isMangaModeActive ? nextPage() : prevPage();
+                } else if (x > containerWidth * 0.75) {
+                    isMangaModeActive ? prevPage() : nextPage();
+                } else {
+                    toggleHUD();
+                }
+            });
+
+
+            backButton.addEventListener('click', () => {
+                showView('upload');
+                imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
+                if (currentObjectUrl) { URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+                if (previousObjectUrl) { URL.revokeObjectURL(previousObjectUrl); previousObjectUrl = null; }
+                comicImage.src = "";
+                updateUI();
+            });
+            menuButton.addEventListener('click', showMenuPanel);
+            closeMenuButton.addEventListener('click', hideMenuPanel);
+            mangaModeToggle.addEventListener('change', applyMangaMode);
+            zoomInButtonPanel.addEventListener('click', () => changeZoom(ZOOM_STEP));
+            zoomOutButtonPanel.addEventListener('click', () => changeZoom(1 / ZOOM_STEP));
+            fitLabels.forEach(label => {
+                label.addEventListener('click', () => {
+                     const radio = label.querySelector('input');
+                     applyFitMode(radio.value);
+                });
+            });
+            document.addEventListener('keydown', (e) => {
+                if (views.reader.classList.contains('active')) {
+                     if (menuPanel.classList.contains('visible')) {
+                         if (e.key === 'Escape') hideMenuPanel();
+                         return;
+                     }
+                    let handled = false;
+                    if (e.key === 'ArrowLeft') { isMangaModeActive ? nextPage() : prevPage(); handled = true; }
+                    else if (e.key === 'ArrowRight') { isMangaModeActive ? prevPage() : nextPage(); handled = true; }
+                    else if (e.key === ' ') { toggleHUD(); handled = true; }
+                    else if (e.key === '+' || e.key === '=') { changeZoom(ZOOM_STEP); handled = true; }
+                    else if (e.key === '-') { changeZoom(1 / ZOOM_STEP); handled = true; }
+                    else if (e.key === 'm' || e.key === 'M') { mangaModeToggle.checked = !mangaModeToggle.checked; applyMangaMode(); handled = true; }
+
+                    if (handled) e.preventDefault();
+                }
+            });
+
+            // --- Initial Setup ---
+            showView('upload');
+        });
+    </script>
+</body>
+</html>

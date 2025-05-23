@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comet - Pricing Plans</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        /* Light Theme Defaults */
+        body {
+            font-family: Manrope, "Noto Sans", sans-serif;
+            background-color: #f8fafc; /* Light gray background (slate-50) */
+            color: #0d141c; /* Dark text (slate-900) */
+        }
+        .pricing-card {
+            background-color: #ffffff; /* White card background */
+            border: 1px solid #e2e8f0; /* Lighter border (slate-200) */
+        }
+        .feature-check svg {
+            color: #3D98F4; /* Blue checkmark */
+        }
+        .popular-badge {
+            background-color: #3D98F4;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            position: absolute;
+            top: -0.75rem;
+            right: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+         .best-value-badge {
+            background-color: #3D98F4; /* Consistent blue badge */
+            color: white;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.8); /* Lighter header bg for light mode */
+            border-bottom-color: #e7edf4; /* Light border */
+            color: #0d141c; /* Dark text for header */
+        }
+        header a, header h2 {
+             color: #0d141c;
+        }
+         header a:hover {
+            color: #3D98F4;
+        }
+        header .logo-icon-comet { /* Class for the logo SVG */
+            color: #3D98F4;
+        }
+        header .sign-in-btn-comet {
+            background-color: #e7edf4; /* Light grey for sign in */
+            color: #0d141c;
+        }
+         header .sign-in-btn-comet:hover {
+            background-color: #d1d5db; /* Slightly darker grey on hover */
+        }
+
+
+        /* Dark Theme Overrides (when html.dark) */
+        .dark body {
+            background-color: #0D141C;
+            color: #E7EDF4;
+        }
+        .dark .pricing-card {
+            background-color: #1A2633;
+            border: 1px solid #334155;
+        }
+        .dark header {
+            background-color: rgba(13, 20, 28, 0.8); /* #0D141C with opacity */
+            border-bottom-color: #1A2633;
+            color: #E7EDF4;
+        }
+        .dark header a, .dark header h2 {
+             color: #E7EDF4;
+        }
+        .dark header a:hover {
+            color: #3D98F4;
+        }
+        .dark header .sign-in-btn-comet {
+            background-color: #1A2633;
+            color: #E7EDF4;
+        }
+        .dark header .sign-in-btn-comet:hover {
+            background-color: #334155;
+        }
+
+        /* Footer consistent light theme */
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e7edf4;
+            color: #49739c; /* Default text color for footer links */
+        }
+        footer a:hover {
+            color: #3D98F4;
+        }
+        /* Dark theme for footer */
+        .dark footer {
+            background-color: #0D141C; /* Match body dark */
+            border-top: 1px solid #1A2633;
+            color: #A0AEC0; /* Lighter text for dark footer */
+        }
+        .dark footer a {
+            color: #A0AEC0;
+        }
+        .dark footer a:hover {
+            color: #3D98F4;
+        }
+
+        /* Theme toggle button */
+        #themeToggleBtn svg {
+            width: 20px;
+            height: 20px;
+        }
+        .text-muted-light { color: #A0AEC0; }
+        .dark .text-muted-light { color: #A0AEC0; } /* Stays same or adjust if needed */
+        .dark .text-main-dark { color: #D1D5DB; }
+        .dark .text-heading-dark { color: #E7EDF4; }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+ <header class="flex items-center justify-between whitespace-nowrap border-b border-solid px-6 sm:px-10 py-4 sticky top-0 z-50 backdrop-blur-md">
+      <a href="index.html" class="flex items-center gap-3 sm:gap-4 logo-title-link transition-opacity" aria-label="Comet Home">
+        <div class="size-6 sm:size-7 logo-icon-comet">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">Comet</h2>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+        <a class="text-sm font-medium leading-normal transition-colors" href="features.html">Features</a>
+        <a class="text-sm font-bold leading-normal text-[#3D98F4]" href="pricing.html">Pricing</a> <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
+      </nav>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="themeToggleBtn" aria-label="Toggle theme" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21c3.978 0 7.44-2.03 9.002-5.002z" /></svg>
+            <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+        </button>
+        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+          <span class="truncate">Download</span>
+        </button>
+        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
+          <span class="truncate">Sign In</span>
+        </button>
+         <button aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
+        <div class="text-center mb-12 md:mb-16">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-4 text-heading-dark dark:text-heading-dark">Choose Your Comet Plan</h1>
+            <p class="text-base sm:text-lg lg:text-xl text-muted-light max-w-2xl mx-auto">
+                Unlock the full potential of Comet with our flexible plans. Whether you're a casual reader or a dedicated enthusiast, we have an option to suit your needs.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="pricing-card rounded-xl p-6 sm:p-8 flex flex-col">
+                <h3 class="text-xl sm:text-2xl font-bold mb-1 text-heading-dark dark:text-heading-dark">Basic</h3>
+                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark dark:text-heading-dark">Free <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
+                <button class="w-full mt-6 mb-6 py-2.5 sm:py-3 px-6 bg-slate-200 dark:bg-[#334155] text-slate-800 dark:text-white font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-[#4A5568] transition-colors">
+                    Select Plan
+                </button>
+                <ul class="space-y-3 text-sm sm:text-base text-main-dark dark:text-main-dark">
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Access to core features
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Read CBZ files
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Basic customization options
+                    </li>
+                </ul>
+            </div>
+
+            <div class="pricing-card rounded-xl p-6 sm:p-8 flex flex-col border-2 border-[#3D98F4] relative">
+                <div class="popular-badge">Popular</div>
+                <h3 class="text-xl sm:text-2xl font-bold mb-1 text-heading-dark dark:text-heading-dark">Pro</h3>
+                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark dark:text-heading-dark">$9.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
+                <button class="w-full mt-6 mb-6 py-2.5 sm:py-3 px-6 bg-[#3D98F4] text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+                    Select Plan
+                </button>
+                <ul class="space-y-3 text-sm sm:text-base text-main-dark dark:text-main-dark">
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        All Basic features
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Advanced customization
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Offline reading
+                    </li>
+                    <li class="flex items-center">
+                       <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Priority support
+                    </li>
+                </ul>
+            </div>
+
+            <div class="pricing-card rounded-xl p-6 sm:p-8 flex flex-col relative">
+                 <div class="absolute top-4 right-4 text-xs font-bold best-value-badge px-3 py-1 rounded-full">Best Value</div>
+                <h3 class="text-xl sm:text-2xl font-bold mb-1 text-heading-dark dark:text-heading-dark">Ultimate</h3>
+                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark dark:text-heading-dark">$19.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
+                <button class="w-full mt-6 mb-6 py-2.5 sm:py-3 px-6 bg-slate-200 dark:bg-[#334155] text-slate-800 dark:text-white font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-[#4A5568] transition-colors">
+                    Select Plan
+                </button>
+                <ul class="space-y-3 text-sm sm:text-base text-main-dark dark:text-main-dark">
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        All Pro features
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Exclusive content
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Early access to new features
+                    </li>
+                    <li class="flex items-center">
+                        <span class="feature-check mr-2 size-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg></span>
+                        Dedicated account manager
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <p class="text-center text-sm text-muted-light mt-12 md:mt-16">
+            All plans come with a 7-day free trial. Cancel anytime.
+        </p>
+    </main>
+
+    <footer class="flex-shrink-0 text-sm py-8 mt-12 md:mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex flex-wrap justify-center gap-x-6 sm:gap-x-8 gap-y-2">
+                    <a class="transition-colors" href="privacy.html">Privacy Policy</a>
+                    <a class="transition-colors" href="terms.html">Terms of Service</a>
+                    <a class="transition-colors" href="support.html">Contact Us</a>
+                </div>
+                <div class="flex justify-center gap-5">
+                    <a href="#" aria-label="Twitter" class="transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                    </a>
+                    <a href="#" aria-label="Instagram" class="transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    </a>
+                    <a href="#" aria-label="Facebook" class="transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                </div>
+                <p class="text-xs sm:text-sm">© 2024 Comet. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle script
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIconMoon = document.getElementById('themeIconMoon');
+        const themeIconSun = document.getElementById('themeIconSun');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            themeIconMoon.classList.add('hidden');
+            themeIconSun.classList.remove('hidden');
+        } else {
+            htmlElement.classList.remove('dark');
+            themeIconSun.classList.add('hidden');
+            themeIconMoon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                themeIconMoon.classList.add('hidden');
+                themeIconSun.classList.remove('hidden');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIconSun.classList.add('hidden');
+                themeIconMoon.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
