@@ -10,7 +10,7 @@
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    <link rel="manifest" href="manifest.json"> <meta name="theme-color" content="#ffffff"> 
+    <link rel="manifest" href="manifest.json"> <meta name="theme-color" content="#ffffff">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
@@ -59,6 +59,28 @@
         #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
         #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
          :root { --hud-top-bar-height: 50px; }
+
+        /* Light/Dark mode specific styles for index.html only */
+        .dark #uploadView { background-color: #0D141C; }
+        .dark #uploadView header { background-color: rgba(13, 20, 28, 0.8); border-bottom-color: #1A2633; }
+        .dark #uploadView header a, .dark #uploadView header h2 { color: #E7EDF4; }
+        .dark #uploadView header a:hover { color: #3D98F4; }
+        .dark #uploadView .logo-icon-comet { color: #3D98F4; } /* Ensure logo color is consistent or themed */
+        .dark #uploadView footer { background-color: #0D141C; border-top-color: #1A2633; }
+        .dark #uploadView footer a { color: #A0AEC0; }
+        .dark #uploadView footer a:hover { color: #3D98F4; }
+        .dark #uploadView footer p { color: #A0AEC0; }
+        .dark #dropZone { /* Potentially adjust dropzone for dark mode if needed */ }
+        .dark #panel, .dark .panel { background-color: #1A2633; color: #E7EDF4; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+        .dark .panel h2, .dark .panel h3 { color: #E7EDF4; }
+        .dark .toggle-bg { background-color: #334155; }
+        .dark .toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
+        .dark .fit-label { border-color: #334155; color: #E7EDF4; }
+        .dark .fit-label.checked { border-color: #3d98f4;}
+        .dark #mobileMenu { background-color: #1A2633; border-bottom-color: #334155; }
+        .dark #mobileMenu a, .dark #mobileMenu button { color: #E7EDF4; }
+        .dark #mobileMenu a:hover, .dark #mobileMenu button:hover { background-color: #334155; color: #3D98F4; }
+
     </style>
 </head>
 <body>
@@ -66,28 +88,32 @@
     <input type="file" id="fileInput" accept=".cbz" class="hidden">
 
     <div id="uploadView" class="view active">
-        <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-4 md:px-10 py-3 bg-white flex-shrink-0 z-50">
-          <a href="index.html" class="flex items-center gap-3 sm:gap-4 text-[#0d141c] hover:opacity-80 transition-opacity" aria-label="Comet Home">
+        <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-[#1A2633] px-4 md:px-10 py-3 bg-white dark:bg-[rgba(13,20,28,0.8)] backdrop-blur-md flex-shrink-0 z-50">
+          <a href="index.html" class="flex items-center gap-3 sm:gap-4 text-[#0d141c] dark:text-[#E7EDF4] hover:opacity-80 transition-opacity" aria-label="Comet Home">
             <div class="size-5 sm:size-6 text-[#3d98f4]"> <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
             </div>
-            <h2 class="text-[#0d141c] text-md sm:text-lg font-bold leading-tight tracking-[-0.015em]">Comet</h2>
+            <h2 class="text-[#0d141c] dark:text-[#E7EDF4] text-md sm:text-lg font-bold leading-tight tracking-[-0.015em]">Comet</h2>
           </a>
           <nav class="hidden md:flex items-center gap-6 lg:gap-9">
-            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="features.html">Features</a>
-            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="pricing.html">Pricing</a>
-            <a class="text-[#0d141c] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="support.html">Support</a>
+            <a class="text-[#0d141c] dark:text-[#E7EDF4] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="features.html">Features</a>
+            <a class="text-[#0d141c] dark:text-[#E7EDF4] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="pricing.html">Pricing</a>
+            <a class="text-[#0d141c] dark:text-[#E7EDF4] text-xs sm:text-sm font-medium leading-normal hover:text-[#3d98f4] transition-colors" href="support.html">Support</a>
           </nav>
           <div class="flex items-center gap-2 md:gap-4">
+            <button id="themeToggleBtn" aria-label="Toggle theme" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <svg id="themeIconMoon" class="text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px; height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21c3.978 0 7.44-2.03 9.002-5.002z" /></svg>
+                <svg id="themeIconSun" class="text-gray-700 dark:text-gray-300 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px; height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+            </button>
             <div class="hidden md:flex items-center gap-2">
                  <button id="uploadButtonHeader" class="flex min-w-[70px] sm:min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3d98f4] text-slate-50 text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
                     <span class="truncate">Upload</span>
                 </button>
-                <button aria-label="Help" class="hidden md:flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#e7edf4] text-[#0d141c] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-300 transition-colors">
+                <button aria-label="Help" class="hidden md:flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#e7edf4] dark:bg-[#1A2633] text-[#0d141c] dark:text-[#E7EDF4] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-300 dark:hover:bg-[#334155] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path></svg>
                 </button>
                 <div class="hidden md:block bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 sm:size-10" style='background-image: url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1064");'></div>
             </div>
-            <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-md text-[#0d141c] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#3d98f4]">
+            <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-md text-[#0d141c] dark:text-[#E7EDF4] hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#3d98f4]">
                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -95,9 +121,9 @@
           </div>
           <div id="mobileMenu" class="md:hidden">
               <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
-                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
-                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
+                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#3d98f4]">Features</a>
+                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#3d98f4]">Pricing</a>
+                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#3d98f4]">Support</a>
                   <button id="uploadButtonHeaderMobile" class="w-full mt-2 flex min-w-[70px] sm:min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3d98f4] text-slate-50 text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
                     <span class="truncate">Upload</span>
                   </button>
@@ -120,29 +146,29 @@
                     </div>
                 </div>
             </div>
-            <footer class="flex flex-col gap-4 sm:gap-6 px-5 py-6 text-center bg-white border-t border-solid border-b-[#e7edf4] flex-shrink-0">
+            <footer class="flex flex-col gap-4 sm:gap-6 px-5 py-6 text-center bg-white dark:bg-[#0D141C] border-t border-solid border-t-[#e7edf4] dark:border-t-[#1A2633] flex-shrink-0">
                   <div class="flex flex-wrap items-center justify-center gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-4">
-                    <a class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="privacy.html">Privacy Policy</a>
-                    <a class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="terms.html">Terms of Service</a>
+                    <a class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="privacy.html">Privacy Policy</a>
+                    <a class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="terms.html">Terms of Service</a>
                   </div>
                   <div class="flex flex-wrap justify-center gap-4 sm:gap-5">
-                    <a href="#" aria-label="Twitter" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                    <a href="#" aria-label="Twitter" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
                         </svg>
                     </a>
-                    <a href="#" aria-label="Instagram" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                    <a href="#" aria-label="Instagram" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
                         </svg>
                     </a>
-                    <a href="#" aria-label="Facebook" class="text-[#49739c] hover:text-[#3d98f4] transition-colors">
+                    <a href="#" aria-label="Facebook" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                         </svg>
                     </a>
                   </div>
-                  <p class="text-[#49739c] text-xs sm:text-sm font-normal leading-normal">© 2024 Comet. All rights reserved.</p>
+                  <p class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal">© 2024 Comet. All rights reserved.</p>
             </footer>
         </div>
     </div>
@@ -164,41 +190,41 @@
         <div id="readerMessage" class="hidden"><span>Loading...</span></div>
     </div>
 
-    <div id="menuPanel" class="panel">
-       <div class="flex justify-between items-center p-4 border-b">
-           <h2 class="text-[#0d141c] text-xl font-bold">Options</h2>
-           <button id="closeMenuButton" class="hud-icon text-black" aria-label="Close Menu">
+    <div id="menuPanel" class="panel dark:bg-[#1A2633] dark:text-[#E7EDF4]">
+       <div class="flex justify-between items-center p-4 border-b dark:border-b-gray-700">
+           <h2 class="text-[#0d141c] dark:text-[#E7EDF4] text-xl font-bold">Options</h2>
+           <button id="closeMenuButton" class="hud-icon text-black dark:text-white" aria-label="Close Menu">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
            </button>
        </div>
-       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Settings</h3>
+       <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-5 pb-2">Settings</h3>
        <div class="flex flex-col gap-1 p-2">
             <div class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between">
                 <div class="flex flex-col justify-center grow mr-2">
-                    <p class="text-[#0d141c] text-base font-medium">Two-Page Spread</p>
-                    <p class="text-[#49739c] text-sm font-normal">Display two pages (Desktop Soon!)</p>
+                    <p class="text-[#0d141c] dark:text-[#E7EDF4] text-base font-medium">Two-Page Spread</p>
+                    <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Display two pages (Desktop Soon!)</p>
                 </div>
-                <label class="toggle-label opacity-50 cursor-not-allowed"><input type="checkbox" id="twoPageToggle" disabled /><div class="toggle-bg"><div class="toggle-switch"></div></div></label>
+                <label class="toggle-label opacity-50 cursor-not-allowed"><input type="checkbox" id="twoPageToggle" disabled /><div class="toggle-bg dark:bg-gray-600"><div class="toggle-switch"></div></div></label>
             </div>
             <div class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between">
                 <div class="flex flex-col justify-center grow mr-2">
-                    <p class="text-[#0d141c] text-base font-medium">Manga Mode</p>
-                    <p class="text-[#49739c] text-sm font-normal">Read from right to left</p>
+                    <p class="text-[#0d141c] dark:text-[#E7EDF4] text-base font-medium">Manga Mode</p>
+                    <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Read from right to left</p>
                 </div>
-                <label class="toggle-label"><input type="checkbox" id="mangaModeToggle" /><div class="toggle-bg"><div class="toggle-switch"></div></div></label>
+                <label class="toggle-label"><input type="checkbox" id="mangaModeToggle" /><div class="toggle-bg dark:bg-gray-600"><div class="toggle-switch"></div></div></label>
             </div>
        </div>
-       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Zoom</h3>
+       <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-5 pb-2">Zoom</h3>
         <div class="flex flex-1 gap-3 px-4 py-3 justify-between">
-            <button id="zoomOutButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-xl font-bold hover:bg-gray-300 transition-colors" aria-label="Zoom Out">-</button>
-            <button id="zoomInButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-xl font-bold hover:bg-gray-300 transition-colors" aria-label="Zoom In">+</button>
+            <button id="zoomOutButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] dark:bg-gray-700 text-[#0d141c] dark:text-white text-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Zoom Out">-</button>
+            <button id="zoomInButtonPanel" class="flex flex-1 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-[#e7edf4] dark:bg-gray-700 text-[#0d141c] dark:text-white text-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Zoom In">+</button>
         </div>
-       <h3 class="text-[#0d141c] text-lg font-bold px-4 pt-5 pb-2">Fit</h3>
+       <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-5 pb-2">Fit</h3>
         <div class="grid grid-cols-2 gap-3 p-4">
-            <label class="fit-label checked"><input type="radio" name="fitMode" value="best" checked />Best</label>
-            <label class="fit-label"><input type="radio" name="fitMode" value="width" />Width</label>
-            <label class="fit-label"><input type="radio" name="fitMode" value="height" />Height</label>
-            <label class="fit-label"><input type="radio" name="fitMode" value="original" />Original</label>
+            <label class="fit-label checked dark:border-gray-600 dark:text-white dark:checked:border-[#3d98f4]"><input type="radio" name="fitMode" value="best" checked />Best</label>
+            <label class="fit-label dark:border-gray-600 dark:text-white dark:checked:border-[#3d98f4]"><input type="radio" name="fitMode" value="width" />Width</label>
+            <label class="fit-label dark:border-gray-600 dark:text-white dark:checked:border-[#3d98f4]"><input type="radio" name="fitMode" value="height" />Height</label>
+            <label class="fit-label dark:border-gray-600 dark:text-white dark:checked:border-[#3d98f4]"><input type="radio" name="fitMode" value="original" />Original</label>
         </div>
     </div>
 
@@ -229,6 +255,10 @@
             const readerMessage = document.getElementById('readerMessage');
             const hamburgerButton = document.getElementById('hamburgerButton');
             const mobileMenu = document.getElementById('mobileMenu');
+            const themeToggleBtn = document.getElementById('themeToggleBtn'); // THEME TOGGLE
+            const themeIconMoon = document.getElementById('themeIconMoon'); // THEME TOGGLE
+            const themeIconSun = document.getElementById('themeIconSun');   // THEME TOGGLE
+            const htmlElement = document.documentElement; // THEME TOGGLE
 
 
             // --- State ---
@@ -241,7 +271,43 @@
             let isMangaModeActive = false;
             let hudTimer = null;
             const ZOOM_STEP = 1.25;
-            const HUD_TOP_BAR_HEIGHT = '50px'; 
+            const HUD_TOP_BAR_HEIGHT = '50px';
+
+            // --- Theme Toggle Logic (for index.html only) ---
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    if(themeIconMoon) themeIconMoon.classList.add('hidden');
+                    if(themeIconSun) themeIconSun.classList.remove('hidden');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    if(themeIconSun) themeIconSun.classList.add('hidden');
+                    if(themeIconMoon) themeIconMoon.classList.remove('hidden');
+                }
+                 const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                if (themeColorMeta) {
+                    themeColorMeta.setAttribute('content', theme === 'dark' ? '#0D141C' : '#ffffff');
+                }
+            }
+
+            if (themeToggleBtn) { // Ensure this runs only if the button exists
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    applyTheme(savedTheme);
+                } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    applyTheme('dark');
+                } else {
+                    applyTheme('light');
+                }
+
+                themeToggleBtn.addEventListener('click', () => {
+                    const isDark = htmlElement.classList.toggle('dark');
+                    const newTheme = isDark ? 'dark' : 'light';
+                    localStorage.setItem('theme', newTheme);
+                    applyTheme(newTheme);
+                });
+            }
+
 
             // --- PWA Service Worker ---
             if ('serviceWorker' in navigator) {
@@ -261,8 +327,7 @@
                 Object.values(views).forEach(v => v.classList.remove('active'));
                 if (views[viewName]) {
                     views[viewName].classList.add('active');
-                    const themeColor = viewName === 'reader' ? '#0d141c' : '#ffffff';
-                    document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+                    // Theme color for reader view is handled by its own background
                 }
             }
              function showMessage(msg) {
@@ -280,7 +345,7 @@
                  // Close mobile menu if open
                 if (mobileMenu && mobileMenu.classList.contains('open')) {
                     mobileMenu.classList.remove('open');
-                    if (hamburgerButton) { 
+                    if (hamburgerButton) {
                         hamburgerButton.setAttribute('aria-expanded', 'false');
                         hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
                     }
@@ -345,8 +410,8 @@
                     return;
                 }
 
-                const localCurrentImageIndex = index; 
-                const imageEntry = imageBlobs[localCurrentImageIndex]; 
+                const localCurrentImageIndex = index;
+                const imageEntry = imageBlobs[localCurrentImageIndex];
 
                 if (!imageEntry || !imageEntry.blob) {
                     console.error("Invalid image entry or blob at index:", localCurrentImageIndex);
@@ -354,13 +419,13 @@
                     return;
                 }
                 const currentBlob = imageEntry.blob;
-                
+
                 if (previousObjectUrl) {
                     URL.revokeObjectURL(previousObjectUrl);
                 }
 
                 currentObjectUrl = URL.createObjectURL(currentBlob);
-                previousObjectUrl = currentObjectUrl; 
+                previousObjectUrl = currentObjectUrl;
 
                 comicImage.style.opacity = 0;
                 comicImage.src = currentObjectUrl;
@@ -374,8 +439,8 @@
                     console.error("Failed to load image:", failedImageName, "at index:", localCurrentImageIndex, "Attempted URL was:", comicImage.src);
                     showMessage("Error loading page " + (localCurrentImageIndex + 1) + (failedImageName !== "unknown image" ? ` (${failedImageName})` : ""));
                 };
-                
-                currentImageIndex = localCurrentImageIndex; 
+
+                currentImageIndex = localCurrentImageIndex;
                 updateUI();
                 hideHUD(0);
             }
@@ -521,7 +586,7 @@
                     fileInput.click();
                 });
             }
-            fileInput.addEventListener('change', (e) => { 
+            fileInput.addEventListener('change', (e) => {
                 if (e.target.files && e.target.files.length > 0) {
                     const file = e.target.files[0];
                     console.log(`File input changed. Selected file: ${file.name}`);
