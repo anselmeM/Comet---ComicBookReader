@@ -10,131 +10,55 @@
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff"> <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json"> <meta name="theme-color" content="#ffffff"> 
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         /* Base Styles */
-        html, body { height: 100%; margin: 0; overflow: hidden; /* Prevent body scroll */ }
-        body { font-family: Manrope, "Noto Sans", sans-serif; font-size: 16px; /* Base font size */ }
-        .view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; } /* Prevent view scroll */
+        html, body { height: 100%; margin: 0; overflow: hidden; }
+        body { font-family: Manrope, "Noto Sans", sans-serif; font-size: 16px; }
+        .view { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; }
         .view.active { display: flex; }
-
-        /* Specific for Upload View to allow its content to scroll */
-        #uploadView > .content-wrapper {
-            flex-grow: 1; /* Allows this div to take available space */
-            overflow-y: auto; /* Allows only vertical scroll for this specific div */
-            display: flex;
-            flex-direction: column;
-        }
-         #uploadView > .content-wrapper > .main-content {
-            flex-grow: 1; /* Ensures main content pushes footer down */
-        }
-
-
-        /* HUD Styles */
+        #uploadView > .content-wrapper { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        #uploadView > .content-wrapper > .main-content { flex-grow: 1; }
         #readerView { background-color: #000; }
-        /* This is the layer for the VISIBLE HUD bars */
-        .hud-overlay { position: absolute; inset: 0; z-index: 20; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; /* None by default so it doesn't block image container */ }
-        .hud-overlay.visible { opacity: 1; pointer-events: auto; /* Auto when visible so buttons inside are clickable */ }
+        .hud-overlay { position: absolute; inset: 0; z-index: 20; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
+        .hud-overlay.visible { opacity: 1; pointer-events: auto; }
         .hud-bar { position: absolute; left: 0; right: 0; background: rgba(13, 20, 28, 0.75); backdrop-filter: blur(8px); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; color: #e7edf4;}
         .hud-bar.top { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .hud-icon { background: transparent; border: none; color: #e7edf4; padding: 6px; border-radius: 50%; cursor: pointer; transition: background 0.2s ease; }
         .hud-icon svg { width: 24px; height: 24px; }
         .hud-icon:hover { background: rgba(255, 255, 255, 0.15); }
         #pageIndicatorHud { font-size: 0.875rem; sm:font-size: 1rem; }
-        
-        /* NO LONGER USING SEPARATE CLICK ZONE DIVS for prev/next/hudToggle. Clicks handled by #imageContainer */
-
-
-        /* Panel Styles */
         .panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 360px; sm:max-width: 400px; height: 100%; background-color: #f8fafc; z-index: 50; transition: right 0.4s ease-in-out; overflow-y: auto; color: #0d141c; box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
         .panel.visible { right: 0; }
         .panel h2 { color: #0d141c; font-size: 20px; sm:font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em; padding-left: 1rem; padding-right: 1rem; text-align: left; padding-bottom: 0.5rem; padding-top: 1.25rem; }
         .panel h3 { color: #0d141c; font-size: 1rem; sm:font-size: 1.125rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em; padding-left: 1rem; padding-right: 1rem; padding-bottom: 0.5rem; padding-top: 1rem; }
-
-        /* Corrected Toggle Switch Styles */
         .toggle-label { position: relative; display: flex; height: 31px; width: 51px; cursor: pointer; border-radius: 9999px; }
         .toggle-bg { display: flex; align-items: center; width: 100%; height: 100%; border-radius: 9999px; transition: all 0.2s ease; padding: 2px; background-color: #e7edf4; }
         .toggle-switch { height: 27px; width: 27px; border-radius: 9999px; background-color: white; box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px; transition: transform 0.2s ease; }
         .toggle-label input { opacity: 0; width: 0; height: 0; position: absolute; }
         .toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
         .toggle-label input:checked + .toggle-bg .toggle-switch { transform: translateX(20px); }
-
-        /* Corrected Fit Button Styles */
         .fit-label { font-size: 0.875rem; sm:font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #cedbe8; padding: 0 12px; sm:padding: 0 16px; height: 40px; sm:height: 44px; color: #0d141c; position: relative; cursor: pointer; transition: all 0.2s ease; }
         .fit-label.checked { border-width: 2px; sm:border-width: 3px; padding: 0 10.66px; sm:padding: 0 14.66px; border-color: #3d98f4; }
         .fit-label input { appearance: none; position: absolute; inset: 0; }
-
-        /* Reader Styles */
-        #imageContainer { 
-            overflow: auto; 
-            flex-grow: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start; /* UPDATED: Ensures top of image is aligned at scroll top */
-            background-color: #000; 
-            position: relative; 
-            cursor: pointer; 
-            padding-top: 0; 
-            transition: padding-top 0.3s ease-in-out; 
-        }
-        #comicImage { 
-            max-width: none; 
-            max-height: none; 
-            display: block; 
-            opacity: 1; 
-            transition: opacity 0.2s; 
-            image-rendering: -webkit-optimize-contrast; 
-            pointer-events: none; 
-        }
+        #imageContainer { overflow: auto; flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; background-color: #000; position: relative; cursor: pointer; padding-top: 0; transition: padding-top 0.3s ease-in-out; }
+        #comicImage { max-width: none; max-height: none; display: block; opacity: 1; transition: opacity 0.2s; image-rendering: -webkit-optimize-contrast; pointer-events: none; }
         #readerMessage { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.75); z-index: 40; color: white; font-size: 1.125rem; sm:font-size: 1.25rem; text-align: center; padding: 20px;}
         #readerMessage.flex { display: flex; }
-
-        /* Upload Styles */
         #uploadView { background-color: #f8fafc; }
         #dropZone { background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://images.unsplash.com/photo-1505664194779-8be68b5c9d48?auto=format&fit=crop&q=80&w=1770"); transition: all 0.3s ease; min-height: 300px; sm:min-height: 400px; md:min-height: 480px; }
         #dropZone.dragging { border: 4px dashed #3d98f4; opacity: 0.8; transform: scale(1.02); }
-
-        /* Mobile Menu Styles */
-        #mobileMenu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: white;
-            z-index: 40;
-            border-bottom: 1px solid #e7edf4;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        #mobileMenu.open {
-            max-height: 500px;
-        }
-        #mobileMenu a, #mobileMenu button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 0.75rem 1.5rem;
-            color: #0d141c;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        #mobileMenu a:hover, #mobileMenu button:hover {
-            background-color: #f3f4f6;
-            color: #3D98F4;
-        }
-         :root {
-            --hud-top-bar-height: 50px; 
-        }
-
+        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        #mobileMenu.open { max-height: 500px; }
+        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
+        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
+         :root { --hud-top-bar-height: 50px; }
     </style>
 </head>
 <body>
@@ -323,7 +247,7 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-                        navigator.serviceWorker.register('/sw.js')
+                        navigator.serviceWorker.register('sw.js') // UPDATED to be relative
                             .then(reg => console.log('Service Worker: Registered successfully with scope:', reg.scope))
                             .catch(err => console.error('Service Worker: Registration failed:', err));
                     } else {
