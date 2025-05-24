@@ -3,8 +3,8 @@
   "short_name": "Comet",
   "description": "An elegant, immersive web-based reader for your CBZ comic book files.",
   "lang": "en-US",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "index.html",
+  "scope": ".",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#0d141c",
@@ -36,13 +36,13 @@
       "type": "image/png"
     },
     {
-      "src": "icons/android-chrome-192x192.png",  /* UPDATED */
+      "src": "icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/android-chrome-192x192.png",  /* UPDATED - Assuming this is also your maskable */
+      "src": "icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
@@ -53,13 +53,13 @@
       "type": "image/png"
     },
     {
-      "src": "icons/android-chrome-512x512.png",  /* UPDATED - Remember to convert from JPG to PNG */
+      "src": "icons/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
      {
-      "src": "icons/android-chrome-512x512.png",  /* UPDATED - Assuming this is also your maskable */
+      "src": "icons/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
