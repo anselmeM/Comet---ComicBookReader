@@ -114,6 +114,7 @@
         .prose-styles li { margin-bottom: 0.5em;}
         .dark .prose-styles h2, .dark .prose-styles h3 { color: #E7EDF4; }
         .dark .prose-styles p, .dark .prose-styles li { color: #cbd5e1; } /* slate-300 */
+ #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; } #mobileMenu.open { max-height: 500px; } #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; } #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
 
     </style>
 </head>
@@ -142,10 +143,10 @@
         <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
           <span class="truncate">Sign In</span>
         </button>
-         <button aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+         <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
         </button>
-      </div>
+      </div> <div id="mobileMenu" class="md:hidden"> <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3"> <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a> <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a> <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a> </div> </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
@@ -246,6 +247,30 @@
                 applyTheme(newTheme);
             });
         }
+
+            const hamburgerButton = document.getElementById('hamburgerButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+ // --- Mobile Menu Logic ---
+            if (hamburgerButton && mobileMenu) {
+                hamburgerButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('open');
+                    const isExpanded = mobileMenu.classList.contains('open');
+                    hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
+                    if (isExpanded) {
+                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+                    } else {
+                         hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                    }
+                });
+                document.addEventListener('click', (e) => {
+                    if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                        mobileMenu.classList.remove('open');
+                        hamburgerButton.setAttribute('aria-expanded', 'false');
+                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                    }
+                });
+            }
     </script>
 </body>
 </html>
