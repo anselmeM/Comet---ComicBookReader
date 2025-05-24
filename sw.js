@@ -1,36 +1,32 @@
 // --- Configuration ---
-const CACHE_NAME = 'comet-reader-cache-v4'; // IMPORTANT: Increment this version number when you update files!
+const CACHE_NAME = 'comet-reader-cache-v4'; // UPDATED version
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
 const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900';
 
 // List of files that constitute your "App Shell" - must be available offline.
 const urlsToCache = [
-  './', // For the root path, often serves index.html
+  './', // Cache the root directory (often serves index.html)
   './index.html',
-  './features.html',
-  './pricing.html',
-  './support.html',
-  // External libraries
+  './features.html', // ADDED
+  './pricing.html',  // ADDED
+  './support.html',  // ADDED
   JSZIP_URL,
   GOOGLE_FONTS_URL,
-  // PWA essentials
-  './manifest.json',
-  // Core PWA Icons (ensure these match your manifest and icon folder, and are PNG)
+  './manifest.json', // Ensure manifest is cached
+  // All necessary icons from your icons folder:
   './icons/android-chrome-192x192.png',
-  './icons/android-chrome-512x512.png', // Make sure this is a .png file
+  './icons/android-chrome-512x512.png', // Remember to use PNG format for this
   './icons/apple-touch-icon.png',
   './icons/favicon-32x32.png',
   './icons/favicon-16x16.png',
-  // Add ALL other PWA icon sizes listed in your manifest.json, for example:
   './icons/icon-72x72.png',
   './icons/icon-96x96.png',
   './icons/icon-128x128.png',
   './icons/icon-144x144.png',
   './icons/icon-152x152.png',
-  // If you have specific maskable files with different names, list them:
-  // './icons/icon-maskable-192x192.png', 
-  // './icons/icon-maskable-512x512.png',
   './icons/icon-384x384.png'
+  // If you have specific maskable icon files with different names, add them here too.
+  // e.g. './icons/icon-maskable-192x192.png',
 ];
 
 // --- Installation Event ---
@@ -41,10 +37,10 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('[Service Worker] Caching App Shell...');
         const requests = urlsToCache.map(url => {
-            if (url.startsWith('http')) {
+            if (url.startsWith('http')) { // For external URLs like CDNs
                 return new Request(url, { mode: 'cors' });
             }
-            return new Request(url);
+            return new Request(url); // For local assets
         });
         return cache.addAll(requests);
       })
@@ -93,10 +89,9 @@ self.addEventListener('fetch', event => {
             return networkResponse;
         }).catch(error => {
             console.warn('[Service Worker] Fetch failed for:', event.request.url, error);
-            // Consider returning a fallback for critical app shell files if absolutely needed
-            // For instance, if index.html itself fails and isn't in cache.
+            // Optional: Return a fallback page for navigation requests if offline and not cached
             // if (event.request.mode === 'navigate') {
-            //   return caches.match('./index.html'); // Or a specific offline.html
+            //   return caches.match('./offline.html'); // You would need to create and cache an offline.html
             // }
         });
       })
