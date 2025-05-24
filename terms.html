@@ -43,37 +43,6 @@
             background-color: #d1d5db;
         }
 
-        /* Dark Theme Overrides */
-        .dark body {
-            background-color: #0D141C;
-            color: #E7EDF4;
-        }
-        .dark .content-section {
-            background-color: #1A2633;
-            border: 1px solid #334155;
-        }
-        .dark header {
-            background-color: rgba(13, 20, 28, 0.8);
-            border-bottom-color: #1A2633;
-            color: #E7EDF4;
-        }
-        .dark header a, .dark header h2 {
-             color: #E7EDF4;
-        }
-        .dark header nav a:hover {
-            color: #3D98F4;
-        }
-        .dark header .logo-title-link:hover {
-            opacity: 0.8;
-        }
-        .dark header .sign-in-btn-comet {
-            background-color: #1A2633;
-            color: #E7EDF4;
-        }
-        .dark header .sign-in-btn-comet:hover {
-            background-color: #334155;
-        }
-
         /* Footer consistent light theme */
         footer {
             background-color: #ffffff;
@@ -83,38 +52,19 @@
         footer a:hover {
             color: #3D98F4;
         }
-        /* Dark theme for footer */
-        .dark footer {
-            background-color: #0D141C;
-            border-top: 1px solid #1A2633;
-            color: #A0AEC0;
-        }
-        .dark footer a {
-            color: #A0AEC0;
-        }
-        .dark footer a:hover {
-            color: #3D98F4;
-        }
 
-        /* Theme toggle button */
-        #themeToggleBtn svg {
-            width: 20px;
-            height: 20px;
-        }
         .text-muted-light { color: #64748b; } /* slate-500 */
-        .dark .text-muted-light { color: #94a3b8; } /* slate-400 */
         .text-main-dark { color: #0d141c; }
-        .dark .text-main-dark { color: #E7EDF4; }
         .text-heading-dark { color: #0d141c; }
-        .dark .text-heading-dark { color: #E7EDF4; }
         .prose-styles h2 { margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.5em; font-weight: 600;}
         .prose-styles h3 { margin-top: 1.25em; margin-bottom: 0.5em; font-size: 1.25em; font-weight: 600;}
         .prose-styles p { margin-bottom: 1em; line-height: 1.6;}
         .prose-styles ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em;}
         .prose-styles li { margin-bottom: 0.5em;}
-        .dark .prose-styles h2, .dark .prose-styles h3 { color: #E7EDF4; }
-        .dark .prose-styles p, .dark .prose-styles li { color: #cbd5e1; } /* slate-300 */
- #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; } #mobileMenu.open { max-height: 500px; } #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; } #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
+        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        #mobileMenu.open { max-height: 500px; }
+        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
+        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
 
     </style>
 </head>
@@ -133,10 +83,6 @@
         <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
       </nav>
       <div class="flex items-center gap-2 sm:gap-3">
-        <button id="themeToggleBtn" aria-label="Toggle theme" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-            <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21c3.978 0 7.44-2.03 9.002-5.002z" /></svg>
-            <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
-        </button>
         <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
           <span class="truncate">Download</span>
         </button>
@@ -146,7 +92,14 @@
          <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
         </button>
-      </div> <div id="mobileMenu" class="md:hidden"> <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3"> <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a> <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a> <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a> </div> </div>
+      </div>
+          <div id="mobileMenu" class="md:hidden">
+              <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
+                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
+                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
+              </div>
+          </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
@@ -214,63 +167,29 @@
     </footer>
 
     <script>
-        // Theme toggle script
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIconMoon = document.getElementById('themeIconMoon');
-        const themeIconSun = document.getElementById('themeIconSun');
-        const htmlElement = document.documentElement;
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                htmlElement.classList.add('dark');
-                if(themeIconMoon) themeIconMoon.classList.add('hidden');
-                if(themeIconSun) themeIconSun.classList.remove('hidden');
-            } else {
-                htmlElement.classList.remove('dark');
-                if(themeIconSun) themeIconSun.classList.add('hidden');
-                if(themeIconMoon) themeIconMoon.classList.remove('hidden');
-            }
-        }
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            applyTheme(savedTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            applyTheme('dark');
-        } else {
-            applyTheme('light');
-        }
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                const isDark = htmlElement.classList.toggle('dark');
-                const newTheme = isDark ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                applyTheme(newTheme);
+        // Mobile Menu Script
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (hamburgerButton && mobileMenu) {
+            hamburgerButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('open');
+                const isExpanded = mobileMenu.classList.contains('open');
+                hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
+                if (isExpanded) {
+                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+                } else {
+                     hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                }
+            });
+            document.addEventListener('click', (e) => {
+                if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                    mobileMenu.classList.remove('open');
+                    hamburgerButton.setAttribute('aria-expanded', 'false');
+                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
+                }
             });
         }
-
-            const hamburgerButton = document.getElementById('hamburgerButton');
-            const mobileMenu = document.getElementById('mobileMenu');
- // --- Mobile Menu Logic ---
-            if (hamburgerButton && mobileMenu) {
-                hamburgerButton.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    mobileMenu.classList.toggle('open');
-                    const isExpanded = mobileMenu.classList.contains('open');
-                    hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
-                    if (isExpanded) {
-                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
-                    } else {
-                         hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                    }
-                });
-                document.addEventListener('click', (e) => {
-                    if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
-                        mobileMenu.classList.remove('open');
-                        hamburgerButton.setAttribute('aria-expanded', 'false');
-                        hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                    }
-                });
-            }
     </script>
 </body>
 </html>

@@ -57,41 +57,6 @@
             background-color: #d1d5db;
         }
 
-        /* Dark Theme Overrides */
-        .dark body {
-            background-color: #0D141C;
-            color: #E7EDF4;
-        }
-        .dark .feature-card {
-            background-color: #1A2633;
-            border: 1px solid #334155;
-        }
-        .dark .feature-icon-placeholder {
-             background-color: #3D98F4;
-        }
-
-        .dark header {
-            background-color: rgba(13, 20, 28, 0.8);
-            border-bottom-color: #1A2633;
-            color: #E7EDF4;
-        }
-        .dark header a, .dark header h2 { /* Default color for links and h2 in header for dark mode */
-             color: #E7EDF4;
-        }
-        .dark header nav a:hover { /* Specific hover for nav links in dark mode */
-            color: #3D98F4;
-        }
-        .dark header .logo-title-link:hover { /* Hover for logo/title link in dark mode */
-            opacity: 0.8;
-        }
-        .dark header .sign-in-btn-comet {
-            background-color: #1A2633;
-            color: #E7EDF4;
-        }
-        .dark header .sign-in-btn-comet:hover {
-            background-color: #334155;
-        }
-
         /* Footer consistent light theme */
         footer {
             background-color: #ffffff;
@@ -101,31 +66,14 @@
         footer a:hover { /* This applies to all <a> in footer */
             color: #3D98F4;
         }
-        /* Dark theme for footer */
-        .dark footer {
-            background-color: #0D141C;
-            border-top: 1px solid #1A2633;
-            color: #A0AEC0;
-        }
-        .dark footer a { /* Specific for <a> in dark footer if needed */
-            color: #A0AEC0;
-        }
-        .dark footer a:hover {
-            color: #3D98F4;
-        }
 
-        /* Theme toggle button */
-        #themeToggleBtn svg {
-            width: 20px;
-            height: 20px;
-        }
         .text-muted-light { color: #64748b; } /* slate-500 */
-        .dark .text-muted-light { color: #94a3b8; } /* slate-400 */
         .text-main-dark { color: #0d141c; } /* Base text color for light mode content */
-        .dark .text-main-dark { color: #cbd5e1; } /* Lighter text for dark mode content (slate-300) */
         .text-heading-dark { color: #0d141c; } /* Base heading for light mode */
-        .dark .text-heading-dark { color: #E7EDF4; } /* Light heading for dark mode */
-        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; } #mobileMenu.open { max-height: 500px; } #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; } #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
+        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        #mobileMenu.open { max-height: 500px; }
+        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
+        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -142,10 +90,6 @@
         <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
       </nav>
       <div class="flex items-center gap-2 sm:gap-3">
-        <button id="themeToggleBtn" aria-label="Toggle theme" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-            <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21c3.978 0 7.44-2.03 9.002-5.002z" /></svg>
-            <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
-        </button>
         <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
           <span class="truncate">Download</span>
         </button>
@@ -212,7 +156,7 @@
             <div class="feature-card rounded-xl p-6 flex flex-col items-start">
                  <div class="feature-icon-placeholder mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> </div>
-                <h3 class="text-xl font-bold mb-2 text-heading-dark">Secure Library <span class="text-xs align-top font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-1.5 py-0.5 rounded-full">Coming Soon</span></h3>
+                <h3 class="text-xl font-bold mb-2 text-heading-dark">Secure Library <span class="text-xs align-top font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">Coming Soon</span></h3>
                 <p class="text-sm text-main-dark leading-relaxed">
                     Look forward to securely storing and managing your entire comic collection in the cloud with our upcoming Pro plans.
                 </p>
@@ -221,7 +165,7 @@
             <div class="feature-card rounded-xl p-6 flex flex-col items-start">
                 <div class="feature-icon-placeholder mb-4">
                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg> </div>
-                <h3 class="text-xl font-bold mb-2 text-heading-dark">Advanced Organization <span class="text-xs align-top font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-1.5 py-0.5 rounded-full">Pro</span></h3>
+                <h3 class="text-xl font-bold mb-2 text-heading-dark">Advanced Organization <span class="text-xs align-top font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">Pro</span></h3>
                 <p class="text-sm text-main-dark leading-relaxed">
                     Unlock powerful tools like collections, tagging, bookmarks, and reading progress sync with our premium tiers.
                 </p>
@@ -253,44 +197,6 @@
         </div>
     </footer>
 
-    <script>
-        // Theme toggle script
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIconMoon = document.getElementById('themeIconMoon');
-        const themeIconSun = document.getElementById('themeIconSun');
-        const htmlElement = document.documentElement;
-
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                htmlElement.classList.add('dark');
-                if(themeIconMoon) themeIconMoon.classList.add('hidden');
-                if(themeIconSun) themeIconSun.classList.remove('hidden');
-            } else {
-                htmlElement.classList.remove('dark');
-                if(themeIconSun) themeIconSun.classList.add('hidden');
-                if(themeIconMoon) themeIconMoon.classList.remove('hidden');
-            }
-        }
-
-        // Check for saved theme preference or use system preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            applyTheme(savedTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            applyTheme('dark');
-        } else {
-            applyTheme('light');
-        }
-
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                const isDark = htmlElement.classList.toggle('dark');
-                const newTheme = isDark ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                applyTheme(newTheme);
-            });
-        }
-    </script>
     <script>
         // Mobile Menu Script
         const hamburgerButton = document.getElementById('hamburgerButton');
