@@ -1,2 +1,0 @@
-# Comet---ComicBookReader
-CBZ ComicBookReader
