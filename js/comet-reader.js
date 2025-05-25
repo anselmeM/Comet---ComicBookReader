@@ -26,12 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const zoomOutButtonPanel = document.getElementById('zoomOutButtonPanel');
         const fitLabels = document.querySelectorAll('.fit-label');
         const readerMessage = document.getElementById('readerMessage');
-        
+
         // Log found elements for index.html (critical ones)
         if (!fileInput) console.error("Comet Reader: fileInput element NOT FOUND!");
         if (!imageContainer) console.error("Comet Reader: imageContainer element NOT FOUND!");
         if (!comicImage) console.error("Comet Reader: comicImage element NOT FOUND!");
-
 
         // State variables
         let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
@@ -40,11 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const ZOOM_STEP = 1.25, HUD_TOP_BAR_HEIGHT = '50px';
         const BOUNDARY_MESSAGE_TIMEOUT = 2500;
 
+        // ---> ADD THESE NEW VARIABLES FOR SWIPE DETECTION <---
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        const swipeThreshold = 50; // Min horizontal distance for a swipe
+        const verticalThreshold = 75; // Max vertical distance to still be a horizontal swipe
+        let isPotentialSwipe = false; // To track if a swipe might be happening
+        // ---> END OF NEW VARIABLES <---
+
         function showView(viewName) {
             Object.values(views).forEach(v => v.classList.remove('active'));
             if (views[viewName]) {
                 views[viewName].classList.add('active');
-                document.body.style.overflow = 'hidden'; 
+                document.body.style.overflow = 'hidden';
             }
         }
         function showMessage(msg) {
@@ -61,11 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         async function handleFile(file) {
-            // The globalMobileMenu and globalHamburgerButton are from the global-ui.js scope.
-            // For this to work perfectly, global-ui.js must have executed and defined them,
-            // or these elements must be re-fetched here if this script is entirely independent.
-            // For simplicity, assuming they are accessible if global-ui.js runs first.
-            const mobMenu = document.getElementById('mobileMenu'); // Re-fetch for safety within this module if needed
+            const mobMenu = document.getElementById('mobileMenu');
             const hamButton = document.getElementById('hamburgerButton');
             if (mobMenu && mobMenu.classList.contains('open') && hamButton) {
                 mobMenu.classList.remove('open');
@@ -110,27 +115,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function displayPage(index) {
             if (!imageBlobs || imageBlobs.length === 0 || !comicImage || !imageContainer) {
-                 showMessage("No images to display or essential elements missing."); return;
+                showMessage("No images to display or essential elements missing."); return;
             }
             if (index < 0 || index >= imageBlobs.length) {
                 currentImageIndex = Math.max(0, Math.min(index, imageBlobs.length ? imageBlobs.length - 1 : 0));
-                updateUI(); return; 
+                updateUI(); return;
             }
-            const imageEntry = imageBlobs[index]; 
+            const imageEntry = imageBlobs[index];
             if (!imageEntry || !imageEntry.blob) {
                 showMessage("Error: Corrupted image data at page " + (index + 1));
-                if(comicImage) comicImage.src = ""; currentImageIndex = index; updateUI(); hideHUD(0); return;
+                if (comicImage) comicImage.src = ""; currentImageIndex = index; updateUI(); hideHUD(0); return;
             }
             if (previousObjectUrl) URL.revokeObjectURL(previousObjectUrl);
             currentObjectUrl = URL.createObjectURL(imageEntry.blob);
             previousObjectUrl = currentObjectUrl;
-            
+
             console.log(`Displaying: ${imageEntry.name} (Blob Type: ${imageEntry.blob.type || 'N/A'}, Size: ${imageEntry.blob.size})`);
 
             comicImage.style.opacity = 0;
             comicImage.src = currentObjectUrl;
             comicImage.onload = () => {
-                if(comicImage) { applyFitMode(fitMode); comicImage.style.opacity = 1; }
+                if (comicImage) { applyFitMode(fitMode); comicImage.style.opacity = 1; }
                 hideMessage();
             };
             comicImage.onerror = () => {
@@ -138,11 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Browser failed to render image:", failedImageName, "at index:", index, "src:", comicImage.src);
                 showMessage(`Error loading page ${index + 1} (${failedImageName}). Image may be corrupted/unsupported.`);
             };
-            currentImageIndex = index; 
+            currentImageIndex = index;
             updateUI();
             hideHUD(0);
         }
-        
+
         function nextPage() {
             if (imageBlobs.length > 0 && currentImageIndex < imageBlobs.length - 1) {
                 displayPage(currentImageIndex + 1);
@@ -159,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(hideMessage, BOUNDARY_MESSAGE_TIMEOUT);
             }
         }
-        function applyMangaMode() { 
+        function applyMangaMode() {
             if (!mangaModeToggle || !imageBlobs.length) return;
             isMangaModeActive = mangaModeToggle.checked;
             const currentName = imageBlobs[currentImageIndex]?.name;
@@ -170,17 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 newIdx = imageBlobs.findIndex(img => img.name === currentName);
                 if (newIdx === -1) newIdx = 0;
             }
-            currentImageIndex = -1; 
+            currentImageIndex = -1;
             displayPage(newIdx);
         }
-        function showHUD() { 
+        function showHUD() {
             if (!hudOverlay || !imageContainer) return;
             clearTimeout(hudTimer);
             hudOverlay.classList.add('visible');
             imageContainer.style.paddingTop = HUD_TOP_BAR_HEIGHT;
             hudTimer = setTimeout(hideHUD, 4000);
         }
-        function hideHUD(delay = 4000) { 
+        function hideHUD(delay = 4000) {
             if (!hudOverlay || !imageContainer) return;
             clearTimeout(hudTimer);
             if (delay === 0) {
@@ -196,21 +201,21 @@ document.addEventListener('DOMContentLoaded', () => {
         function toggleHUD() { (hudOverlay && hudOverlay.classList.contains('visible')) ? hideHUD(0) : showHUD(); }
         function showMenuPanel() { if (menuPanel) menuPanel.classList.add('visible'); hideHUD(0); }
         function hideMenuPanel() { if (menuPanel) menuPanel.classList.remove('visible'); }
-        function applyFitMode(modeValue) { 
+        function applyFitMode(modeValue) {
             if (!comicImage || !imageContainer) return;
             fitMode = modeValue;
             comicImage.style.width = 'auto'; comicImage.style.height = 'auto';
             comicImage.style.maxWidth = 'none'; comicImage.style.maxHeight = 'none';
             if (!comicImage.naturalWidth || comicImage.naturalWidth === 0) {
-                if (!comicImage.complete && comicImage.src && !comicImage.src.startsWith("file:")) { 
+                if (!comicImage.complete && comicImage.src && !comicImage.src.startsWith("file:")) {
                     comicImage.addEventListener('load', () => applyFitMode(modeValue), { once: true });
                 }
                 return;
             }
             switch (fitMode) {
                 case 'best': comicImage.style.maxWidth = '100%'; comicImage.style.maxHeight = '100%'; break;
-                case 'width': comicImage.style.width = '100%'; comicImage.style.height = 'auto'; break; 
-                case 'height': comicImage.style.height = `${imageContainer.clientHeight}px`; comicImage.style.width = 'auto'; break; 
+                case 'width': comicImage.style.width = '100%'; comicImage.style.height = 'auto'; break;
+                case 'height': comicImage.style.height = `${imageContainer.clientHeight}px`; comicImage.style.width = 'auto'; break;
                 case 'original': comicImage.style.width = `${comicImage.naturalWidth}px`; comicImage.style.height = `${comicImage.naturalHeight}px`; break;
             }
             if (fitLabels) fitLabels.forEach(label => {
@@ -218,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (radio) { label.classList.toggle('checked', radio.value === fitMode); radio.checked = radio.value === fitMode; }
             });
         }
-        function changeZoom(factor) { 
-             if (!comicImage) return;
+        function changeZoom(factor) {
+            if (!comicImage) return;
             const currentWidth = comicImage.clientWidth;
             comicImage.style.width = `${currentWidth * factor}px`;
             comicImage.style.height = 'auto';
@@ -230,9 +235,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 const radio = label.querySelector('input'); if (radio) radio.checked = false;
             });
         }
-        function updateUI() { 
+        function updateUI() {
             if (pageIndicatorHud) pageIndicatorHud.textContent = imageBlobs.length > 0 ? `${currentImageIndex + 1} / ${imageBlobs.length}` : `0 / 0`;
         }
+
+        // ---> ADD THESE TOUCH HANDLER FUNCTIONS <---
+        function handleTouchStart(event) {
+            if (event.touches.length === 1) { // Single touch
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+                touchEndX = touchStartX; // Initialize endX
+                touchEndY = touchStartY; // Initialize endY
+                isPotentialSwipe = true; // Assume it could be a swipe
+            }
+        }
+
+        function handleTouchMove(event) {
+            if (event.touches.length === 1 && isPotentialSwipe) {
+                touchEndX = event.touches[0].clientX;
+                touchEndY = event.touches[0].clientY;
+
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+
+                // If horizontal movement is more dominant than vertical, prevent default page scroll
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+                    event.preventDefault();
+                }
+            }
+        }
+
+        function handleTouchEnd(event) {
+            if (!isPotentialSwipe) return;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Check for a valid horizontal swipe
+            if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < verticalThreshold) {
+                if (deltaX < 0) { // Swiped left
+                    isMangaModeActive ? prevPage() : nextPage();
+                } else { // Swiped right
+                    isMangaModeActive ? nextPage() : prevPage();
+                }
+            }
+            // Reset for next touch
+            isPotentialSwipe = false;
+            touchStartX = 0;
+            touchEndX = 0;
+            touchStartY = 0;
+            touchEndY = 0;
+        }
+        // ---> END OF TOUCH HANDLER FUNCTIONS <---
+
 
         // Event Listeners for index.html
         if (selectFileButton && fileInput) {
@@ -244,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (uploadButtonHeaderMobile && fileInput) {
             uploadButtonHeaderMobile.addEventListener('click', () => {
                 console.log("uploadButtonHeaderMobile clicked");
-                // This relies on globalHamburgerButton and globalMobileMenu from global-ui.js
                 if (document.getElementById('mobileMenu') && document.getElementById('mobileMenu').classList.contains('open') && document.getElementById('hamburgerButton')) {
                     document.getElementById('mobileMenu').classList.remove('open');
                     document.getElementById('hamburgerButton').setAttribute('aria-expanded', 'false');
@@ -254,8 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         if (fileInput) {
-            fileInput.addEventListener('change', (e) => { 
-                if (e.target.files && e.target.files.length > 0) { handleFile(e.target.files[0]); e.target.value = ''; } 
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files.length > 0) { handleFile(e.target.files[0]); e.target.value = ''; }
             });
         }
         if (dropZone) {
@@ -263,13 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
             dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('dragging'); });
             dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragging'); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
         }
-        if (imageContainer) { 
+        if (imageContainer) {
             imageContainer.addEventListener('click', (event) => {
                 if (menuPanel && menuPanel.classList.contains('visible')) return;
-                const scrollbarWidth = 17; 
+                const scrollbarWidth = 17;
                 if (event.offsetX >= imageContainer.clientWidth - scrollbarWidth || event.offsetY >= imageContainer.clientHeight - scrollbarWidth) return;
                 if (hudOverlay && hudOverlay.classList.contains('visible') && event.target.closest('.hud-icon')) {
-                    showHUD(); return; 
+                    showHUD(); return;
                 }
                 const rect = imageContainer.getBoundingClientRect();
                 const x = event.clientX - rect.left;
@@ -277,19 +331,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (x < containerWidth * 0.25) { isMangaModeActive ? nextPage() : prevPage(); }
                 else if (x > containerWidth * 0.75) { isMangaModeActive ? prevPage() : nextPage(); }
                 else { toggleHUD(); }
-            }); 
+            });
+
+            // ---> ADD THESE TOUCH EVENT LISTENERS FOR SWIPE <---
+            imageContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+            imageContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+            imageContainer.addEventListener('touchend', handleTouchEnd);
+            imageContainer.addEventListener('touchcancel', handleTouchEnd); // Also handle touchcancel like touchend
+            // ---> END OF TOUCH EVENT LISTENERS <---
         }
         if (hudOverlay) {
             hudOverlay.addEventListener('click', (event) => {
                 if (hudOverlay.classList.contains('visible') && event.target === hudOverlay) {
-                    hideHUD(0); 
-                    event.stopPropagation(); 
+                    hideHUD(0);
+                    event.stopPropagation();
                 } else if (hudOverlay.classList.contains('visible') && event.target.closest('.hud-icon')) {
-                    showHUD(); 
+                    showHUD();
                 }
             });
         }
-        if (backButton) { 
+        if (backButton) {
             backButton.addEventListener('click', () => {
                 showView('upload');
                 imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
@@ -299,17 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUI();
                 if (menuPanel) menuPanel.classList.remove('visible');
                 hideMessage();
-                document.body.style.overflow = ''; 
-            }); 
+                document.body.style.overflow = '';
+            });
         }
         if (menuButton) menuButton.addEventListener('click', showMenuPanel);
         if (closeMenuButton) closeMenuButton.addEventListener('click', hideMenuPanel);
         if (mangaModeToggle) mangaModeToggle.addEventListener('change', applyMangaMode);
         if (zoomInButtonPanel) zoomInButtonPanel.addEventListener('click', () => changeZoom(ZOOM_STEP));
         if (zoomOutButtonPanel) zoomOutButtonPanel.addEventListener('click', () => changeZoom(1 / ZOOM_STEP));
-        if (fitLabels) { fitLabels.forEach(label => { const radio = label.querySelector('input'); if (radio) label.addEventListener('click', () => applyFitMode(radio.value));});}
-        document.addEventListener('keydown', (e) => { 
-             if (views.reader && views.reader.classList.contains('active')) {
+        if (fitLabels) { fitLabels.forEach(label => { const radio = label.querySelector('input'); if (radio) label.addEventListener('click', () => applyFitMode(radio.value)); }); }
+        document.addEventListener('keydown', (e) => {
+            if (views.reader && views.reader.classList.contains('active')) {
                 if (menuPanel && menuPanel.classList.contains('visible')) {
                     if (e.key === 'Escape') hideMenuPanel(); return;
                 }
@@ -319,18 +380,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (e.key === ' ') { toggleHUD(); handled = true; e.preventDefault(); }
                 else if (e.key === '+' || e.key === '=') { changeZoom(ZOOM_STEP); handled = true; }
                 else if (e.key === '-') { changeZoom(1 / ZOOM_STEP); handled = true; }
-                else if (e.key.toLowerCase() === 'm') { if(mangaModeToggle) {mangaModeToggle.checked = !mangaModeToggle.checked; applyMangaMode();} handled = true; }
+                else if (e.key.toLowerCase() === 'm') { if (mangaModeToggle) { mangaModeToggle.checked = !mangaModeToggle.checked; applyMangaMode(); } handled = true; }
                 if (handled) e.preventDefault();
             }
         });
-        
+
         showView('upload');
-        if(mangaModeToggle) isMangaModeActive = mangaModeToggle.checked;
+        if (mangaModeToggle) isMangaModeActive = mangaModeToggle.checked;
         applyFitMode('best');
 
         console.log("Index.html specific logic: Initialization COMPLETE.");
     } else {
         console.log("Not on index.html (or core elements 'uploadView'/'readerView' missing), skipping reader initialization.");
-        document.body.style.overflow = ''; 
+        document.body.style.overflow = '';
     }
 });
