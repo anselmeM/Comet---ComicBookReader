@@ -1,4 +1,4 @@
-/* dark-theme.css - Enhanced Version */
+/* dark-theme.css - Enhanced Version 2 */
 
 /* Applied when <html> tag has class="dark" */
 
@@ -61,11 +61,15 @@
 
 /* Dark mode specifically for #uploadView on index.html */
 .dark #uploadView {
-  background-color: #121212;
+  background-color: #121212; /* Match body background */
 }
 .dark #uploadView header {
     background-color: rgba(30, 30, 30, 0.85);
     border-bottom-color: #333333;
+}
+.dark #uploadView footer {
+    background-color: #121212;
+    border-top-color: #333333;
 }
 .dark #uploadView button[aria-label="Help"] {
     background-color: #333333;
@@ -74,6 +78,50 @@
 .dark #uploadView button[aria-label="Help"]:hover {
     background-color: #444444;
 }
+/* Ensure index header/footer text/links are dark-themed */
+.dark #uploadView .text-\[\#49739c\] { color: #A0AEC0 !important; }
+.dark #uploadView .text-\[\#0d141c\] { color: #E0E0E0 !important; }
+.dark #uploadView .dark\:text-\[\#E7EDF4\] { color: #E0E0E0 !important; }
+.dark #uploadView .dark\:border-b-\[\#1A2633\] { border-bottom-color: #333333 !important; }
+.dark #uploadView .dark\:bg-\[rgba\(13\,20\,28\,0\.8\)\] { background-color: rgba(30, 30, 30, 0.85) !important; }
+.dark #uploadView .dark\:border-t-\[\#1A2633\] { border-top-color: #333333 !important; }
+.dark #uploadView .dark\:bg-\[\#0D141C\] { background-color: #121212 !important; }
+.dark #uploadView .dark\:text-\[\#A0AEC0\] { color: #A0AEC0 !important; }
+
+
+/* Fix for the main content area */
+.dark #uploadView .content-wrapper {
+  background-color: #121212 !important; /* Ensure this is dark */
+}
+.dark #uploadView .main-content {
+   background-color: #121212 !important; /* Ensure this is dark */
+}
+
+/* Dark mode for #dropZone */
+.dark #dropZone {
+  background-image: none !important; /* Remove light image */
+  background-color: #1E1E1E !important; /* Use surface color */
+  border: 2px dashed #444444; /* Add a dashed border */
+  transition: all 0.3s ease;
+}
+.dark #dropZone h1,
+.dark #dropZone h2 {
+  color: #E0E0E0 !important; /* Light text */
+}
+.dark #dropZone.dragging {
+  border: 4px dashed #3d98f4 !important; /* Keep blue accent for dragging */
+  background-color: #2a2a2a !important; /* Slightly lighter when dragging */
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+.dark #selectFileButton {
+    background-color: #3D98F4 !important;
+    color: #ffffff !important;
+}
+.dark #selectFileButton:hover {
+    background-color: #2a7fcf !important;
+}
+
 
 /* Dark mode for Reader Panel (index.html) */
 .dark .panel {
