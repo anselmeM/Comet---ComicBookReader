@@ -1,20 +1,21 @@
-/* dark-theme.css */
+/* dark-theme.css - Enhanced Version */
 
 /* Applied when <html> tag has class="dark" */
 
 .dark body {
-  background-color: #0d141c; /* slate-900 */
-  color: #e7edf4; /* slate-200 or similar light text */
+  background-color: #121212; /* Dark Grey (Not pure black) */
+  color: #E0E0E0; /* Off-white text */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
 }
 
-/* General dark mode for header (applies to all pages if .dark is on html) */
+/* General dark mode for header */
 .dark header {
-  background-color: rgba(13, 20, 28, 0.8);
-  border-bottom-color: #1A2633;
-  /* color: #E7EDF4; /* This is inherited from .dark body or set by specific child rules like .dark header a */
+  background-color: rgba(30, 30, 30, 0.85); /* #1E1E1E with backdrop blur */
+  border-bottom-color: #333333;
+  transition: background-color 0.3s ease, border-bottom-color 0.3s ease;
 }
 .dark header a, .dark header h2 {
-  color: #E7EDF4;
+  color: #E0E0E0;
 }
 .dark header nav a:hover {
   color: #3D98F4;
@@ -23,75 +24,121 @@
   color: #3D98F4;
 }
 .dark header .sign-in-btn-comet { /* For static page sign-in buttons */
-  background-color: #334155; /* slate-700 */
-  color: #E7EDF4;
+  background-color: #333333;
+  color: #E0E0E0;
 }
 .dark header .sign-in-btn-comet:hover {
-  background-color: #475569; /* slate-600 */
+  background-color: #444444;
+}
+.dark #themeToggleBtn svg,
+.dark #hamburgerButton svg {
+  color: #E0E0E0;
+}
+.dark #themeToggleBtn:hover,
+.dark #hamburgerButton:hover {
+  background-color: #333333;
 }
 
 /* General dark mode for footer */
 .dark footer {
-  background-color: #0D141C;
-  border-top-color: #1A2633;
-  color: #A0AEC0; /* Default text in footer */
+  background-color: #121212;
+  border-top-color: #333333;
+  color: #A0AEC0;
+  transition: background-color 0.3s ease, border-top-color 0.3s ease;
 }
 .dark footer a {
-  color: #A0AEC0; /* Links in footer */
+  color: #A0AEC0;
 }
 .dark footer a:hover {
   color: #3D98F4;
 }
-
-/* Dark mode specifically for #uploadView on index.html if needed to override general */
-/* The .dark #uploadView {} rule itself is empty, which is fine if general rules suffice. */
-/* background-color for .dark #uploadView is already set by .dark body */
-
-/* .dark #uploadView header {} /* Covered by general .dark header if styling is identical */
-/* .dark #uploadView .logo-icon-comet {} /* Covered by general .dark header .logo-icon-comet */
-/* .dark #uploadView footer {} /* Covered by general .dark footer if styling is identical */
-
-.dark #uploadView footer p { /* Example: If specific p tags in uploadView footer need distinct dark styling not covered by general .dark footer */
-  color: #A0AEC0;
+.dark footer svg {
+    color: #A0AEC0;
+}
+.dark footer svg:hover {
+    color: #3D98F4;
 }
 
+/* Dark mode specifically for #uploadView on index.html */
+.dark #uploadView {
+  background-color: #121212;
+}
+.dark #uploadView header {
+    background-color: rgba(30, 30, 30, 0.85);
+    border-bottom-color: #333333;
+}
+.dark #uploadView button[aria-label="Help"] {
+    background-color: #333333;
+    color: #E0E0E0;
+}
+.dark #uploadView button[aria-label="Help"]:hover {
+    background-color: #444444;
+}
 
 /* Dark mode for Reader Panel (index.html) */
 .dark .panel {
-  background-color: #1A2633; /* slate-800 */
-  color: #E7EDF4; /* slate-200 */
-  box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* Darker shadow */
+  background-color: #1E1E1E;
+  color: #E0E0E0;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.5); /* Enhanced shadow */
+  border-left: 1px solid #333333;
 }
 .dark .panel h2,
 .dark .panel h3 {
-  color: #E7EDF4;
+  color: #E0E0E0;
+}
+.dark .panel .border-b { /* Panel header border */
+    border-bottom-color: #333333 !important;
+}
+.dark .panel .hud-icon { /* Close button */
+    color: #E0E0E0;
 }
 .dark .toggle-bg {
-  background-color: #334155; /* slate-700 */
+  background-color: #444444;
 }
 .dark .toggle-label input:checked + .toggle-bg {
-  background-color: #3d98f4; /* Accent blue */
+  background-color: #3d98f4;
+}
+.dark .toggle-label .toggle-switch {
+    background-color: #cccccc;
+}
+.dark .toggle-label input:checked + .toggle-bg .toggle-switch {
+    background-color: #ffffff;
+}
+.dark .panel p { /* Panel descriptions */
+    color: #A0AEC0;
 }
 .dark .fit-label {
-  border-color: #334155; /* slate-700 */
-  color: #E7EDF4; /* slate-200 */
+  border-color: #444444;
+  color: #E0E0E0;
+  background-color: #2a2a2a;
 }
 .dark .fit-label.checked {
-  border-color: #3d98f4; /* Accent blue */
+  border-color: #3d98f4;
+  background-color: #3d98f4;
+  color: #ffffff;
+}
+.dark .panel button[aria-label="Zoom Out"],
+.dark .panel button[aria-label="Zoom In"] {
+    background-color: #333333;
+    color: #E0E0E0;
+}
+.dark .panel button[aria-label="Zoom Out"]:hover,
+.dark .panel button[aria-label="Zoom In"]:hover {
+    background-color: #444444;
 }
 
 /* Dark mode for shared Mobile Menu */
 .dark #mobileMenu {
-  background-color: #1A2633; /* slate-800 */
-  border-bottom-color: #334155; /* slate-700 */
+  background-color: #1E1E1E;
+  border-bottom-color: #333333;
 }
 .dark #mobileMenu a,
 .dark #mobileMenu button {
-  color: #E7EDF4;
+  color: #E0E0E0;
 }
 .dark #mobileMenu a:hover,
 .dark #mobileMenu button:hover {
-  background-color: #334155; /* slate-700 */
+  background-color: #333333;
   color: #3D98F4;
 }
 
@@ -100,33 +147,74 @@
 .dark .pricing-card,
 .dark .content-section,
 .dark .support-section {
-  background-color: #1A2633; /* slate-800 */
-  border-color: #334155;     /* slate-700 */
+  background-color: #1E1E1E;
+  border-color: #333333;
 }
 
 /* Dark mode for text elements on static pages */
-/* Note: Classes like .text-main-dark are named based on their light-mode appearance. */
-/* In dark mode, they should display light text. */
 .dark .text-main-dark,
 .dark .text-heading-dark,
 .dark .faq-item summary {
-  color: #E7EDF4; /* Light text */
+  color: #E0E0E0;
 }
 .dark .faq-item p {
-  color: #cbd5e1; /* Lighter gray for paragraphs (slate-300) */
+  color: #A0AEC0;
 }
-.dark .text-muted-light { /* Muted text in dark mode */
-  color: #718096; /* slate-500 or similar */
+.dark .text-muted-light {
+  color: #888888; /* Slightly darker muted */
 }
 
 /* Dark mode for forms on static pages (e.g., support page) */
 .dark input[type="email"],
 .dark textarea {
-  background-color: #0d141c; /* slate-900 */
-  border-color: #334155; /* slate-700 */
-  color: #E7EDF4; /* slate-200 */
+  background-color: #121212;
+  border-color: #444444;
+  color: #E0E0E0;
 }
 .dark input[type="email"]::placeholder,
 .dark textarea::placeholder {
-  color: #718096; /* slate-500 */
+  color: #888888;
+}
+.dark input[type="email"]:focus,
+.dark textarea:focus {
+  border-color: #3D98F4;
+  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.5);
+  background-color: #1E1E1E; /* Focus background */
+}
+.dark .faq-item {
+    border-bottom-color: #333333;
+}
+
+/* Dark mode for Pricing page specifics */
+.dark .pricing-card button {
+    background-color: #333333;
+    color: #E0E0E0;
+}
+.dark .pricing-card button:hover {
+    background-color: #444444;
+}
+.dark .pricing-card .bg-\[\#3D98F4\] { /* Pro plan button */
+    background-color: #3D98F4 !important;
+    color: #ffffff !important;
+}
+.dark .pricing-card .bg-\[\#3D98F4\]:hover {
+    background-color: #2a7fcf !important; /* Slightly darker blue */
+}
+.dark .pricing-card .border-\[\#3D98F4\] { /* Pro plan border */
+    border-color: #3D98F4 !important;
+}
+
+/* Dark mode for Feature page specifics */
+.dark .feature-icon-placeholder {
+    background-color: #3D98F4;
+}
+
+/* Dark mode for Privacy/Terms specifics */
+.dark .prose-styles h2,
+.dark .prose-styles h3 {
+    color: #E0E0E0;
+}
+.dark .prose-styles p,
+.dark .prose-styles li {
+    color: #A0AEC0;
 }
