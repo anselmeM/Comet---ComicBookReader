@@ -18,6 +18,31 @@
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/index-specific.css">
     <link rel="stylesheet" href="css/dark-theme.css"> 
+    
+    <script>
+      (function() {
+        function applyTheme(theme) {
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+        let theme;
+        try {
+          theme = localStorage.getItem('theme');
+        } catch (e) { console.warn("Could not access localStorage for theme."); }
+        if (theme) {
+          applyTheme(theme);
+        } else {
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            applyTheme('dark');
+          } else {
+            applyTheme('light');
+          }
+        }
+      })();
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
