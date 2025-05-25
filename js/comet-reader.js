@@ -1,8 +1,8 @@
 // js/comet-reader.js
 import * as DOM from './comet-dom.js';
 import * as UI from './comet-ui.js';
-import * as Interactions from './comet-interactions.js';
-import * as State from './comet-state.js'; // Might need for init state
+import * as State from './comet-state.js';
+import { setupEventListeners } from './comet-event-setup.js'; // <-- Import the new setup function
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Comet Reader Logic: Initializing...");
@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
          return; // Stop execution if core elements aren't found
     }
 
-    // Setup all event listeners
-    Interactions.setupEventListeners();
+    // Setup all event listeners using the new setup module
+    setupEventListeners(); // <-- Call the setup function
 
     // Set initial state / view
     UI.showView('upload');
