@@ -7,74 +7,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <style>
-        /* Light Theme Defaults */
-        body {
-            font-family: Manrope, "Noto Sans", sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-            color: #0d141c; /* slate-900 */
-        }
-        .feature-card {
-            background-color: #ffffff; /* White card background */
-            border: 1px solid #e2e8f0; /* slate-200 */
-        }
-        .feature-icon-placeholder { /* Placeholder style for feature icons */
-            background-color: #3D98F4;
-            color: white;
-            border-radius: 0.5rem; /* rounded-lg */
-            padding: 0.75rem; /* p-3 */
-            display: inline-flex; /* To center icon if SVG is used */
-            align-items: center;
-            justify-content: center;
-        }
-        .feature-icon-placeholder svg {
-            width: 24px; /* w-6 */
-            height: 24px; /* h-6 */
-        }
-
-        header {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-bottom-color: #e7edf4;
-            color: #0d141c;
-        }
-        header a, header h2 { /* Default color for links and h2 in header */
-             color: #0d141c;
-        }
-         header nav a:hover { /* Specific hover for nav links */
-            color: #3D98F4;
-        }
-        header .logo-title-link:hover { /* Hover for logo/title link */
-            opacity: 0.8;
-        }
-        header .logo-icon-comet {
-            color: #3D98F4;
-        }
-        header .sign-in-btn-comet {
-            background-color: #e7edf4;
-            color: #0d141c;
-        }
-         header .sign-in-btn-comet:hover {
-            background-color: #d1d5db;
-        }
-
-        /* Footer consistent light theme */
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e7edf4;
-            color: #49739c;
-        }
-        footer a:hover { /* This applies to all <a> in footer */
-            color: #3D98F4;
-        }
-
-        .text-muted-light { color: #64748b; } /* slate-500 */
-        .text-main-dark { color: #0d141c; } /* Base text color for light mode content */
-        .text-heading-dark { color: #0d141c; } /* Base heading for light mode */
-        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        #mobileMenu.open { max-height: 500px; }
-        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
-        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
-    </style>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/static-pages.css">
+    <link rel="stylesheet" href="css/dark-theme.css">
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -173,54 +108,32 @@
         </div>
     </main>
 
-    <footer class="flex-shrink-0 text-sm py-8 mt-12 md:mt-24">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col items-center gap-4">
-                <div class="flex flex-wrap justify-center gap-x-6 sm:gap-x-8 gap-y-2">
-                    <a class="transition-colors" href="privacy.html">Privacy Policy</a>
-                    <a class="transition-colors" href="terms.html">Terms of Service</a>
-                    <a class="transition-colors" href="support.html">Contact Us</a>
-                </div>
-                <div class="flex justify-center gap-5">
-                    <a href="#" aria-label="Twitter" class="transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+    <footer class="flex flex-col gap-4 sm:gap-6 px-5 py-6 text-center bg-white dark:bg-[#0D141C] border-t border-solid border-t-[#e7edf4] dark:border-t-[#1A2633] flex-shrink-0">
+                  <div class="flex flex-wrap items-center justify-center gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-4">
+                    <a class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="privacy.html">Privacy Policy</a>
+                    <a class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal hover:text-[#3d98f4] transition-colors" href="terms.html">Terms of Service</a>
+                  </div>
+                  <div class="flex flex-wrap justify-center gap-4 sm:gap-5">
+                    <a href="#" aria-label="Twitter" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+                        </svg>
                     </a>
-                    <a href="#" aria-label="Instagram" class="transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    <a href="#" aria-label="Instagram" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                        </svg>
                     </a>
-                    <a href="#" aria-label="Facebook" class="transition-colors">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    <a href="#" aria-label="Facebook" class="text-[#49739c] dark:text-[#A0AEC0] hover:text-[#3d98f4] transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                        </svg>
                     </a>
-                </div>
-                <p class="text-xs sm:text-sm">© 2024 Comet. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+                  </div>
+                  <p class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal">© 2024 Comet. All rights reserved.</p>
+            </footer>
 
-    <script>
-        // Mobile Menu Script
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (hamburgerButton && mobileMenu) {
-            hamburgerButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                mobileMenu.classList.toggle('open');
-                const isExpanded = mobileMenu.classList.contains('open');
-                hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
-                if (isExpanded) {
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
-                } else {
-                     hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-            document.addEventListener('click', (e) => {
-                if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
-                    mobileMenu.classList.remove('open');
-                    hamburgerButton.setAttribute('aria-expanded', 'false');
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-        }
-    </script>
+<script src="js/global-ui.js" defer></script>
+    <script src="js/pwa-init.js" defer></script>
 </body>
 </html>

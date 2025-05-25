@@ -9,115 +9,9 @@
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
         href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <style>
-        /* Light Theme Defaults */
-        body {
-            font-family: Manrope, "Noto Sans", sans-serif;
-            background-color: #f8fafc;
-            /* slate-50 */
-            color: #0d141c;
-            /* slate-900 */
-        }
-
-        .support-section {
-            background-color: #ffffff;
-            /* White card background */
-            border: 1px solid #e2e8f0;
-            /* slate-200 */
-        }
-
-        .faq-item {
-            border-bottom: 1px solid #e2e8f0;
-            /* slate-200 */
-        }
-
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-
-        input[type="email"],
-        textarea {
-            background-color: #ffffff;
-            /* White input bg */
-            border: 1px solid #cbd5e1;
-            /* slate-300 */
-            color: #0d141c;
-            /* Dark text */
-        }
-
-        input[type="email"]:focus,
-        textarea:focus {
-            border-color: #3D98F4;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.5);
-        }
-
-        header {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-bottom-color: #e7edf4;
-            color: #0d141c;
-        }
-
-        header a,
-        header h2 {
-            color: #0d141c;
-        }
-
-        header a:hover {
-            color: #3D98F4;
-        }
-
-        header .logo-icon-comet {
-            color: #3D98F4;
-        }
-
-        header .sign-in-btn-comet {
-            background-color: #e7edf4;
-            color: #0d141c;
-        }
-
-        header .sign-in-btn-comet:hover {
-            background-color: #d1d5db;
-        }
-
-        /* Footer consistent light theme */
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e7edf4;
-            color: #49739c;
-        }
-
-        footer a:hover {
-            color: #3D98F4;
-        }
-
-        .text-muted-light {
-            color: #64748b;
-        }
-
-        /* slate-500 */
-        .text-main-dark {
-            color: #0d141c;
-        }
-
-        .text-heading-dark {
-            color: #0d141c;
-        }
-
-        .faq-item summary {
-            color: #0d141c;
-        }
-
-        .faq-item p {
-            color: #475569;
-        }
-
-        /* slate-600 */
-        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        #mobileMenu.open { max-height: 500px; }
-        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
-        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
-    </style>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/static-pages.css">
+    <link rel="stylesheet" href="css/dark-theme.css">
 </head>
 
 <body class="min-h-screen flex flex-col">
@@ -299,46 +193,8 @@
         </div>
     </footer>
 
-    <script>
-        // Basic script for FAQ accordion
-        const detailsElements = document.querySelectorAll('details.faq-item');
-        detailsElements.forEach(details => {
-            details.addEventListener('toggle', function () { // Use function keyword for 'this'
-                if (this.open) {
-                    detailsElements.forEach(otherDetails => {
-                        if (otherDetails !== this) {
-                            otherDetails.open = false;
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-    <script>
-        // Mobile Menu Script
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (hamburgerButton && mobileMenu) {
-            hamburgerButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                mobileMenu.classList.toggle('open');
-                const isExpanded = mobileMenu.classList.contains('open');
-                hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
-                if (isExpanded) {
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
-                } else {
-                     hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-            document.addEventListener('click', (e) => {
-                if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
-                    mobileMenu.classList.remove('open');
-                    hamburgerButton.setAttribute('aria-expanded', 'false');
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-        }
-    </script>
+   <script src="js/global-ui.js" defer></script>
+    <script src="js/pwa-init.js" defer></script>
 </body>
 
 </html>

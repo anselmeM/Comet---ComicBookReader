@@ -7,108 +7,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <style>
-        /* Light Theme Defaults */
-        body {
-            font-family: Manrope, "Noto Sans", sans-serif;
-            background-color: #f8fafc; /* Light gray background (slate-50) */
-            color: #0d141c; /* Dark text (slate-900) */
-        }
-        .pricing-card {
-            background-color: #ffffff; /* White card background */
-            border: 1px solid #e2e8f0; /* Lighter border (slate-200) */
-        }
-        .feature-check svg {
-            color: #3D98F4; /* Blue checkmark */
-        }
-        .popular-badge {
-            background-color: #3D98F4;
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            position: absolute;
-            top: -0.75rem;
-            right: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-         .best-value-badge {
-            background-color: #3D98F4; /* Consistent blue badge */
-            color: white;
-        }
-        header {
-            background-color: rgba(255, 255, 255, 0.8); /* Lighter header bg for light mode */
-            border-bottom-color: #e7edf4; /* Light border */
-            color: #0d141c; /* Dark text for header */
-        }
-        header a, header h2 {
-             color: #0d141c;
-        }
-         header a:hover {
-            color: #3D98F4;
-        }
-        header .logo-icon-comet { /* Class for the logo SVG */
-            color: #3D98F4;
-        }
-        header .sign-in-btn-comet {
-            background-color: #e7edf4; /* Light grey for sign in */
-            color: #0d141c;
-        }
-         header .sign-in-btn-comet:hover {
-            background-color: #d1d5db; /* Slightly darker grey on hover */
-        }
-
-        /* Footer consistent light theme */
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e7edf4;
-            color: #49739c; /* Default text color for footer links */
-        }
-        footer a:hover {
-            color: #3D98F4;
-        }
-
-        .text-muted-light { color: #A0AEC0; }
-        #mobileMenu { position: absolute; top: 100%; left: 0; right: 0; background-color: white; z-index: 40; border-bottom: 1px solid #e7edf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        #mobileMenu.open { max-height: 500px; }
-        #mobileMenu a, #mobileMenu button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem; color: #0d141c; font-size: 0.875rem; font-weight: 500; }
-        #mobileMenu a:hover, #mobileMenu button:hover { background-color: #f3f4f6; color: #3D98F4; }
-
-    </style>
+   <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/static-pages.css">
+    <link rel="stylesheet" href="css/dark-theme.css">
 </head>
 <body class="min-h-screen flex flex-col">
 
  <header class="flex items-center justify-between whitespace-nowrap border-b border-solid px-6 sm:px-10 py-4 sticky top-0 z-50 backdrop-blur-md">
-      <a href="index.html" class="flex items-center gap-3 sm:gap-4 logo-title-link transition-opacity" aria-label="Comet Home">
-        <div class="size-6 sm:size-7 logo-icon-comet">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
-        </div>
-        <h2 class="text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">Comet</h2>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 lg:gap-8">
-        <a class="text-sm font-medium leading-normal transition-colors" href="features.html">Features</a>
-        <a class="text-sm font-bold leading-normal text-[#3D98F4]" href="pricing.html">Pricing</a> <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
-      </nav>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
-          <span class="truncate">Download</span>
-        </button>
-        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
-          <span class="truncate">Sign In</span>
-        </button>
-         <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
-        </button>
+  <a href="index.html" class="flex items-center gap-3 sm:gap-4 logo-title-link transition-opacity" aria-label="Comet Home">
+    <div class="size-6 sm:size-7 logo-icon-comet">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
+    </div>
+    <h2 class="text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">Comet</h2>
+  </a>
+  <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+    <a class="text-sm font-medium leading-normal transition-colors hover:text-[#3D98F4]" href="features.html">Features</a>
+    <a class="text-sm font-medium leading-normal transition-colors hover:text-[#3D98F4]" href="pricing.html">Pricing</a>
+    <a class="text-sm font-medium leading-normal transition-colors hover:text-[#3D98F4]" href="support.html">Support</a>
+    </nav>
+  <div class="flex items-center gap-2 sm:gap-3">
+    <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+      <span class="truncate">Download</span>
+    </button>
+    <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
+      <span class="truncate">Sign In</span>
+    </button>
+     <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="md:hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
+          <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
+          <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
       </div>
-          <div id="mobileMenu" class="md:hidden">
-              <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
-                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
-                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
-              </div>
-          </div>
-    </header>
+  </div>
+</header>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
         <div class="text-center mb-12 md:mb-16">
@@ -144,7 +79,7 @@
             <div class="pricing-card rounded-xl p-6 sm:p-8 flex flex-col border-2 border-[#3D98F4] relative">
                 <div class="popular-badge">Popular</div>
                 <h3 class="text-xl sm:text-2xl font-bold mb-1 text-heading-dark">Pro</h3>
-                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark">$9.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
+                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark">$.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
                 <button class="w-full mt-6 mb-6 py-2.5 sm:py-3 px-6 bg-[#3D98F4] text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
                     Select Plan
                 </button>
@@ -171,7 +106,7 @@
             <div class="pricing-card rounded-xl p-6 sm:p-8 flex flex-col relative">
                  <div class="absolute top-4 right-4 text-xs font-bold best-value-badge px-3 py-1 rounded-full">Best Value</div>
                 <h3 class="text-xl sm:text-2xl font-bold mb-1 text-heading-dark">Ultimate</h3>
-                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark">$19.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
+                <p class="text-3xl sm:text-4xl font-black mb-1 text-heading-dark">$2.99 <span class="text-lg sm:text-xl font-medium text-muted-light">/month</span></p>
                 <button class="w-full mt-6 mb-6 py-2.5 sm:py-3 px-6 bg-slate-200 text-slate-800 font-semibold rounded-lg hover:bg-slate-300 transition-colors">
                     Select Plan
                 </button>
@@ -223,31 +158,7 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // Mobile Menu Script
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (hamburgerButton && mobileMenu) {
-            hamburgerButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                mobileMenu.classList.toggle('open');
-                const isExpanded = mobileMenu.classList.contains('open');
-                hamburgerButton.setAttribute('aria-expanded', isExpanded.toString());
-                if (isExpanded) {
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
-                } else {
-                     hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-            document.addEventListener('click', (e) => {
-                if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
-                    mobileMenu.classList.remove('open');
-                    hamburgerButton.setAttribute('aria-expanded', 'false');
-                    hamburgerButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
-                }
-            });
-        }
-    </script>
+<script src="js/global-ui.js" defer></script>
+    <script src="js/pwa-init.js" defer></script>
 </body>
 </html>

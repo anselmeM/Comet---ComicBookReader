@@ -1,0 +1,129 @@
+/* dark-theme.css */
+
+/* Applied when <html> tag has class="dark" */
+
+.dark body {
+  background-color: #0d141c;
+  color: #e7edf4;
+}
+
+/* General dark mode for header (applies to all pages if .dark is on html) */
+.dark header {
+  background-color: rgba(13, 20, 28, 0.8);
+  border-bottom-color: #1A2633;
+  /* color: #E7EDF4; /* Already set by .dark body or specific a/h2 rules */
+}
+.dark header a, .dark header h2 {
+  color: #E7EDF4;
+}
+.dark header nav a:hover {
+  color: #3D98F4;
+}
+.dark header .logo-icon-comet {
+  color: #3D98F4;
+}
+.dark header .sign-in-btn-comet { /* For static page sign-in buttons */
+  background-color: #334155;
+  color: #E7EDF4;
+}
+.dark header .sign-in-btn-comet:hover {
+  background-color: #475569;
+}
+
+/* General dark mode for footer */
+.dark footer {
+  background-color: #0D141C;
+  border-top-color: #1A2633;
+  color: #A0AEC0;
+}
+.dark footer a {
+  color: #A0AEC0;
+}
+.dark footer a:hover {
+  color: #3D98F4;
+}
+
+/* Dark mode specifically for #uploadView on index.html if needed to override general */
+.dark #uploadView {
+  /* background-color is already set by .dark body or .dark #uploadView in index-specific.css if that's preferred */
+}
+/* .dark #uploadView header {} /* Covered by general .dark header */
+/* .dark #uploadView .logo-icon-comet {} /* Covered by general .dark header .logo-icon-comet */
+/* .dark #uploadView footer {} /* Covered by general .dark footer */
+.dark #uploadView footer p { /* If specific p tags in uploadView footer need distinct dark styling */
+  color: #A0AEC0;
+}
+
+
+/* Dark mode for Reader Panel (index.html) */
+.dark .panel {
+  background-color: #1A2633;
+  color: #E7EDF4;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+}
+.dark .panel h2,
+.dark .panel h3 {
+  color: #E7EDF4;
+}
+.dark .toggle-bg {
+  background-color: #334155;
+}
+.dark .toggle-label input:checked + .toggle-bg {
+  background-color: #3d98f4;
+}
+.dark .fit-label {
+  border-color: #334155;
+  color: #E7EDF4;
+}
+.dark .fit-label.checked {
+  border-color: #3d98f4;
+}
+
+/* Dark mode for shared Mobile Menu */
+.dark #mobileMenu {
+  background-color: #1A2633;
+  border-bottom-color: #334155;
+}
+.dark #mobileMenu a,
+.dark #mobileMenu button {
+  color: #E7EDF4;
+}
+.dark #mobileMenu a:hover,
+.dark #mobileMenu button:hover {
+  background-color: #334155;
+  color: #3D98F4;
+}
+
+/* Dark mode for content cards on static pages */
+.dark .feature-card,
+.dark .pricing-card,
+.dark .content-section,
+.dark .support-section {
+  background-color: #1A2633;
+  border-color: #334155;
+}
+
+/* Dark mode for text elements on static pages */
+.dark .text-main-dark, /* These class names are a bit confusing in dark mode */
+.dark .text-heading-dark, /* They should become light text */
+.dark .faq-item summary {
+  color: #E7EDF4; /* Light text */
+}
+.dark .faq-item p {
+  color: #cbd5e1; /* Lighter gray for paragraphs */
+}
+.dark .text-muted-light { /* Muted text in dark mode */
+  color: #718096;
+}
+
+/* Dark mode for forms on static pages (e.g., support page) */
+.dark input[type="email"],
+.dark textarea {
+  background-color: #0d141c;
+  border-color: #334155;
+  color: #E7EDF4;
+}
+.dark input[type="email"]::placeholder,
+.dark textarea::placeholder {
+  color: #718096;
+}

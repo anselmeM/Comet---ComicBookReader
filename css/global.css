@@ -1,0 +1,120 @@
+/* global.css */
+
+/* Base Styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Manrope, "Noto Sans", sans-serif;
+  font-size: 16px;
+  background-color: #f8fafc; /* Default light mode background */
+  color: #0d141c; /* Default light mode text */
+}
+
+/* Generic Helper Text Styles (if used across multiple contexts) */
+.text-main-dark {
+  color: #0d141c;
+}
+
+.text-heading-dark {
+  color: #0d141c;
+}
+
+.text-muted-light {
+  color: #64748b; /* Default slate-500, can be overridden by more specific rules */
+}
+
+
+/* Header Styles (Shared across all pages) */
+header {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid #e7edf4;
+  color: #0d141c;
+  /* Tailwind classes in HTML handle: sticky, top, z-index, backdrop-blur, padding, flex, items-center, justify-between, whitespace-nowrap */
+}
+
+header a,
+header h2 {
+  color: #0d141c;
+}
+
+header nav a:hover {
+  color: #3D98F4;
+}
+
+header .logo-title-link:hover {
+  opacity: 0.8;
+}
+
+header .logo-icon-comet {
+  color: #3D98F4;
+}
+
+header .sign-in-btn-comet { /* For static page sign-in buttons */
+  background-color: #e7edf4;
+  color: #0d141c;
+}
+
+header .sign-in-btn-comet:hover {
+  background-color: #d1d5db;
+}
+
+/* Footer Styles (Shared across all pages) */
+footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e7edf4;
+  color: #49739c;
+  flex-shrink: 0; /* Important if footer is in a flex column */
+}
+
+footer a {
+  color: #49739c;
+}
+
+footer a:hover {
+  color: #3D98F4;
+}
+
+/* Mobile Menu Styles (Shared for main #mobileMenu in headers) */
+#mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 1000; /* High z-index */
+  border-bottom: 1px solid #e7edf4;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+#mobileMenu.open {
+  max-height: 500px;
+}
+
+#mobileMenu a,
+#mobileMenu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1.5rem;
+  color: #0d141c;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+#mobileMenu a:hover,
+#mobileMenu button:hover {
+  background-color: #f3f4f6;
+  color: #3D98F4;
+}
+
+/* Root variables if any are truly global */
+:root {
+  --hud-top-bar-height: 50px; /* Example, if used by JS on any page */
+}

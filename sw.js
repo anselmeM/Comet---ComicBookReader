@@ -1,5 +1,5 @@
 // --- Configuration ---
-const CACHE_NAME = 'comet-reader-cache-v4'; // UPDATED version
+const CACHE_NAME = 'comet-reader-cache-v5'; // Cache name UPDATED
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
 const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900';
 
@@ -7,15 +7,19 @@ const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=
 const urlsToCache = [
   './', // Cache the root directory (often serves index.html)
   './index.html',
-  './features.html', // ADDED
-  './pricing.html',  // ADDED
-  './support.html',  // ADDED
+  './features.html',
+  './pricing.html',
+  './support.html',
+  './terms.html',     // INCLUDED
+  './privacy.html',   // INCLUDED
+  './styles.css',
+  './script.js',
   JSZIP_URL,
   GOOGLE_FONTS_URL,
-  './manifest.json', // Ensure manifest is cached
+  './manifest.json',
   // All necessary icons from your icons folder:
   './icons/android-chrome-192x192.png',
-  './icons/android-chrome-512x512.png', // Remember to use PNG format for this
+  './icons/android-chrome-512x512.png',
   './icons/apple-touch-icon.png',
   './icons/favicon-32x32.png',
   './icons/favicon-16x16.png',
@@ -25,8 +29,6 @@ const urlsToCache = [
   './icons/icon-144x144.png',
   './icons/icon-152x152.png',
   './icons/icon-384x384.png'
-  // If you have specific maskable icon files with different names, add them here too.
-  // e.g. './icons/icon-maskable-192x192.png',
 ];
 
 // --- Installation Event ---
@@ -91,7 +93,7 @@ self.addEventListener('fetch', event => {
             console.warn('[Service Worker] Fetch failed for:', event.request.url, error);
             // Optional: Return a fallback page for navigation requests if offline and not cached
             // if (event.request.mode === 'navigate') {
-            //   return caches.match('./offline.html'); // You would need to create and cache an offline.html
+            //   return caches.match('./offline.html'); 
             // }
         });
       })

@@ -1,0 +1,88 @@
+/* static-pages.css */
+
+/* Feature Page Specific */
+.feature-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.feature-icon-placeholder {
+  background-color: #3D98F4;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.feature-icon-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Pricing Page Specific */
+.pricing-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.feature-check svg {
+  color: #3D98F4;
+}
+.popular-badge {
+  background-color: #3D98F4;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  position: absolute;
+  top: -0.75rem;
+  right: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.best-value-badge {
+  background-color: #3D98F4;
+  color: white;
+}
+
+/* Privacy/Terms Page Specific */
+.content-section { /* Used by privacy.html, terms.html */
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.prose-styles h2 { margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.5em; font-weight: 600;}
+.prose-styles h3 { margin-top: 1.25em; margin-bottom: 0.5em; font-size: 1.25em; font-weight: 600;}
+.prose-styles p { margin-bottom: 1em; line-height: 1.6;}
+.prose-styles ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; padding-left: 1em;}
+.prose-styles li { margin-bottom: 0.5em;}
+
+/* Support Page Specific */
+.support-section { /* Used by support.html for FAQ and Contact form cards */
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.faq-item {
+  border-bottom: 1px solid #e2e8f0;
+}
+.faq-item:last-child {
+  border-bottom: none;
+}
+/* Input styles for support form, if not fully handled by Tailwind */
+input[type="email"],
+textarea {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0d141c;
+  /* Tailwind usually adds padding, width, rounded, etc. */
+}
+input[type="email"]:focus,
+textarea:focus {
+  border-color: #3D98F4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.5);
+}
+.faq-item summary {
+  color: #0d141c;
+}
+.faq-item p {
+  color: #475569;
+}

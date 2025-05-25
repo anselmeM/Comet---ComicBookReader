@@ -1,0 +1,359 @@
+/* Base Styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Manrope, "Noto Sans", sans-serif;
+  font-size: 16px;
+  background-color: #f8fafc; /* Default light mode background */
+  color: #0d141c; /* Default light mode text */
+}
+
+.view {
+  display: none; /* Hidden by default */
+  position: fixed; /* Take out of normal flow, cover viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;   /* Use viewport units for full coverage */
+  height: 100vh;  /* Use viewport units for full coverage */
+  overflow: hidden; /* The view itself should not scroll; internal elements can */
+  flex-direction: column; /* Most views are flex containers */
+}
+
+.view.active {
+  display: flex; /* Show and make it a flex container */
+  /* z-index can be added if stacking conflicts occur, e.g., z-index: 10; */
+}
+
+#uploadView {
+  background-color: #f8fafc;
+  /* z-index: 10; /* Example if needed */
+}
+
+#uploadView > .content-wrapper {
+  flex-grow: 1;
+  overflow-y: auto; /* Allows scrolling within upload view's main content area */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#uploadView > .content-wrapper > .main-content {
+  flex-grow: 1;
+}
+
+#readerView {
+  background-color: #000;
+  /* z-index: 20; /* Example: Ensure reader is on top of upload view if both active briefly */
+}
+
+/* Ensure footer inside uploadView is part of the layout */
+#uploadView footer {
+  flex-shrink: 0; /* Prevent footer from shrinking if content-wrapper is flex */
+}
+
+
+/* Feature Page Specific */
+.feature-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.feature-icon-placeholder {
+  background-color: #3D98F4;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.feature-icon-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+.text-main-dark { color: #0d141c; }
+.text-heading-dark { color: #0d141c; }
+
+/* Pricing Page Specific */
+.pricing-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.feature-check svg {
+  color: #3D98F4; /* Blue checkmark */
+}
+.popular-badge {
+  background-color: #3D98F4;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  position: absolute;
+  top: -0.75rem;
+  right: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.best-value-badge {
+  background-color: #3D98F4;
+  color: white;
+}
+.text-muted-light { color: #A0AEC0; } /* Using this for consistency as per pricing page needs */
+
+/* Privacy/Terms Page Specific */
+.content-section {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.prose-styles h2 { margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.5em; font-weight: 600;}
+.prose-styles h3 { margin-top: 1.25em; margin-bottom: 0.5em; font-size: 1.25em; font-weight: 600;}
+.prose-styles p { margin-bottom: 1em; line-height: 1.6;}
+.prose-styles ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; padding-left: 1em;}
+.prose-styles li { margin-bottom: 0.5em;}
+
+/* Support Page Specific */
+.support-section {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+.faq-item {
+  border-bottom: 1px solid #e2e8f0;
+}
+.faq-item:last-child {
+  border-bottom: none;
+}
+input[type="email"],
+textarea {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0d141c;
+}
+input[type="email"]:focus,
+textarea:focus {
+  border-color: #3D98F4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.5);
+}
+.faq-item summary {
+  color: #0d141c;
+}
+.faq-item p {
+  color: #475569;
+}
+
+/* Header Styles (shared across static pages) */
+header {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid #e7edf4;
+  color: #0d141c;
+}
+header a, header h2 {
+  color: #0d141c;
+}
+header nav a:hover {
+  color: #3D98F4;
+}
+header .logo-title-link:hover {
+  opacity: 0.8;
+}
+header .logo-icon-comet {
+  color: #3D98F4;
+}
+header .sign-in-btn-comet {
+  background-color: #e7edf4;
+  color: #0d141c;
+}
+header .sign-in-btn-comet:hover {
+  background-color: #d1d5db;
+}
+
+/* Footer Styles (shared across static pages) */
+footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e7edf4;
+  color: #49739c;
+  flex-shrink: 0;
+}
+footer a {
+  color: #49739c;
+}
+footer a:hover {
+  color: #3D98F4;
+}
+
+/* Mobile Menu Styles (Shared for #mobileMenu elements) */
+#mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 1000; /* Ensure it's on top */
+  border-bottom: 1px solid #e7edf4;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+#mobileMenu.open {
+  max-height: 500px;
+}
+#mobileMenu a, #mobileMenu button {
+  display: block; width: 100%; text-align: left; padding: 0.75rem 1.5rem;
+  color: #0d141c; font-size: 0.875rem; font-weight: 500;
+}
+#mobileMenu a:hover, #mobileMenu button:hover {
+  background-color: #f3f4f6; color: #3D98F4;
+}
+
+/* Styles for index.html Reader View (HUD, Panel, etc.) */
+.hud-overlay { position: absolute; inset: 0; z-index: 20; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
+.hud-overlay.visible { opacity: 1; pointer-events: auto; }
+.hud-bar {
+  position: absolute; left: 0; right: 0; background: rgba(13, 20, 28, 0.75);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; color: #e7edf4;
+}
+.hud-bar.top { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.hud-icon { background: transparent; border: none; color: #e7edf4; padding: 6px; border-radius: 50%; cursor: pointer; transition: background 0.2s ease; }
+.hud-icon svg { width: 24px; height: 24px; display: block; }
+.hud-icon:hover { background: rgba(255, 255, 255, 0.15); }
+
+#pageIndicatorHud { font-size: 0.875rem; }
+@media (min-width: 640px) { #pageIndicatorHud { font-size: 1rem; } }
+
+.panel { /* Reader Options Panel */
+  position: fixed; top: 0; right: -100%; width: 100%; max-width: 360px; height: 100%;
+  background-color: #f8fafc; z-index: 1010; /* Above active view and HUD */
+  transition: right 0.4s ease-in-out; overflow-y: auto; color: #0d141c;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+}
+@media (min-width: 640px) { .panel { max-width: 400px; } }
+.panel.visible { right: 0; }
+
+.panel h2 {
+  color: #0d141c; font-size: 20px; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em;
+  padding-left: 1rem; padding-right: 1rem; text-align: left; padding-bottom: 0.5rem; padding-top: 1.25rem;
+}
+@media (min-width: 640px) { .panel h2 { font-size: 22px; } }
+
+.panel h3 {
+  color: #0d141c; font-size: 1rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.015em;
+  padding-left: 1rem; padding-right: 1rem; padding-bottom: 0.5rem; padding-top: 1rem;
+}
+@media (min-width: 640px) { .panel h3 { font-size: 1.125rem; } }
+
+.toggle-label { position: relative; display: inline-flex; height: 31px; width: 51px; cursor: pointer; border-radius: 9999px; }
+.toggle-bg { display: flex; align-items: center; width: 100%; height: 100%; border-radius: 9999px; transition: background-color 0.2s ease; padding: 2px; background-color: #e7edf4; }
+.toggle-switch { height: 27px; width: 27px; border-radius: 9999px; background-color: white; box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px; transition: transform 0.2s ease; }
+.toggle-label input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
+.toggle-label input:checked + .toggle-bg .toggle-switch { transform: translateX(20px); }
+
+.fit-label {
+  font-weight: 500; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; border: 1px solid #cbd5e1; color: #0d141c;
+  position: relative; cursor: pointer; transition: all 0.2s ease;
+  font-size: 0.875rem; padding: 0 12px; height: 40px; box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  .fit-label { font-size: 14px; padding: 0 16px; height: 44px; }
+}
+.fit-label.checked { border-width: 2px; border-color: #3d98f4; }
+@media (min-width: 640px) {
+  .fit-label.checked { border-width: 3px; }
+}
+.fit-label input { appearance: none; position: absolute; inset: 0; cursor: pointer; }
+
+#imageContainer {
+  overflow: auto; overscroll-behavior: contain; flex-grow: 1; display: flex;
+  justify-content: center; align-items: flex-start; background-color: #000;
+  position: relative; cursor: pointer; padding-top: 0;
+  transition: padding-top 0.3s ease-in-out; width: 100%;
+}
+#comicImage {
+  max-width: none; max-height: none; display: block; opacity: 1;
+  transition: opacity 0.2s; image-rendering: -webkit-optimize-contrast; pointer-events: none;
+}
+#readerMessage {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.75); z-index: 5; color: white; text-align: center;
+  padding: 20px; font-size: 1.125rem;
+}
+@media (min-width: 640px) { #readerMessage { font-size: 1.25rem; } }
+#readerMessage.flex { display: flex; }
+
+#dropZone {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://images.unsplash.com/photo-1505664194779-8be68b5c9d48?auto=format&fit=crop&q=80&w=1770");
+  transition: all 0.3s ease; min-height: 300px;
+}
+@media (min-width: 640px) { #dropZone { min-height: 400px; } }
+@media (min-width: 768px) { #dropZone { min-height: 480px; } }
+#dropZone.dragging { border: 4px dashed #3d98f4; opacity: 0.8; transform: scale(1.02); }
+
+:root { --hud-top-bar-height: 50px; }
+
+/* Dark Mode Styles */
+.dark body { background-color: #0d141c; color: #e7edf4; }
+
+/* General dark mode styles for header, footer, common elements */
+.dark header {
+  background-color: rgba(13, 20, 28, 0.8);
+  border-bottom-color: #1A2633;
+  color: #E7EDF4;
+}
+.dark header a, .dark header h2 { color: #E7EDF4; }
+.dark header nav a:hover { color: #3D98F4; }
+.dark header .logo-icon-comet { color: #3D98F4; }
+.dark header .sign-in-btn-comet { background-color: #334155; color: #E7EDF4; }
+.dark header .sign-in-btn-comet:hover { background-color: #475569; }
+
+.dark footer {
+  background-color: #0D141C;
+  border-top-color: #1A2633;
+  color: #A0AEC0;
+}
+.dark footer a { color: #A0AEC0; }
+.dark footer a:hover { color: #3D98F4; }
+
+/* Specific dark mode for #uploadView if it needs to differ from general .dark header/footer */
+/* If identical, the general rules above are enough. If specific, these will override. */
+.dark #uploadView { background-color: #0D141C; }
+/* .dark #uploadView header {} /* Covered by .dark header */
+/* .dark #uploadView footer {} /* Covered by .dark footer */
+.dark #uploadView footer p { color: #A0AEC0; } /* Example of a specific override */
+
+
+.dark .panel { background-color: #1A2633; color: #E7EDF4; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+.dark .panel h2, .dark .panel h3 { color: #E7EDF4; }
+.dark .toggle-bg { background-color: #334155; }
+.dark .toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
+.dark .fit-label { border-color: #334155; color: #E7EDF4; }
+.dark .fit-label.checked { border-color: #3d98f4;}
+
+.dark #mobileMenu { background-color: #1A2633; border-bottom-color: #334155; }
+.dark #mobileMenu a, .dark #mobileMenu button { color: #E7EDF4; }
+.dark #mobileMenu a:hover, .dark #mobileMenu button:hover { background-color: #334155; color: #3D98F4; }
+
+.dark .feature-card,
+.dark .pricing-card,
+.dark .content-section,
+.dark .support-section {
+  background-color: #1A2633;
+  border-color: #334155;
+}
+.dark .text-main-dark, .dark .text-heading-dark, .dark .faq-item summary { color: #E7EDF4; }
+.dark .faq-item p { color: #cbd5e1; }
+.dark .text-muted-light { color: #718096; }
+.dark input[type="email"], .dark textarea {
+  background-color: #0d141c;
+  border-color: #334155;
+  color: #E7EDF4;
+}
+.dark input[type="email"]::placeholder,
+.dark textarea::placeholder {
+  color: #718096;
+}
