@@ -12,12 +12,25 @@
 }
 
 /* --- Generic Header & Footer --- */
-.dark header,
-.dark footer {
-  border-color: #333333; /* Darker border */
+.dark header {
+  background-color: rgba(13, 20, 28, 0.8); /* Added */
+  border-color: #333333;
+  color: #E0E0E0;
+}
+/* Keep this rule for link colors within the dark header */
+.dark header a, .dark header h2 {
   color: #E0E0E0;
 }
 
+/* Keep the footer rule as is or adjust if needed */
+.dark footer {
+  /* background-color: #121212; /* Example if you want a specific CSS bg for footer */
+  border-color: #333333;
+  color: #E0E0E0;
+}
+.dark footer a {
+  color: #E0E0E0;
+}
 .dark header a, .dark header h2,
 .dark footer a {
   color: #E0E0E0;
