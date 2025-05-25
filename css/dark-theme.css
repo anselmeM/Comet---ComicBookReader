@@ -1,4 +1,4 @@
-/* dark-theme.css - Enhanced Version 2 */
+/* dark-theme.css - Enhanced Version 3 */
 
 /* Applied when <html> tag has class="dark" */
 
@@ -61,7 +61,7 @@
 
 /* Dark mode specifically for #uploadView on index.html */
 .dark #uploadView {
-  background-color: #121212; /* Match body background */
+  background-color: #121212 !important; /* Force dark background for the whole view */
 }
 .dark #uploadView header {
     background-color: rgba(30, 30, 30, 0.85);
