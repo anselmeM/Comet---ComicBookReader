@@ -11,6 +11,7 @@ export const HUD_TOP_BAR_HEIGHT = '50px';
 export const BOUNDARY_MESSAGE_TIMEOUT = 2500;
 export const SWIPE_THRESHOLD = 50;
 export const VERTICAL_THRESHOLD = 75;
+export const DOUBLE_TAP_DELAY = 300; // Milliseconds to wait for a second tap
 
 // Swipe State
 let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;
@@ -22,6 +23,12 @@ let dragStartX = 0, dragStartY = 0;
 let initialScrollLeft = 0, initialScrollTop = 0;
 let didDrag = false;
 
+// ---> NEW: Double Tap State <---
+let lastTapTime = 0; // Timestamp of the last tap
+let tapTimeout = null; // Timer to handle single tap action
+// ---> END OF NEW VARIABLES <---
+
+
 // Export getters and setters/modifiers
 export function getState() {
     return {
@@ -29,10 +36,13 @@ export function getState() {
         currentObjectUrl, previousObjectUrl, fitMode, isMangaModeActive,
         hudTimer, touchStartX, touchEndX, touchStartY, touchEndY,
         isPotentialSwipe, isDragging, dragStartX, dragStartY,
-        initialScrollLeft, initialScrollTop, didDrag
+        initialScrollLeft, initialScrollTop, didDrag,
+        lastTapTime, // <-- Export new state
+        tapTimeout   // <-- Export new state
     };
 }
 
+// ... (Existing setters: setImageBlobs, setOriginalImageBlobs, etc.) ...
 export function setImageBlobs(blobs) { imageBlobs = blobs; }
 export function setOriginalImageBlobs(blobs) { originalImageBlobs = blobs; }
 export function setCurrentImageIndex(index) { currentImageIndex = index; }
@@ -49,6 +59,13 @@ export function setDragStart(x, y) { dragStartX = x; dragStartY = y; }
 export function setInitialScroll(left, top) { initialScrollLeft = left; initialScrollTop = top; }
 export function setDidDrag(dragged) { didDrag = dragged; }
 
+// ---> NEW: Setters for Double Tap State <---
+export function setLastTapTime(time) { lastTapTime = time; }
+export function setTapTimeout(timeout) { tapTimeout = timeout; }
+export function clearTapTimeout() { clearTimeout(tapTimeout); tapTimeout = null; }
+// ---> END OF NEW SETTERS <---
+
+
 export function reverseImageBlobs() { imageBlobs.reverse(); }
 export function resetSwipeState() {
     isPotentialSwipe = false;
@@ -58,7 +75,6 @@ export function resetPanState() {
     isDragging = false;
     dragStartX = 0; dragStartY = 0;
     initialScrollLeft = 0; initialScrollTop = 0;
-    // Keep didDrag until it's checked by click handler
 }
 export function resetAllState() {
     imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
@@ -67,4 +83,6 @@ export function resetAllState() {
     resetSwipeState();
     resetPanState();
     didDrag = false;
+    lastTapTime = 0; // <-- Reset new state
+    clearTapTimeout(); // <-- Reset new state
 }
