@@ -1,66 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comet - Privacy Policy</title>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/static-pages.css">
     <link rel="stylesheet" href="css/dark-theme.css">
 </head>
+
 <body class="min-h-screen flex flex-col">
 
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid px-6 sm:px-10 py-4 sticky top-0 z-50 backdrop-blur-md">
-      <a href="index.html" class="flex items-center gap-3 sm:gap-4 logo-title-link transition-opacity" aria-label="Comet Home">
-        <div class="size-6 sm:size-7 logo-icon-comet">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_6_330)"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor"></path></g><defs><clipPath id="clip0_6_330"><rect width="48" height="48" fill="white"></rect></clipPath></defs></svg>
+    <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-solid px-6 sm:px-10 py-4 sticky top-0 z-50 backdrop-blur-md">
+        <a href="index.html" class="flex items-center gap-3 sm:gap-4 logo-title-link transition-opacity"
+            aria-label="Comet Home">
+            <div class="size-6 sm:size-7 logo-icon-comet">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_6_330)">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z"
+                            fill="currentColor"></path>
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_6_330">
+                            <rect width="48" height="48" fill="white"></rect>
+                        </clipPath>
+                    </defs>
+                </svg>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">Comet</h2>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8">
+            <a class="text-sm font-medium leading-normal transition-colors" href="features.html">Features</a>
+            <a class="text-sm font-medium leading-normal transition-colors" href="pricing.html">Pricing</a>
+            <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
+        </nav>
+        <div class="flex items-center gap-2 sm:gap-3">
+
+            <span class="truncate">Download</span>
+            </button>
+            <button
+                class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
+                <span class="truncate">Sign In</span>
+            </button>
+            <button id="hamburgerButton" aria-label="Open menu"
+                class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                    viewBox="0 0 256 256">
+                    <path
+                        d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z">
+                    </path>
+                </svg>
+            </button>
         </div>
-        <h2 class="text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">Comet</h2>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 lg:gap-8">
-        <a class="text-sm font-medium leading-normal transition-colors" href="features.html">Features</a>
-        <a class="text-sm font-medium leading-normal transition-colors" href="pricing.html">Pricing</a>
-        <a class="text-sm font-medium leading-normal transition-colors" href="support.html">Support</a>
-      </nav>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3D98F4] text-white text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
-          <span class="truncate">Download</span>
-        </button>
-        <button class="flex min-w-[80px] sm:min-w-[90px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-3 sm:px-4 sign-in-btn-comet text-xs sm:text-sm font-medium leading-normal transition-colors">
-          <span class="truncate">Sign In</span>
-        </button>
-         <button id="hamburgerButton" aria-label="Open menu" class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
-        </button>
-      </div>
-          <div id="mobileMenu" class="md:hidden">
-              <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  <a href="features.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
-                  <a href="pricing.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
-                  <a href="support.html" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
-              </div>
-          </div>
+        <div id="mobileMenu" class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="features.html"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Features</a>
+                <a href="pricing.html"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Pricing</a>
+                <a href="support.html"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#3d98f4]">Support</a>
+            </div>
+        </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
         <div class="max-w-3xl mx-auto">
             <div class="text-center mb-10 md:mb-12">
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-4 text-heading-dark">Privacy Policy</h1>
+                <h1
+                    class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-4 text-heading-dark">
+                    Privacy Policy</h1>
                 <p class="text-sm text-muted-light">Last Updated: May 23, 2025</p>
             </div>
 
             <div class="content-section rounded-xl p-6 sm:p-8 prose-styles text-main-dark">
-                <p>Welcome to Comet CBZ Reader ("Comet", "we", "us", or "our"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our web application (the "Service"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the service.</p>
+                <p>Welcome to Comet CBZ Reader ("Comet", "we", "us", or "our"). We are committed to protecting your
+                    privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information
+                    when you use our web application (the "Service"). Please read this privacy policy carefully. If you
+                    do not agree with the terms of this privacy policy, please do not access the service.</p>
 
                 <h2>1. Information We Collect</h2>
-                <p>Comet is designed to be a client-side application. This means that the CBZ files you open and read are processed directly in your browser. We do not upload, store, or transmit your comic book files or their content to our servers.</p>
+                <p>Comet is designed to be a client-side application. This means that the CBZ files you open and read
+                    are processed directly in your browser. We do not upload, store, or transmit your comic book files
+                    or their content to our servers.</p>
                 <p>We may collect the following types of information:</p>
                 <ul>
-                    <li><strong>Usage Data:</strong> We may collect non-personal information that your browser sends whenever you visit our Service or when you access the Service by or through a mobile device. This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data. This data is collected anonymously and used for analytics purposes to improve our service.</li>
-                    <li><strong>Local Storage Data:</strong> To enhance your experience, Comet may use your browser's local storage to save your preferences, such as theme settings (light/dark mode), last read page for a comic (if implemented), or other reader settings. This data is stored only on your device and is not accessible to us.</li>
+                    <li><strong>Usage Data:</strong> We may collect non-personal information that your browser sends
+                        whenever you visit our Service or when you access the Service by or through a mobile device.
+                        This Usage Data may include information such as your computer's Internet Protocol address (e.g.
+                        IP address), browser type, browser version, the pages of our Service that you visit, the time
+                        and date of your visit, the time spent on those pages, unique device identifiers and other
+                        diagnostic data. This data is collected anonymously and used for analytics purposes to improve
+                        our service.</li>
+                    <li><strong>Local Storage Data:</strong> To enhance your experience, Comet may use your browser's
+                        local storage to save your preferences, such as theme settings (light/dark mode), last read page
+                        for a comic (if implemented), or other reader settings. This data is stored only on your device
+                        and is not accessible to us.</li>
                 </ul>
 
                 <h2>2. How We Use Your Information</h2>
@@ -73,19 +115,36 @@
                 </ul>
 
                 <h2>3. Disclosure of Your Information</h2>
-                <p>Since we primarily operate as a client-side application and do not store your personal comic book files, the disclosure of your personal information is limited. We do not sell, trade, rent or otherwise transfer to outside parties your personally identifiable information unless we provide users with advance notice. This does not include website hosting partners and other parties who assist us in operating our website, conducting our business, or serving our users, so long as those parties agree to keep this information confidential.</p>
+                <p>Since we primarily operate as a client-side application and do not store your personal comic book
+                    files, the disclosure of your personal information is limited. We do not sell, trade, rent or
+                    otherwise transfer to outside parties your personally identifiable information unless we provide
+                    users with advance notice. This does not include website hosting partners and other parties who
+                    assist us in operating our website, conducting our business, or serving our users, so long as those
+                    parties agree to keep this information confidential.</p>
 
                 <h2>4. Security of Your Information</h2>
-                <p>We use administrative, technical, and physical security measures to help protect your personal information if any is collected (e.g., through analytics). While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse.</p>
+                <p>We use administrative, technical, and physical security measures to help protect your personal
+                    information if any is collected (e.g., through analytics). While we have taken reasonable steps to
+                    secure the personal information you provide to us, please be aware that despite our efforts, no
+                    security measures are perfect or impenetrable, and no method of data transmission can be guaranteed
+                    against any interception or other type of misuse.</p>
 
                 <h2>5. Third-Party Services</h2>
-                <p>Our Service may contain links to third-party websites or services that are not owned or controlled by Comet. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party websites or services. You further acknowledge and agree that Comet shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with the use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
+                <p>Our Service may contain links to third-party websites or services that are not owned or controlled by
+                    Comet. We have no control over and assume no responsibility for the content, privacy policies, or
+                    practices of any third-party websites or services. You further acknowledge and agree that Comet
+                    shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged
+                    to be caused by or in connection with the use of or reliance on any such content, goods or services
+                    available on or through any such web sites or services.</p>
 
                 <h2>6. Changes to This Privacy Policy</h2>
-                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the
+                    new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any
+                    changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
 
                 <h2>7. Contact Us</h2>
-                <p>If you have any questions about this Privacy Policy, please contact us at: [Your Contact Email or Link to Contact Form on Support Page]</p>
+                <p>If you have any questions about this Privacy Policy, please contact us at: [Your Contact Email or
+                    Link to Contact Form on Support Page]</p>
             </div>
         </div>
     </main>
@@ -100,13 +159,25 @@
                 </div>
                 <div class="flex justify-center gap-5">
                     <a href="#" aria-label="Twitter" class="transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                        </svg>
                     </a>
                     <a href="#" aria-label="Instagram" class="transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                        </svg>
                     </a>
                     <a href="#" aria-label="Facebook" class="transition-colors">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                        </svg>
                     </a>
                 </div>
                 <p class="text-xs sm:text-sm">© 2024 Comet. All rights reserved.</p>
@@ -114,7 +185,8 @@
         </div>
     </footer>
 
-<script src="js/global-ui.js" defer></script>
+    <script src="js/global-ui.js" defer></script>
     <script src="js/pwa-init.js" defer></script>
 </body>
+
 </html>
