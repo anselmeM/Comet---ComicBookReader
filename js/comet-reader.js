@@ -83,16 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const arrayBuffer = await file.arrayBuffer();
                 if (!window.JSZip) throw new Error("JSZip library not loaded.");
                 const zip = await JSZip.loadAsync(arrayBuffer);
-                imageBlobs = []; // Reset for new file
+                imageFiles = []; // Reset for new file
                 const promises = [];
                 for (const [filename, fileData] of Object.entries(zip.files)) {
                     if (!fileData.dir && /\.(jpe?g|png|gif|webp)$/i.test(filename) && !filename.startsWith('__MACOSX/')) {
-                        promises.push(fileData.async("blob").then(blob => imageBlobs.push({ name: filename, blob })));
+                        promises.push(fileData.async("blob").then(blob => imageFiles.push({ name: filename, blob })));
                     }
                 }
                 await Promise.all(promises);
-                imageBlobs.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-                originalImageBlobs = [...imageBlobs];
+                imageFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+                originalImageBlobs = [...imageFiles];
+                imageBlobs = [...imageFiles];
                 currentImageIndex = 0;
                 if (imageBlobs.length > 0) {
                     isMangaModeActive = mangaModeToggle ? mangaModeToggle.checked : false;
