@@ -1,7 +1,7 @@
 // --- Configuration ---
 const CACHE_NAME = 'comet-reader-cache-v5'; // Cache name UPDATED
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900';
+// const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900'; // Removed
 
 // List of files that constitute your "App Shell" - must be available offline.
 const urlsToCache = [
@@ -10,12 +10,17 @@ const urlsToCache = [
   './features.html',
   './pricing.html',
   './support.html',
-  './terms.html',     // INCLUDED
-  './privacy.html',   // INCLUDED
-  './styles.css',
-  './script.js',
+  './terms.html',
+  './privacy.html',
+  './css/global.css', // Corrected CSS path
+  './css/static-pages.css', // Corrected CSS path
+  './css/dark-theme.css', // Corrected CSS path
+  './css/index-specific.css', // Corrected CSS path
+  './Js/global-ui.js', // Corrected JS path (with 'Js')
+  './Js/pwa-init.js', // Corrected JS path (with 'Js')
+  './Js/comet-reader.js', // Corrected JS path (with 'Js')
   JSZIP_URL,
-  GOOGLE_FONTS_URL,
+  // GOOGLE_FONTS_URL, // Removed as recommended
   './manifest.json',
   // All necessary icons from your icons folder:
   './icons/android-chrome-192x192.png',
