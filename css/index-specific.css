@@ -183,6 +183,7 @@
 #readerMessage.flex { display: flex; }
 
 #dropZone {
+  /* REMOVED background-image line */
   transition: all 0.3s ease; min-height: 300px;
   /* Tailwind classes for flex, justify-center etc. are in HTML */
 }
