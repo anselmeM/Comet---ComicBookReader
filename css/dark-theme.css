@@ -1,7 +1,9 @@
+/* css/dark-theme.css - Clean Rewrite v2 */
 
-
-/* Apply this to the html tag when dark mode is active */
-/* html.dark { ... } or .dark body { ... } */
+/* This file contains ONLY the overrides for dark mode.
+ * It assumes global.css and static-pages.css are loaded BEFORE it.
+ * It uses the .dark class applied to the <html> tag.
+ */
 
 /* --- Base Styles --- */
 .dark body {
@@ -9,23 +11,36 @@
   color: #E0E0E0;           /* Default light text for dark mode */
 }
 
-/* --- Generic Header & Footer (Primarily for Static Pages) --- */
-/* These rules ensure static page headers/footers get dark backgrounds if not using Tailwind dark: variants directly in their HTML */
+/* --- Generic Header (For Static Pages & Fallback) --- */
+/* This ensures headers on static pages adopt dark mode correctly. */
+/* For index.html, Tailwind dark: classes in HTML will also apply and might override parts of this. */
 .dark header {
-  background-color: rgba(13, 20, 28, 0.8); /* Consistent dark header background */
-  border-bottom-color: #333333;
-  color: #E0E0E0;
+  background-color: rgba(13, 20, 28, 0.8); /* Dark, slightly transparent background */
+  border-bottom-color: #333333; /* Darker border */
+  color: #E0E0E0; /* Light text */
 }
 
 .dark header a,
-.dark header h2 {
-  color: #E0E0E0; /* Light text for links and titles in header */
+.dark header h2 { /* Includes the "Comet" title */
+  color: #E0E0E0;
 }
+
 .dark header nav a:hover {
   color: #3D98F4; /* Accent color on hover */
 }
 
-.dark header .sign-in-btn-comet { /* For static page sign-in buttons */
+/* Theme toggle and hamburger buttons (if present in any header) */
+.dark header #themeToggleBtn svg,
+.dark header #hamburgerButton {
+  color: #E0E0E0;
+}
+.dark header #themeToggleBtn:hover,
+.dark header #hamburgerButton:hover {
+  background-color: #333333;
+}
+
+/* Sign In button on static page headers */
+.dark header .sign-in-btn-comet {
   background-color: #333333;
   color: #E0E0E0;
 }
@@ -33,19 +48,28 @@
   background-color: #444444;
 }
 
+/* --- Generic Footer (For Static Pages & Fallback) --- */
+/* This ensures footers on static pages adopt dark mode correctly. */
+/* For index.html and static pages, Tailwind dark: classes in HTML for bg/border will also apply. */
 .dark footer {
-  background-color: #0D141C; /* Consistent dark footer background */
-  border-top-color: #1A2633; /* Matching index.html footer's dark border */
-  color: #A0AEC0; /* Muted text color for footer */
+  background-color: #0D141C; /* Dark background, matches Tailwind dark:bg-[#0D141C] */
+  border-top-color: #1A2633;   /* Dark top border, matches Tailwind dark:border-t-[#1A2633] */
+  color: #A0AEC0;          /* Default muted light text for footer content */
 }
 
+/* Links and paragraphs within the footer */
+/* Tailwind classes like dark:text-[#A0AEC0] in HTML will be more specific for those elements */
+.dark footer p,
 .dark footer a {
-  color: #A0AEC0;
+  color: #A0AEC0; /* Ensures text and links are light by default if no Tailwind class */
 }
+
 .dark footer a:hover {
   color: #3D98F4; /* Accent color on hover */
 }
-.dark footer svg { /* Social media icons */
+
+/* Social media icons in footer */
+.dark footer svg {
   color: #A0AEC0;
 }
 .dark footer svg:hover {
@@ -53,47 +77,36 @@
 }
 
 /* --- index.html Specifics (Upload View) --- */
-/* Note: index.html header/footer primarily styled by Tailwind dark: classes in HTML */
-.dark #uploadView { /* Ensure main view background is dark */
+/* Note: index.html header/footer are primarily styled by Tailwind dark: classes in their HTML. */
+/* These rules are fallbacks or for elements within that might not have specific Tailwind dark classes. */
+.dark #uploadView {
   background-color: #121212;
 }
-.dark #uploadView .content-wrapper {
-  background-color: #121212;
-}
+.dark #uploadView .content-wrapper,
 .dark #uploadView .main-content {
    background-color: #121212;
 }
 
-/* Theme toggle and hamburger on index.html (and potentially other headers if they exist) */
-.dark #themeToggleBtn svg,
-.dark #hamburgerButton {
-  color: #E0E0E0;
-}
-.dark #themeToggleBtn:hover,
-.dark #hamburgerButton:hover {
-  background-color: #333333;
-}
-
 /* Drop Zone on index.html */
 .dark #dropZone {
-  background-image: none; /* Remove light mode image if one was set via CSS */
-  background-color: #1E1E1E; /* Surface color */
-  border: 2px dashed #444444;
+  background-image: none; /* Ensure no light mode image is inherited */
+  background-color: #1E1E1E; /* Dark surface for drop zone */
+  border-color: #444444; /* Darker dashed border */
+  /* Text color for h1/h2 inside is handled by Tailwind dark:text-white in index.html */
 }
-/* Text inside dropZone is handled by Tailwind dark:text-white in index.html */
 .dark #dropZone.dragging {
-  border-color: #3d98f4;
-  background-color: #2a2a2a;
+  border-color: #3d98f4;    /* Accent color when dragging */
+  background-color: #2a2a2a; /* Slightly different background when dragging */
 }
 
-/* --- Reader View (#readerView) --- */
+/* --- Reader View (#readerView, HUD, Panel) --- */
 .dark #readerView {
-  background-color: #000000; /* Reader area itself remains black for focus */
+  background-color: #000000; /* Reader background remains black */
 }
 .dark .hud-bar {
-  background: rgba(18, 18, 18, 0.85); /* Darker HUD background */
-  border-bottom-color: rgba(51, 51, 51, 0.5); /* Darker HUD border */
-  color: #E0E0E0; /* Light text on HUD */
+  background: rgba(18, 18, 18, 0.85);
+  border-bottom-color: rgba(51, 51, 51, 0.5);
+  color: #E0E0E0;
 }
 .dark .hud-icon {
   color: #E0E0E0;
@@ -102,50 +115,45 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* Reader Options Panel */
 .dark .panel {
-  background-color: #1E1E1E; /* Dark surface for panel */
+  background-color: #1E1E1E;
   color: #E0E0E0;
   box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-  border-left: 1px solid #333333;
+  border-left-color: #333333;
 }
-.dark .panel h2, /* Panel Title */
-.dark .panel h3 { /* Section Titles */
+.dark .panel h2,
+.dark .panel h3 {
   color: #E0E0E0;
 }
-.dark .panel .border-b { /* Separator lines in panel */
+.dark .panel .border-b { /* For any explicit border-b classes used in panel HTML */
     border-bottom-color: #333333;
 }
-.dark .panel .hud-icon { /* Close button in panel */
+.dark .panel .hud-icon { /* e.g., Close button */
     color: #E0E0E0;
 }
 .dark .panel p { /* Descriptive text in panel options */
-    color: #A0AEC0; /* Muted text */
+    color: #A0AEC0;
 }
-
-/* Toggle switches in panel */
 .dark .toggle-bg {
-  background-color: #444444; /* Off state background */
+  background-color: #444444;
 }
 .dark .toggle-label input:checked + .toggle-bg {
-  background-color: #3d98f4; /* On state background (accent) */
+  background-color: #3d98f4;
 }
 .dark .toggle-label .toggle-switch {
-  background-color: #cccccc; /* Switch color (off) */
+  background-color: #cccccc;
 }
 .dark .toggle-label input:checked + .toggle-bg .toggle-switch {
-  background-color: #ffffff; /* Switch color (on) */
+  background-color: #ffffff;
 }
-
-/* Fit labels/buttons in panel */
 .dark .fit-label {
   border-color: #444444;
   color: #E0E0E0;
-  background-color: #2a2a2a; /* Darker button background */
+  background-color: #2a2a2a;
 }
-.dark .fit-label.checked { /* This class is added by JS */
+.dark .fit-label.checked {
   border-color: #3d98f4;
-  background-color: #3d98f4; /* Accent color for selected */
+  background-color: #3d98f4;
   color: #ffffff;
 }
 .dark .panel button[aria-label="Zoom Out"],
@@ -158,24 +166,24 @@
     background-color: #444444;
 }
 
-/* --- Static Pages Content --- */
-/* Cards used on Features, Pricing, Support pages */
+/* --- Static Pages Content Area --- */
+/* Cards on Features, Pricing, Support */
 .dark .feature-card,
 .dark .pricing-card,
-.dark .content-section, /* For Terms/Privacy */
-.dark .support-section { /* For FAQ/Contact cards */
-  background-color: #1E1E1E; /* Dark surface for cards */
-  border-color: #333333;    /* Darker borders */
+.dark .content-section, /* For Terms/Privacy content area */
+.dark .support-section { /* For FAQ/Contact form card area */
+  background-color: #1E1E1E;
+  border-color: #333333;
 }
 
-/* General text colors on static pages */
-.dark .text-heading-dark { /* Main headings on static pages */
+/* General text classes used within static page content */
+.dark .text-heading-dark {
   color: #E0E0E0;
 }
-.dark .text-muted-light { /* Sub-headings or muted text */
+.dark .text-muted-light {
   color: #888888;
 }
-.dark .text-main-dark { /* Main paragraph text */
+.dark .text-main-dark {
   color: #E0E0E0;
 }
 
@@ -183,17 +191,17 @@
 .dark .faq-item {
   border-bottom-color: #333333;
 }
-.dark .faq-item summary { /* Question text */
+.dark .faq-item summary {
   color: #E0E0E0;
 }
-.dark .faq-item p { /* Answer text */
+.dark .faq-item p {
   color: #A0AEC0;
 }
 
 /* Contact Form on Support page */
 .dark input[type="email"],
 .dark textarea {
-  background-color: #121212; /* Base background for inputs */
+  background-color: #121212;
   border-color: #444444;
   color: #E0E0E0;
 }
@@ -203,9 +211,9 @@
 }
 .dark input[type="email"]:focus,
 .dark textarea:focus {
-  border-color: #3D98F4; /* Accent border on focus */
-  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.3); /* Lighter shadow for dark */
-  background-color: #1E1E1E; /* Slightly lighter bg on focus */
+  border-color: #3D98F4;
+  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.3);
+  background-color: #1E1E1E;
 }
 
 /* Prose styles for Terms/Privacy */
@@ -218,36 +226,30 @@
   color: #A0AEC0;
 }
 
-/* Pricing page specific buttons */
-.dark .pricing-card button.bg-slate-200 { /* "Select Plan" for non-popular plans */
+/* Pricing page buttons */
+.dark .pricing-card button.bg-slate-200 {
     background-color: #333333;
     color: #E0E0E0;
 }
 .dark .pricing-card button.bg-slate-200:hover {
     background-color: #444444;
 }
-/* Popular plan button is styled with bg-[#3D98F4] in HTML, which is fine */
-/* Feature check icons in pricing */
-.dark .feature-check svg {
-  color: #3D98F4; /* Keep accent color */
+.dark .feature-check svg { /* Checkmark icon in pricing */
+  color: #3D98F4;
 }
-
 
 /* --- Mobile Menu (General) --- */
 .dark #mobileMenu {
-  background-color: #1E1E1E; /* Dark surface for mobile menu */
+  background-color: #1E1E1E;
   border-bottom-color: #333333;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1); /* Darker shadow */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
 .dark #mobileMenu a,
-.dark #mobileMenu button { /* Includes mobile upload/install buttons */
+.dark #mobileMenu button {
   color: #E0E0E0;
 }
 .dark #mobileMenu a:hover,
 .dark #mobileMenu button:hover {
   background-color: #333333;
-  color: #3D98F4; /* Accent on hover */
+  color: #3D98F4;
 }
-
-/* Ensure Tailwind's dark: variants in HTML take precedence if needed, */
-/* but this CSS provides a solid baseline for elements not using them. */
