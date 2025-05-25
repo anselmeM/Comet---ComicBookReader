@@ -1,70 +1,70 @@
-/* dark-theme.css - V6 (Clean Start) */
+/* css/dark-theme.css - Clean Rewrite */
 
-/* * This file contains ONLY the overrides for dark mode.
- * It assumes global.css, index-specific.css, and static-pages.css are loaded BEFORE it.
- * It uses the .dark class applied to the <html> tag.
- */
+/* Apply this to the html tag when dark mode is active */
+/* html.dark { ... } or .dark body { ... } */
 
 /* --- Base Styles --- */
 .dark body {
-  background-color: #121212; /* Main dark background */
-  color: #E0E0E0; /* Main text color */
+  background-color: #121212; /* Main dark background for all pages */
+  color: #E0E0E0;           /* Default light text for dark mode */
 }
 
-/* --- Generic Header & Footer --- */
+/* --- Generic Header & Footer (Primarily for Static Pages) --- */
+/* These rules ensure static page headers/footers get dark backgrounds if not using Tailwind dark: variants directly in their HTML */
 .dark header {
-  background-color: rgba(13, 20, 28, 0.8); /* Added */
-  border-color: #333333;
-  color: #E0E0E0;
-}
-/* Keep this rule for link colors within the dark header */
-.dark header a, .dark header h2 {
+  background-color: rgba(13, 20, 28, 0.8); /* Consistent dark header background */
+  border-bottom-color: #333333;
   color: #E0E0E0;
 }
 
-/* Keep the footer rule as is or adjust if needed */
+.dark header a,
+.dark header h2 {
+  color: #E0E0E0; /* Light text for links and titles in header */
+}
+.dark header nav a:hover {
+  color: #3D98F4; /* Accent color on hover */
+}
+
+.dark header .sign-in-btn-comet { /* For static page sign-in buttons */
+  background-color: #333333;
+  color: #E0E0E0;
+}
+.dark header .sign-in-btn-comet:hover {
+  background-color: #444444;
+}
+
 .dark footer {
-  /* background-color: #121212; /* Example if you want a specific CSS bg for footer */
-  border-color: #333333;
-  color: #E0E0E0;
+  background-color: #0D141C; /* Consistent dark footer background */
+  border-top-color: #1A2633; /* Matching index.html footer's dark border */
+  color: #A0AEC0; /* Muted text color for footer */
 }
+
 .dark footer a {
-  color: #E0E0E0;
+  color: #A0AEC0;
 }
-.dark header a, .dark header h2,
-.dark footer a {
-  color: #E0E0E0;
+.dark footer a:hover {
+  color: #3D98F4; /* Accent color on hover */
 }
-.dark header a:hover, .dark footer a:hover {
-  color: #3D98F4; /* Keep accent for links */
-}
-.dark footer svg {
-  color: #A0AEC0; /* Muted icons */
+.dark footer svg { /* Social media icons */
+  color: #A0AEC0;
 }
 .dark footer svg:hover {
   color: #3D98F4;
 }
 
-/* --- index.html Header/Footer --- */
-.dark #uploadView header {
-  background-color: rgba(30, 30, 30, 0.85); /* #1E1E1E with transparency */
-  border-bottom-color: #333333;
-}
-.dark #uploadView footer {
+/* --- index.html Specifics (Upload View) --- */
+/* Note: index.html header/footer primarily styled by Tailwind dark: classes in HTML */
+.dark #uploadView { /* Ensure main view background is dark */
   background-color: #121212;
-  border-top-color: #333333;
-  color: #A0AEC0;
 }
-.dark #uploadView footer a {
-  color: #A0AEC0;
+.dark #uploadView .content-wrapper {
+  background-color: #121212;
 }
-.dark #uploadView button[aria-label="Help"] {
-    background-color: #333333;
-    color: #E0E0E0;
+.dark #uploadView .main-content {
+   background-color: #121212;
 }
-.dark #uploadView button[aria-label="Help"]:hover {
-    background-color: #444444;
-}
+
+/* Theme toggle and hamburger on index.html (and potentially other headers if they exist) */
 .dark #themeToggleBtn svg,
 .dark #hamburgerButton {
   color: #E0E0E0;
@@ -74,45 +74,26 @@
   background-color: #333333;
 }
 
-/* --- index.html Main Content --- */
-.dark #uploadView {
-  background-color: #121212; /* CRITICAL: Override light background */
-}
-.dark #uploadView .content-wrapper {
-  background-color: #121212;
-}
-.dark #uploadView .main-content {
-   background-color: #121212;
-}
+/* Drop Zone on index.html */
 .dark #dropZone {
-  background-image: none; /* Remove light image */
+  background-image: none; /* Remove light mode image if one was set via CSS */
   background-color: #1E1E1E; /* Surface color */
-  border: 2px dashed #444444; /* Dark dashed border */
+  border: 2px dashed #444444;
 }
-.dark #dropZone h1,
-.dark #dropZone h2 {
-  color: #E0E0E0;
-}
+/* Text inside dropZone is handled by Tailwind dark:text-white in index.html */
 .dark #dropZone.dragging {
-  border: 4px dashed #3d98f4;
+  border-color: #3d98f4;
   background-color: #2a2a2a;
-}
-.dark #selectFileButton {
-    background-color: #3D98F4;
-    color: #ffffff;
-}
-.dark #selectFileButton:hover {
-    background-color: #2a7fcf;
 }
 
 /* --- Reader View (#readerView) --- */
 .dark #readerView {
-  background-color: #000000; /* Reader stays black for focus */
+  background-color: #000000; /* Reader area itself remains black for focus */
 }
 .dark .hud-bar {
-  background: rgba(18, 18, 18, 0.85); /* Darker HUD */
-  border-bottom: 1px solid rgba(51, 51, 51, 0.5);
-  color: #E0E0E0;
+  background: rgba(18, 18, 18, 0.85); /* Darker HUD background */
+  border-bottom-color: rgba(51, 51, 51, 0.5); /* Darker HUD border */
+  color: #E0E0E0; /* Light text on HUD */
 }
 .dark .hud-icon {
   color: #E0E0E0;
@@ -120,37 +101,51 @@
 .dark .hud-icon:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+/* Reader Options Panel */
 .dark .panel {
-  background-color: #1E1E1E;
+  background-color: #1E1E1E; /* Dark surface for panel */
   color: #E0E0E0;
   box-shadow: -5px 0 15px rgba(0,0,0,0.5);
   border-left: 1px solid #333333;
 }
-.dark .panel h2,
-.dark .panel h3 {
+.dark .panel h2, /* Panel Title */
+.dark .panel h3 { /* Section Titles */
   color: #E0E0E0;
 }
-.dark .panel .border-b {
+.dark .panel .border-b { /* Separator lines in panel */
     border-bottom-color: #333333;
 }
-.dark .panel .hud-icon { /* Close button */
+.dark .panel .hud-icon { /* Close button in panel */
     color: #E0E0E0;
 }
-.dark .panel p { /* Panel descriptions */
-    color: #A0AEC0;
+.dark .panel p { /* Descriptive text in panel options */
+    color: #A0AEC0; /* Muted text */
 }
-.dark .toggle-bg { background-color: #444444; }
-.dark .toggle-label input:checked + .toggle-bg { background-color: #3d98f4; }
-.dark .toggle-label .toggle-switch { background-color: #cccccc; }
-.dark .toggle-label input:checked + .toggle-bg .toggle-switch { background-color: #ffffff; }
+
+/* Toggle switches in panel */
+.dark .toggle-bg {
+  background-color: #444444; /* Off state background */
+}
+.dark .toggle-label input:checked + .toggle-bg {
+  background-color: #3d98f4; /* On state background (accent) */
+}
+.dark .toggle-label .toggle-switch {
+  background-color: #cccccc; /* Switch color (off) */
+}
+.dark .toggle-label input:checked + .toggle-bg .toggle-switch {
+  background-color: #ffffff; /* Switch color (on) */
+}
+
+/* Fit labels/buttons in panel */
 .dark .fit-label {
   border-color: #444444;
   color: #E0E0E0;
-  background-color: #2a2a2a;
+  background-color: #2a2a2a; /* Darker button background */
 }
-.dark .fit-label.checked {
+.dark .fit-label.checked { /* This class is added by JS */
   border-color: #3d98f4;
-  background-color: #3d98f4;
+  background-color: #3d98f4; /* Accent color for selected */
   color: #ffffff;
 }
 .dark .panel button[aria-label="Zoom Out"],
@@ -163,74 +158,96 @@
     background-color: #444444;
 }
 
-/* --- Static Pages --- */
+/* --- Static Pages Content --- */
+/* Cards used on Features, Pricing, Support pages */
 .dark .feature-card,
 .dark .pricing-card,
-.dark .content-section,
-.dark .support-section {
-  background-color: #1E1E1E;
-  border-color: #333333;
+.dark .content-section, /* For Terms/Privacy */
+.dark .support-section { /* For FAQ/Contact cards */
+  background-color: #1E1E1E; /* Dark surface for cards */
+  border-color: #333333;    /* Darker borders */
 }
-.dark .text-heading-dark { color: #E0E0E0; }
-.dark .text-muted-light { color: #888888; }
-.dark .text-main-dark { color: #E0E0E0; }
 
-/* Static Page Headers */
-.dark header.marketing-header {
-  background-color: #1E1E1E;
+/* General text colors on static pages */
+.dark .text-heading-dark { /* Main headings on static pages */
+  color: #E0E0E0;
+}
+.dark .text-muted-light { /* Sub-headings or muted text */
+  color: #888888;
+}
+.dark .text-main-dark { /* Main paragraph text */
+  color: #E0E0E0;
+}
+
+/* FAQ items on Support page */
+.dark .faq-item {
   border-bottom-color: #333333;
 }
-.dark header.marketing-header .sign-in-btn-comet {
-    background-color: #333333;
-    color: #E0E0E0;
+.dark .faq-item summary { /* Question text */
+  color: #E0E0E0;
 }
-.dark header.marketing-header .sign-in-btn-comet:hover {
-    background-color: #444444;
-}
-/* Static Page Footers */
-.dark footer.marketing-footer {
-  background-color: #121212;
-  border-top-color: #333333;
+.dark .faq-item p { /* Answer text */
+  color: #A0AEC0;
 }
 
-/* Static Page Specifics */
-.dark .faq-item { border-bottom-color: #333333; }
-.dark .faq-item summary { color: #E0E0E0; }
-.dark .faq-item p { color: #A0AEC0; }
+/* Contact Form on Support page */
 .dark input[type="email"],
 .dark textarea {
-  background-color: #121212;
+  background-color: #121212; /* Base background for inputs */
   border-color: #444444;
   color: #E0E0E0;
 }
 .dark input[type="email"]::placeholder,
-.dark textarea::placeholder { color: #888888; }
+.dark textarea::placeholder {
+  color: #888888;
+}
 .dark input[type="email"]:focus,
 .dark textarea:focus {
-  border-color: #3D98F4;
-  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.5);
-  background-color: #1E1E1E;
+  border-color: #3D98F4; /* Accent border on focus */
+  box-shadow: 0 0 0 2px rgba(61, 152, 244, 0.3); /* Lighter shadow for dark */
+  background-color: #1E1E1E; /* Slightly lighter bg on focus */
 }
-.dark .prose-styles h2, .dark .prose-styles h3 { color: #E0E0E0; }
-.dark .prose-styles p, .dark .prose-styles li { color: #A0AEC0; }
-.dark .pricing-card button { background-color: #333333; color: #E0E0E0; }
-.dark .pricing-card button:hover { background-color: #444444; }
-.dark .pricing-card .bg-\[\#3D98F4\] { background-color: #3D98F4; color: #ffffff; }
-.dark .pricing-card .bg-\[\#3D98F4\]:hover { background-color: #2a7fcf; }
-.dark .pricing-card .border-\[\#3D98F4\] { border-color: #3D98F4; }
+
+/* Prose styles for Terms/Privacy */
+.dark .prose-styles h2,
+.dark .prose-styles h3 {
+  color: #E0E0E0;
+}
+.dark .prose-styles p,
+.dark .prose-styles li {
+  color: #A0AEC0;
+}
+
+/* Pricing page specific buttons */
+.dark .pricing-card button.bg-slate-200 { /* "Select Plan" for non-popular plans */
+    background-color: #333333;
+    color: #E0E0E0;
+}
+.dark .pricing-card button.bg-slate-200:hover {
+    background-color: #444444;
+}
+/* Popular plan button is styled with bg-[#3D98F4] in HTML, which is fine */
+/* Feature check icons in pricing */
+.dark .feature-check svg {
+  color: #3D98F4; /* Keep accent color */
+}
 
 
-/* --- Mobile Menu --- */
+/* --- Mobile Menu (General) --- */
 .dark #mobileMenu {
-  background-color: #1E1E1E;
+  background-color: #1E1E1E; /* Dark surface for mobile menu */
   border-bottom-color: #333333;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1); /* Darker shadow */
 }
 .dark #mobileMenu a,
-.dark #mobileMenu button {
+.dark #mobileMenu button { /* Includes mobile upload/install buttons */
   color: #E0E0E0;
 }
 .dark #mobileMenu a:hover,
 .dark #mobileMenu button:hover {
   background-color: #333333;
-  color: #3D98F4;
+  color: #3D98F4; /* Accent on hover */
 }
+
+/* Ensure Tailwind's dark: variants in HTML take precedence if needed, */
+/* but this CSS provides a solid baseline for elements not using them. */
