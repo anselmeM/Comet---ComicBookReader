@@ -3,7 +3,7 @@ import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
 import * as UI from './comet-ui.js';
 
-export function displayPage(index) {
+export async function displayPage(index) {
     let { imageBlobs, currentImageIndex, previousObjectUrl } = State.getState();
     if (!imageBlobs || imageBlobs.length === 0 || !DOM.comicImage || !DOM.imageContainer) {
         UI.showMessage("No images to display or essential elements missing."); return;
@@ -12,10 +12,31 @@ export function displayPage(index) {
         State.setCurrentImageIndex(Math.max(0, Math.min(index, imageBlobs.length ? imageBlobs.length - 1 : 0)));
         UI.updateUI(); return;
     }
+
+    State.setCurrentImageIndex(index);
+    UI.updateUI();
+    UI.hideHUD(0);
+
     const imageEntry = imageBlobs[index];
+
+    if (imageEntry && !imageEntry.blob && imageEntry.fileData) {
+        try {
+            imageEntry.blob = await imageEntry.fileData.async("blob");
+        } catch (e) {
+            console.error("Failed to lazy load image", e);
+            UI.showMessage("Error loading image for page " + (index + 1));
+            return;
+        }
+    }
+
+    // Check if the user navigated away while the image was loading
+    if (State.getState().currentImageIndex !== index) {
+        return;
+    }
+
     if (!imageEntry || !imageEntry.blob) {
         UI.showMessage("Error: Corrupted image data at page " + (index + 1));
-        if (DOM.comicImage) DOM.comicImage.src = ""; State.setCurrentImageIndex(index); UI.updateUI(); UI.hideHUD(0); return;
+        if (DOM.comicImage) DOM.comicImage.src = ""; return;
     }
     if (previousObjectUrl) URL.revokeObjectURL(previousObjectUrl);
     const newUrl = URL.createObjectURL(imageEntry.blob);
@@ -36,9 +57,6 @@ export function displayPage(index) {
         console.error("Browser failed to render image:", failedImageName, "at index:", index, "src:", DOM.comicImage.src);
         UI.showMessage(`Error loading page ${index + 1} (${failedImageName}).`);
     };
-    State.setCurrentImageIndex(index);
-    UI.updateUI();
-    UI.hideHUD(0);
 }
 
 export function nextPage() {

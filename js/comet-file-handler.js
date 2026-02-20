@@ -23,13 +23,11 @@ export async function handleFile(file) {
         if (!window.JSZip) throw new Error("JSZip library not loaded.");
         const zip = await JSZip.loadAsync(arrayBuffer);
         let imageFiles = [];
-        const promises = [];
         for (const [filename, fileData] of Object.entries(zip.files)) {
             if (!fileData.dir && /\.(jpe?g|png|gif|webp)$/i.test(filename) && !filename.startsWith('__MACOSX/')) {
-                promises.push(fileData.async("blob").then(blob => imageFiles.push({ name: filename, blob })));
+                imageFiles.push({ name: filename, fileData, blob: null });
             }
         }
-        await Promise.all(promises);
         imageFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
         State.setOriginalImageBlobs([...imageFiles]);
@@ -39,7 +37,7 @@ export async function handleFile(file) {
         if (State.getState().imageBlobs.length > 0) {
             State.setIsMangaModeActive(document.getElementById('mangaModeToggle')?.checked || false);
             if (State.getState().isMangaModeActive) State.reverseImageBlobs();
-            displayPage(0);
+            await displayPage(0);
         } else {
             throw new Error('No images found in the CBZ file.');
         }
