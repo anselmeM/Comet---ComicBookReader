@@ -5,6 +5,7 @@
 import * as DOM from './comet-dom.js'; // For accessing DOM elements
 import * as UI from './comet-ui.js';   // For UI manipulation functions (showing/hiding elements, applying modes)
 import * as State from './comet-state.js'; // For application state (like zoom step)
+import * as Auth from './comet-auth.js'; // For authentication
 import { handleFile } from './comet-file-handler.js'; // For processing selected/dropped files
 import { handleKeyDown } from './comet-keyboard-handler.js'; // For keyboard navigation/actions
 import { setupMouseListeners } from './comet-mouse-handler.js'; // For mouse-specific interactions (like panning, clicking for next/prev page)
@@ -23,6 +24,40 @@ export function setupEventListeners() {
     console.log("Setting up all event listeners...");
 
     // SECTION: File Input and Drop Zone Event Listeners
+
+    // SECTION: Authentication & Navigation Event Listeners
+
+    // "Get Started" button -> Show Login View
+    DOM.getStartedButton?.addEventListener('click', () => {
+        UI.showView('login');
+    });
+
+    // Login Form Submission
+    DOM.loginForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = DOM.loginEmailInput?.value;
+        const password = DOM.loginPasswordInput?.value;
+
+        // Simple UI feedback
+        const btn = DOM.loginButton;
+        if(btn) { btn.textContent = "Signing in..."; btn.disabled = true; }
+
+        const success = await Auth.login(email, password);
+
+        if(btn) { btn.textContent = "Sign in"; btn.disabled = false; }
+
+        if (success) {
+            UI.showUploadView();
+        } else {
+            alert("Login failed. Please enter any email and password.");
+        }
+    });
+
+    // Logout Button
+    DOM.logoutButton?.addEventListener('click', () => {
+        Auth.logout();
+        UI.showView('landing');
+    });
 
     // When the 'Select File' button is clicked, programmatically click the hidden file input.
     // This allows for custom styling of the file selection trigger.

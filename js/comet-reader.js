@@ -2,6 +2,7 @@
 import * as DOM from './comet-dom.js';
 import * as UI from './comet-ui.js';
 import * as State from './comet-state.js';
+import * as Auth from './comet-auth.js';
 import { setupEventListeners } from './comet-event-setup.js'; // <-- Import the new setup function
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners(); // <-- Call the setup function
 
     // Set initial state / view
-    UI.showView('upload');
+    if (Auth.isLoggedIn()) {
+        UI.showView('upload');
+    } else {
+        UI.showView('landing');
+    }
+
     if (DOM.mangaModeToggle) {
         State.setIsMangaModeActive(DOM.mangaModeToggle.checked);
     }

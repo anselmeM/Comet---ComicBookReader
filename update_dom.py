@@ -1,4 +1,5 @@
-// js/comet-dom.js
+
+content = """// js/comet-dom.js
 
 // SECTION: View Elements
 // These constants represent the main view containers for the application.
@@ -125,3 +126,7 @@ export function checkCriticalElements() {
     // However, the initial check for uploadViewElement and readerViewElement is the most critical.
     return true; // Indicate that core elements (at least views) seem present.
 }
+"""
+
+with open("js/comet-dom.js", "w") as f:
+    f.write(content)

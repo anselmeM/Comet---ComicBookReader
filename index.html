@@ -53,7 +53,83 @@
 
     <input type="file" id="fileInput" accept=".cbz" class="hidden">
 
-    <div id="uploadView" class="view active">
+    <div id="landingView" class="view active">
+        <header
+            class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-[#1A2633] px-4 md:px-10 py-3 bg-white dark:bg-[rgba(13,20,28,0.8)] backdrop-blur-md flex-shrink-0 z-50">
+            <a href="#"
+                class="flex items-center gap-3 sm:gap-4 text-[#0d141c] dark:text-[#E7EDF4] hover:opacity-80 transition-opacity"
+                aria-label="Comet Home">
+                <div class="size-6 sm:size-7 text-[#3d98f4] logo-icon-comet"> <svg viewBox="0 0 48 48" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_6_330)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z"
+                                fill="currentColor"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_6_330">
+                                <rect width="48" height="48" fill="white"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
+                <h2
+                    class="text-[#0d141c] dark:text-[#E7EDF4] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em]">
+                    Comet</h2>
+            </a>
+            <div class="flex items-center gap-4">
+                 <button id="getStartedButton"
+                        class="flex min-w-[70px] sm:min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md sm:rounded-lg h-9 sm:h-10 px-3 sm:px-4 bg-[#3d98f4] text-slate-50 text-xs sm:text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
+                        <span class="truncate">Get Started</span>
+                </button>
+            </div>
+        </header>
+        <div class="flex flex-1 justify-center items-center py-20 px-4">
+             <div class="flex flex-col items-center gap-6 max-w-2xl text-center">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight text-[#0d141c] dark:text-white">
+                    Read your comics <span class="text-[#3d98f4]">anywhere</span>.
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300">
+                    Comet is the fastest way to read your CBZ files in the browser. No installation required, works offline.
+                </p>
+             </div>
+        </div>
+        <footer
+            class="flex flex-col gap-4 sm:gap-6 px-5 py-6 text-center bg-white dark:bg-[#0D141C] border-t border-solid border-t-[#e7edf4] dark:border-t-[#1A2633] flex-shrink-0 mt-auto">
+             <p class="text-[#49739c] dark:text-[#A0AEC0] text-xs sm:text-sm font-normal leading-normal">© 2024 Comet. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div id="loginView" class="view">
+        <div class="flex flex-1 justify-center items-center h-full bg-gray-50 dark:bg-[#0D141C]">
+            <div class="w-full max-w-md p-8 space-y-8 bg-white dark:bg-[#1A2633] rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-[#0d141c] dark:text-white">Sign in to Comet</h2>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Use any email and password to demo.</p>
+                </div>
+                <form id="loginForm" class="mt-8 space-y-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="loginEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
+                            <input id="loginEmail" name="email" type="email" autocomplete="email" required
+                                class="mt-1 block w-full px-3 py-2 bg-white dark:bg-[#0D141C] border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-[#3d98f4] focus:border-[#3d98f4] sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="loginPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required
+                                class="mt-1 block w-full px-3 py-2 bg-white dark:bg-[#0D141C] border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-[#3d98f4] focus:border-[#3d98f4] sm:text-sm">
+                        </div>
+                    </div>
+                    <button id="loginButton" type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#3d98f4] hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3d98f4]">
+                        Sign in
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="uploadView" class="view">
         <header
             class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] dark:border-b-[#1A2633] px-4 md:px-10 py-3 bg-white dark:bg-[rgba(13,20,28,0.8)] backdrop-blur-md flex-shrink-0 z-50">
             <a href="index.html"
@@ -119,9 +195,10 @@
                             </path>
                         </svg>
                     </button>
-                    <div class="hidden md:block bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 sm:size-10"
-                        style='background-image: url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1064");'>
-                    </div>
+                    <button id="logoutButton" class="hidden md:block bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 sm:size-10 cursor-pointer border-0"
+                        style='background-image: url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1064");'
+                        title="Sign Out">
+                    </button>
                 </div>
                 <button id="hamburgerButton" aria-label="Open menu"
                     class="md:hidden p-2 rounded-md text-[#0d141c] dark:text-[#E7EDF4] hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#3d98f4]">
