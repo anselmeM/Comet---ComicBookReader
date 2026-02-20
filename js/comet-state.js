@@ -2,8 +2,11 @@
 
 // Core State
 let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
-let currentObjectUrl = null, previousObjectUrl = null;
 let fitMode = 'best', isMangaModeActive = false, hudTimer = null;
+
+// Object URL Cache
+const OBJECT_URL_CACHE_LIMIT = 10;
+const objectUrlCache = new Map(); // imageEntry -> objectUrl
 
 // Constants
 export const ZOOM_STEP = 1.25;
@@ -33,7 +36,7 @@ let tapTimeout = null; // Timer to handle single tap action
 export function getState() {
     return {
         imageBlobs, originalImageBlobs, currentImageIndex,
-        currentObjectUrl, previousObjectUrl, fitMode, isMangaModeActive,
+        fitMode, isMangaModeActive,
         hudTimer, touchStartX, touchEndX, touchStartY, touchEndY,
         isPotentialSwipe, isDragging, dragStartX, dragStartY,
         initialScrollLeft, initialScrollTop, didDrag,
@@ -46,8 +49,6 @@ export function getState() {
 export function setImageBlobs(blobs) { imageBlobs = blobs; }
 export function setOriginalImageBlobs(blobs) { originalImageBlobs = blobs; }
 export function setCurrentImageIndex(index) { currentImageIndex = index; }
-export function setCurrentObjectUrl(url) { currentObjectUrl = url; }
-export function setPreviousObjectUrl(url) { previousObjectUrl = url; }
 export function setFitMode(mode) { fitMode = mode; }
 export function setIsMangaModeActive(active) { isMangaModeActive = active; }
 export function setHudTimer(timer) { hudTimer = timer; }
@@ -65,6 +66,56 @@ export function setTapTimeout(timeout) { tapTimeout = timeout; }
 export function clearTapTimeout() { clearTimeout(tapTimeout); tapTimeout = null; }
 // ---> END OF NEW SETTERS <---
 
+/**
+ * Retrieves a cached Object URL for the given image entry and updates its LRU position.
+ * @param {Object} imageEntry
+ * @returns {string|null}
+ */
+export function getCachedObjectUrl(imageEntry) {
+    if (objectUrlCache.has(imageEntry)) {
+        const url = objectUrlCache.get(imageEntry);
+        // Refresh LRU position by deleting and re-setting
+        objectUrlCache.delete(imageEntry);
+        objectUrlCache.set(imageEntry, url);
+        return url;
+    }
+    return null;
+}
+
+/**
+ * Adds an Object URL to the cache and revokes the oldest if the limit is reached.
+ * @param {Object} imageEntry
+ * @param {string} url
+ */
+export function addObjectUrl(imageEntry, url) {
+    if (objectUrlCache.has(imageEntry)) {
+        objectUrlCache.delete(imageEntry);
+    }
+    objectUrlCache.set(imageEntry, url);
+
+    if (objectUrlCache.size > OBJECT_URL_CACHE_LIMIT) {
+        const firstEntry = objectUrlCache.entries().next().value;
+        if (firstEntry) {
+            const [oldEntry, oldUrl] = firstEntry;
+            if (typeof URL !== 'undefined' && URL.revokeObjectURL) {
+                URL.revokeObjectURL(oldUrl);
+            }
+            objectUrlCache.delete(oldEntry);
+        }
+    }
+}
+
+/**
+ * Revokes all cached Object URLs and clears the cache.
+ */
+export function clearObjectUrlCache() {
+    for (const url of objectUrlCache.values()) {
+        if (typeof URL !== 'undefined' && URL.revokeObjectURL) {
+            URL.revokeObjectURL(url);
+        }
+    }
+    objectUrlCache.clear();
+}
 
 export function reverseImageBlobs() { imageBlobs.reverse(); }
 export function resetSwipeState() {
@@ -78,7 +129,7 @@ export function resetPanState() {
 }
 export function resetAllState() {
     imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
-    currentObjectUrl = null; previousObjectUrl = null;
+    clearObjectUrlCache();
     fitMode = 'best'; isMangaModeActive = false; hudTimer = null;
     resetSwipeState();
     resetPanState();
