@@ -4,7 +4,7 @@ import * as State from './comet-state.js';
 import * as UI from './comet-ui.js';
 
 export async function displayPage(index) {
-    let { imageBlobs, currentImageIndex, previousObjectUrl } = State.getState();
+    let { imageBlobs, currentImageIndex } = State.getState();
     if (!imageBlobs || imageBlobs.length === 0 || !DOM.comicImage || !DOM.imageContainer) {
         UI.showMessage("No images to display or essential elements missing."); return;
     }
@@ -38,10 +38,12 @@ export async function displayPage(index) {
         UI.showMessage("Error: Corrupted image data at page " + (index + 1));
         if (DOM.comicImage) DOM.comicImage.src = ""; return;
     }
-    if (previousObjectUrl) URL.revokeObjectURL(previousObjectUrl);
-    const newUrl = URL.createObjectURL(imageEntry.blob);
-    State.setCurrentObjectUrl(newUrl);
-    State.setPreviousObjectUrl(newUrl);
+
+    let newUrl = State.getCachedObjectUrl(imageEntry);
+    if (!newUrl) {
+        newUrl = URL.createObjectURL(imageEntry.blob);
+        State.addObjectUrl(imageEntry, newUrl);
+    }
 
     DOM.imageContainer.scrollLeft = 0;
     DOM.imageContainer.scrollTop = 0;

@@ -18,8 +18,6 @@ export function showView(viewName) {
 export function showUploadView() {
     showView('upload');
     State.resetAllState();
-    if (State.getState().currentObjectUrl) { URL.revokeObjectURL(State.getState().currentObjectUrl); State.setCurrentObjectUrl(null); }
-    if (State.getState().previousObjectUrl) { URL.revokeObjectURL(State.getState().previousObjectUrl); State.setPreviousObjectUrl(null); }
     if (DOM.comicImage) { DOM.comicImage.onerror = null; DOM.comicImage.src = ""; }
     updateUI();
     if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible');
