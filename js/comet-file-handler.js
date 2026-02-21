@@ -6,13 +6,32 @@ import { displayPage } from './comet-navigation.js';
 // Supported image extensions within archive files (includes AVIF and SVG)
 const IMAGE_REGEX = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
 
-// CDN worker URLs for lazy-loaded libraries
+// CDN URLs for optional libraries (loaded on-demand, not at startup)
+const PDFJS_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
 const PDFJS_WORKER_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+const LIBARCHIVE_URL = 'https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/libarchive.js';
 const LIBARCHIVE_WORKER_URL = 'https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/worker-bundle.js';
 
 // Initialization flags (each lib only needs setup once per session)
 let libarchiveInitialized = false;
 let pdfjsWorkerSet = false;
+
+// ---------------------------------------------------------------------------
+// Dynamic script loader — injects a <script> tag and resolves when loaded.
+// Safe to call multiple times for the same URL (skips if already present).
+// ---------------------------------------------------------------------------
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) {
+            resolve(); return; // already injected
+        }
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Failed to load: ${url}`));
+        document.head.appendChild(script);
+    });
+}
 
 // ---------------------------------------------------------------------------
 // Shared helpers
@@ -92,7 +111,8 @@ function flattenArchiveFiles(obj, prefix = '') {
 
 async function handleCbrFile(file) {
     UI.showMessage('Loading ' + file.name + '...');
-    if (typeof Archive === 'undefined') throw new Error('libarchive.js not loaded. Please check your internet connection.');
+    await loadScript(LIBARCHIVE_URL);
+    if (typeof Archive === 'undefined') throw new Error('libarchive.js failed to load.');
 
     if (!libarchiveInitialized) {
         Archive.init({ workerUrl: LIBARCHIVE_WORKER_URL });
@@ -116,7 +136,8 @@ async function handleCbrFile(file) {
 
 async function handlePdfFile(file) {
     UI.showMessage('Loading ' + file.name + '...');
-    if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js not loaded. Please check your internet connection.');
+    await loadScript(PDFJS_URL);
+    if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js failed to load.');
 
     if (!pdfjsWorkerSet) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
@@ -137,8 +158,7 @@ async function handlePdfFile(file) {
             name: `page_${paddedNum}.jpg`,
             blob: null,
             fileData: {
-                // eslint-disable-next-line no-dupe-keys
-                async async(type) {
+                async: async function (type) {
                     const page = await pdf.getPage(pageNum);
                     const viewport = page.getViewport({ scale: 2.0 });
                     const canvas = document.createElement('canvas');
