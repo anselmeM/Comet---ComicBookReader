@@ -1,0 +1,30 @@
+127.0.0.1 - - [21/Feb/2026 01:47:33] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:34] "GET /css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:34] "GET /css/global.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:34] "GET /css/index-specific.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/global-ui.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-reader.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/pwa-init.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-ui.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-event-setup.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-dom.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-state.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-keyboard-handler.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-mouse-handler.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-touch-handler.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-file-handler.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /js/comet-navigation.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /features.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /terms.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /pricing.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /support.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /privacy.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /css/static-pages.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] code 404, message File not found
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /Js/global-ui.js HTTP/1.1" 404 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] code 404, message File not found
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /Js/comet-reader.js HTTP/1.1" 404 -
+127.0.0.1 - - [21/Feb/2026 01:47:35] code 404, message File not found
+127.0.0.1 - - [21/Feb/2026 01:47:35] "GET /Js/pwa-init.js HTTP/1.1" 404 -

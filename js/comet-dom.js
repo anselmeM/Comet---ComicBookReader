@@ -29,6 +29,8 @@ export const uploadButtonHeaderMobile = document.getElementById('uploadButtonHea
 export const imageContainer = document.getElementById('imageContainer');
 // The actual <img> element where the comic page image will be rendered.
 export const comicImage = document.getElementById('comicImage');
+// The second <img> element for two-page spread.
+export const comicImage2 = document.getElementById('comicImage2');
 
 // SECTION: Reader View - HUD (Heads-Up Display) and Overlay Elements
 // Element to display page information (e.g., "Page 1 of 10").
@@ -49,6 +51,8 @@ export const closeMenuButton = document.getElementById('closeMenuButton');
 // SECTION: Reader View - Reader Mode and Zoom Controls
 // A toggle switch to enable/disable "manga mode" (e.g., right-to-left reading).
 export const mangaModeToggle = document.getElementById('mangaModeToggle');
+// A toggle switch to enable/disable "two-page spread" mode.
+export const twoPageToggle = document.getElementById('twoPageToggle');
 // A button within the menu panel to zoom in on the comic image.
 export const zoomInButtonPanel = document.getElementById('zoomInButtonPanel');
 // A button within the menu panel to zoom out of the comic image.

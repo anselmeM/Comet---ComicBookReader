@@ -115,6 +115,10 @@ export function setupEventListeners() {
     // Apply the selected manga mode (e.g., right-to-left reading).
     DOM.mangaModeToggle?.addEventListener('change', UI.applyMangaMode);
 
+    // When the state of the 'Two-Page Spread' toggle changes:
+    // Toggle the two-page display mode.
+    DOM.twoPageToggle?.addEventListener('change', UI.toggleTwoPageMode);
+
     // When the 'Zoom In' button in the panel is clicked:
     // Call the changeZoom function from the UI module with a positive zoom step.
     DOM.zoomInButtonPanel?.addEventListener('click', () => UI.changeZoom(State.ZOOM_STEP));
