@@ -1,5 +1,7 @@
 // js/comet-state.js
 
+import { UI as UI_CONSTANTS } from './comet-constants.js';
+
 // Core State
 let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
 let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, hudTimer = null;
@@ -12,16 +14,16 @@ let isSmartSplitActive = false;
 let isVerticalScrollActive = false;
 
 // Object URL Cache
-const OBJECT_URL_CACHE_LIMIT = 20;
+const OBJECT_URL_CACHE_LIMIT = UI_CONSTANTS.OBJECT_URL_CACHE_LIMIT;
 const objectUrlCache = new Map(); // imageEntry -> objectUrl
 
-// Constants
-export const ZOOM_STEP = 1.25;
-export const HUD_TOP_BAR_HEIGHT = '50px';
-export const BOUNDARY_MESSAGE_TIMEOUT = 2500;
-export const SWIPE_THRESHOLD = 50;
-export const VERTICAL_THRESHOLD = 75;
-export const DOUBLE_TAP_DELAY = 300; // Milliseconds to wait for a second tap
+// Constants (Re-exported from centralized constants for backward compatibility)
+export const ZOOM_STEP = UI_CONSTANTS.ZOOM_STEP;
+export const HUD_TOP_BAR_HEIGHT = UI_CONSTANTS.HUD_TOP_BAR_HEIGHT;
+export const BOUNDARY_MESSAGE_TIMEOUT = UI_CONSTANTS.BOUNDARY_MESSAGE_TIMEOUT;
+export const SWIPE_THRESHOLD = UI_CONSTANTS.SWIPE_THRESHOLD;
+export const VERTICAL_THRESHOLD = UI_CONSTANTS.VERTICAL_THRESHOLD;
+export const DOUBLE_TAP_DELAY = UI_CONSTANTS.DOUBLE_TAP_DELAY;
 
 // Swipe State
 let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;

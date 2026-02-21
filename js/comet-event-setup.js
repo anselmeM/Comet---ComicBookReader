@@ -13,22 +13,7 @@ import { saveSettings, saveFileSettings } from './comet-settings.js';
 import { toggleBookmark, clearBookmarks } from './comet-bookmarks.js';
 import { makeFileKey } from './comet-progress.js';
 import { storeHandle, openFileFromHandle, supportsFileSystemAccess } from './comet-library.js';
-
-const COMIC_FILE_PICKER_TYPES = [
-    {
-        description: 'Comic Files',
-        accept: {
-            'application/vnd.comicbook+zip': ['.cbz'],
-            'application/vnd.comicbook-rar': ['.cbr'],
-            'application/x-cbz': ['.cbz'],
-            'application/x-cbr': ['.cbr'],
-            'application/zip': ['.cbz'],
-            'application/x-zip-compressed': ['.cbz'],
-            'application/x-rar-compressed': ['.cbr'],
-            'application/pdf': ['.pdf'],
-        },
-    },
-];
+import { COMIC_FILE_PICKER_TYPES } from './comet-constants.js';
 
 /**
  * Sets up all application-wide event listeners.

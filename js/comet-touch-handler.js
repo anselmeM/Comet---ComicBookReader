@@ -3,6 +3,7 @@ import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
 import * as UI from './comet-ui.js';
 import * as Nav from './comet-navigation.js';
+import { UI as UI_CONSTANTS } from './comet-constants.js';
 
 // --- Touch State ---
 let touchState = 'IDLE'; // Possible states: IDLE, DOWN, PANNING, SWIPING
@@ -12,7 +13,7 @@ let initialScrollLeft = 0, initialScrollTop = 0;
 let singleTapTimeout = null;
 let lastTapTime = 0;
 
-const TAP_THRESHOLD = 10; // Max pixels moved to still be a tap
+const TAP_THRESHOLD = UI_CONSTANTS.TAP_THRESHOLD;
 
 // --- Action Handlers ---
 

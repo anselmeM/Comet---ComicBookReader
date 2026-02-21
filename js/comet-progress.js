@@ -2,8 +2,10 @@
 // Per-file reading progress, persisted to localStorage.
 // Files are identified by "filename:filesize" — stable without needing file paths.
 
-const PROGRESS_KEY = 'comet-progress';
-const MAX_HISTORY = 10;
+import { STORAGE_KEYS, UI } from './comet-constants.js';
+
+const PROGRESS_KEY = STORAGE_KEYS.PROGRESS;
+const MAX_HISTORY = UI.MAX_HISTORY;
 
 /** Returns a stable key for the given File object. */
 export function makeFileKey(file) {

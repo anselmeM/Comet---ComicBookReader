@@ -1,7 +1,9 @@
 // js/comet-bookmarks.js
 // Per-file bookmarks (favourite page indices), persisted to localStorage.
 
-const BOOKMARKS_KEY = 'comet-bookmarks';
+import { STORAGE_KEYS } from './comet-constants.js';
+
+const BOOKMARKS_KEY = STORAGE_KEYS.BOOKMARKS;
 
 function load() {
     try { return JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '{}'); }

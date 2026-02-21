@@ -3,9 +3,9 @@
 // Allows re-opening previously-read files without a new file picker dialog.
 // Falls back gracefully in browsers that don't support the File System Access API.
 
-const DB_NAME = 'comet-library';
-const STORE_NAME = 'handles';
-const DB_VERSION = 1;
+import { DB_CONFIG } from './comet-constants.js';
+
+const { NAME: DB_NAME, STORE_NAME, VERSION: DB_VERSION } = DB_CONFIG;
 
 /** Opens (or creates) the IndexedDB instance. */
 function openDb() {

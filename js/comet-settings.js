@@ -2,7 +2,9 @@
 // Centralised persistence layer. All user preferences are stored as a single
 // JSON object under SETTINGS_KEY in localStorage.
 
-const SETTINGS_KEY = 'comet-settings';
+import { STORAGE_KEYS } from './comet-constants.js';
+
+const SETTINGS_KEY = STORAGE_KEYS.SETTINGS;
 
 export const DEFAULTS = Object.freeze({
     mangaMode: false,

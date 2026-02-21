@@ -4,15 +4,7 @@ import * as State from './comet-state.js';
 import { displayPage } from './comet-navigation.js';
 import { makeFileKey, getProgress } from './comet-progress.js';
 import { loadFileSettings, applySettings } from './comet-settings.js';
-
-// Supported image extensions within archive files (includes AVIF and SVG)
-const IMAGE_REGEX = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
-
-// CDN URLs for optional libraries (loaded on-demand, not at startup)
-const PDFJS_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
-const PDFJS_WORKER_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-const LIBARCHIVE_URL = 'https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/libarchive.js';
-const LIBARCHIVE_WORKER_URL = 'https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/worker-bundle.js';
+import { IMAGE_REGEX, PDFJS_URL, PDFJS_WORKER_URL, LIBARCHIVE_URL, LIBARCHIVE_WORKER_URL } from './comet-constants.js';
 
 // Initialization flags (each lib only needs setup once per session)
 let libarchiveInitialized = false;
