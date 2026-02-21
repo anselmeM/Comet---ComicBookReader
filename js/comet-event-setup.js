@@ -35,7 +35,16 @@ export function setupEventListeners() {
                 const [fileHandle] = await window.showOpenFilePicker({
                     types: [{
                         description: 'Comic Files',
-                        accept: { 'application/octet-stream': ['.cbz', '.cbr', '.pdf'] }
+                        accept: {
+                            'application/vnd.comicbook+zip': ['.cbz'],
+                            'application/vnd.comicbook-rar': ['.cbr'],
+                            'application/x-cbz': ['.cbz'],
+                            'application/x-cbr': ['.cbr'],
+                            'application/zip': ['.cbz'],
+                            'application/x-zip-compressed': ['.cbz'],
+                            'application/x-rar-compressed': ['.cbr'],
+                            'application/pdf': ['.pdf']
+                        }
                     }],
                     multiple: false
                 });
