@@ -1,6 +1,8 @@
 // --- Configuration ---
-const CACHE_NAME = 'comet-reader-cache-v7'; // Bumped: includes all new JS modules
+const CACHE_NAME = 'comet-reader-cache-v8'; // Bumped: PDF JS support for offline
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+const PDFJS_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+const PDFJS_WORKER_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 
 // List of files that constitute your "App Shell" - must be available offline.
 const urlsToCache = [
@@ -38,6 +40,8 @@ const urlsToCache = [
   './js/pwa-init.js',
   // External CDN
   JSZIP_URL,
+  PDFJS_URL,
+  PDFJS_WORKER_URL,
   // Icons
   './icons/android-chrome-192x192.png',
   './icons/android-chrome-512x512.png',
