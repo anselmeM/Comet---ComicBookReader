@@ -13,7 +13,6 @@ let singleTapTimeout = null;
 let lastTapTime = 0;
 
 const TAP_THRESHOLD = 10; // Max pixels moved to still be a tap
-const DOUBLE_TAP_DELAY = 300; // ms for double tap
 
 // --- Action Handlers ---
 
@@ -184,7 +183,7 @@ function handleTouchEnd(event) {
          console.log("Touch End: Processing Tap...");
          event.preventDefault(); // *Crucial* - Prevent ghost clicks!
 
-         if ((endTime - lastTapTime) < DOUBLE_TAP_DELAY) {
+         if ((endTime - lastTapTime) < State.DOUBLE_TAP_DELAY) {
              // DOUBLE TAP!
              console.log("Touch End: DOUBLE TAP!");
              clearTimeout(singleTapTimeout); // Cancel any pending single tap
@@ -202,7 +201,7 @@ function handleTouchEnd(event) {
                      doSingleTap(tapCoords);
                      lastTapTime = 0; // Reset after it runs
                  }
-             }, DOUBLE_TAP_DELAY + 50); // Add a small buffer to delay
+             }, State.DOUBLE_TAP_DELAY + 50); // Add a small buffer to delay
          }
          return;
     }
