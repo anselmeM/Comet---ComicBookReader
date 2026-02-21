@@ -30,7 +30,6 @@ export function showUploadView() {
 }
 
 // --- Message Handling ---
-// ... (showMessage, hideMessage - unchanged) ...
 export function showMessage(msg) {
     if (DOM.readerMessage) {
         DOM.readerMessage.querySelector('span').textContent = msg;
@@ -42,6 +41,47 @@ export function hideMessage() {
     if (DOM.readerMessage) {
         DOM.readerMessage.classList.add('hidden');
         DOM.readerMessage.classList.remove('flex');
+    }
+}
+
+// --- NEW: Enhanced Error Notification ---
+/**
+ * Displays a robust error notification to the user.
+ * Currently reuses the corrupt banner slot but could be upgraded to a dedicated toast/modal.
+ * @param {string} title - Short error summary (e.g. "File Error")
+ * @param {string} message - Detailed description
+ * @param {boolean} isTransient - If true, auto-hides after a few seconds
+ */
+export function showError(title, message, isTransient = false) {
+    console.error(`[Comet Error] ${title}: ${message}`);
+
+    // Reuse the corrupt banner for now, but style it as a general error
+    const banner = document.getElementById('corruptBanner');
+    const text = document.getElementById('corruptBannerText');
+
+    if (banner && text) {
+        text.textContent = ''; // Clear previous content
+        const strong = document.createElement('strong');
+        strong.textContent = title;
+        text.appendChild(strong);
+        text.appendChild(document.createTextNode(': ' + message));
+
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+
+        // Ensure dismiss button works
+        const dismiss = document.getElementById('corruptBannerDismiss');
+        if (dismiss) {
+            dismiss.onclick = () => banner.classList.add('hidden');
+        }
+
+        if (isTransient) {
+            setTimeout(() => banner.classList.add('hidden'), 5000);
+        }
+    } else {
+        // Fallback to simple message if banner missing
+        showMessage(`${title}: ${message}`);
+        if (isTransient) setTimeout(hideMessage, 5000);
     }
 }
 

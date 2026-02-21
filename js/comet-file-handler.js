@@ -46,6 +46,10 @@ function closeMobileMenu() {
  * @param {Array} imageFiles
  */
 async function finalizeAndDisplay(imageFiles) {
+    if (imageFiles.length === 0) {
+        throw new Error('No valid images found in the archive.');
+    }
+
     imageFiles.sort((a, b) =>
         a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
     );
@@ -54,16 +58,12 @@ async function finalizeAndDisplay(imageFiles) {
     State.setImageBlobs([...imageFiles]);
     State.setCurrentImageIndex(0);
 
-    if (State.getState().imageBlobs.length > 0) {
-        State.setIsMangaModeActive(document.getElementById('mangaModeToggle')?.checked || false);
+    State.setIsMangaModeActive(document.getElementById('mangaModeToggle')?.checked || false);
 
-        if (State.getIsVerticalScrollActive()) {
-            UI.renderVerticalScroll();
-        } else {
-            await displayPage(0);
-        }
+    if (State.getIsVerticalScrollActive()) {
+        UI.renderVerticalScroll();
     } else {
-        throw new Error('No images found in the file.');
+        await displayPage(0);
     }
 }
 
@@ -73,11 +73,24 @@ async function finalizeAndDisplay(imageFiles) {
 
 async function handleCbzFile(file) {
     UI.showSkeleton();
-    UI.showMessage('Loading ' + file.name + '...');
-    const arrayBuffer = await file.arrayBuffer();
+    UI.showMessage('Parsing CBZ...');
+
+    let arrayBuffer;
+    try {
+        arrayBuffer = await file.arrayBuffer();
+    } catch (e) {
+        throw new Error('Failed to read file. It might be corrupt or inaccessible.');
+    }
+
     if (!window.JSZip) throw new Error('JSZip library not loaded.');
 
-    const zip = await JSZip.loadAsync(arrayBuffer);
+    let zip;
+    try {
+        zip = await JSZip.loadAsync(arrayBuffer);
+    } catch (e) {
+        throw new Error('Invalid or corrupt CBZ file.');
+    }
+
     const imageFiles = [];
     for (const [filename, fileData] of Object.entries(zip.files)) {
         if (!fileData.dir && IMAGE_REGEX.test(filename) && !filename.startsWith('__MACOSX/')) {
@@ -130,17 +143,34 @@ function flattenArchiveFiles(obj, prefix = '') {
 
 async function handleCbrFile(file) {
     UI.showSkeleton();
-    UI.showMessage('Loading ' + file.name + '...');
-    await loadScript(LIBARCHIVE_URL);
-    if (typeof Archive === 'undefined') throw new Error('libarchive.js failed to load.');
+    UI.showMessage('Parsing CBR...');
+
+    try {
+        await loadScript(LIBARCHIVE_URL);
+    } catch (e) {
+        throw new Error('Failed to load RAR extraction library. Check internet connection.');
+    }
+
+    if (typeof Archive === 'undefined') throw new Error('libarchive.js failed to initialize.');
 
     if (!libarchiveInitialized) {
         Archive.init({ workerUrl: LIBARCHIVE_WORKER_URL });
         libarchiveInitialized = true;
     }
 
-    const archive = await Archive.open(file);
-    const extracted = await archive.extractFiles();
+    let archive;
+    try {
+        archive = await Archive.open(file);
+    } catch (e) {
+        throw new Error('Failed to open CBR file. It might be corrupt or password protected.');
+    }
+
+    let extracted;
+    try {
+        extracted = await archive.extractFiles();
+    } catch (e) {
+        throw new Error('Failed to extract files from archive.');
+    }
 
     // File objects extend Blob, so they can be used directly as blobs
     const imageFiles = flattenArchiveFiles(extracted)
@@ -156,8 +186,14 @@ async function handleCbrFile(file) {
 
 async function handlePdfFile(file) {
     UI.showSkeleton();
-    UI.showMessage('Loading ' + file.name + '...');
-    await loadScript(PDFJS_URL);
+    UI.showMessage('Processing PDF...');
+
+    try {
+        await loadScript(PDFJS_URL);
+    } catch (e) {
+        throw new Error('Failed to load PDF library. Check internet connection.');
+    }
+
     if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js failed to load.');
 
     if (!pdfjsWorkerSet) {
@@ -165,14 +201,24 @@ async function handlePdfFile(file) {
         pdfjsWorkerSet = true;
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let arrayBuffer;
+    try {
+        arrayBuffer = await file.arrayBuffer();
+    } catch (e) {
+        throw new Error('Failed to read PDF file.');
+    }
+
+    let pdf;
+    try {
+        pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    } catch (e) {
+        throw new Error('Invalid or corrupt PDF file.');
+    }
+
     const pageCount = pdf.numPages;
     const imageFiles = [];
 
     // Create a lazy imageEntry for each PDF page.
-    // The fileData.async() renders the page on-demand (compatible with the
-    // existing lazy-loading system in comet-navigation.js).
     for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
         const paddedNum = String(pageNum).padStart(4, '0');
         imageFiles.push({
@@ -213,8 +259,7 @@ export async function handleFile(file) {
     const supported = ['cbz', 'cbr', 'pdf'];
 
     if (!file || !supported.includes(ext)) {
-        UI.showMessage('Error: Please select a valid .cbz, .cbr, or .pdf file.');
-        setTimeout(UI.hideMessage, 3000);
+        UI.showError('Unsupported File', 'Please select a valid .cbz, .cbr, or .pdf file.', true);
         return;
     }
 
@@ -240,7 +285,7 @@ export async function handleFile(file) {
         if (corruptCount > 0) UI.showCorruptBanner(corruptCount);
     } catch (err) {
         console.error('Error processing file:', err);
-        UI.showMessage('Error: ' + err.message);
-        setTimeout(() => { UI.hideMessage(); UI.showView('upload'); }, 3000);
+        UI.showError('Open Failed', err.message);
+        setTimeout(() => { UI.hideMessage(); UI.showView('upload'); }, 4000);
     }
 }

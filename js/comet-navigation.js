@@ -106,7 +106,7 @@ function prefetchAdjacentPages(currentIndex) {
 export async function displayPage(index) {
     let { imageBlobs, currentImageIndex, isTwoPageSpreadActive } = State.getState();
     if (!imageBlobs || imageBlobs.length === 0 || !DOM.comicImage || !DOM.imageContainer) {
-        UI.showMessage("No images to display or essential elements missing."); return;
+        UI.showError("Display Error", "No images to display or essential elements missing.", true); return;
     }
 
     // Clamp index
@@ -127,8 +127,7 @@ export async function displayPage(index) {
 
     // --- Handle corrupted primary entry: skip and advance ---
     if (!imageEntry1 || !imageEntry1.blob) {
-        UI.showMessage(`Skipping corrupted page ${index + 1}, trying next…`);
-        setTimeout(UI.hideMessage, State.BOUNDARY_MESSAGE_TIMEOUT);
+        UI.showError('Image Error', `Skipping corrupted page ${index + 1}, trying next…`, true);
         if (DOM.comicImage) DOM.comicImage.src = "";
 
         // Try to advance past the corrupt page
@@ -215,7 +214,7 @@ export async function displayPage(index) {
         UI.hideSkeleton();
         UI.hideMessage();
         DOM.comicImage.style.opacity = 1; // Ensure broken icon is visible instead of a black screen
-        UI.showMessage(`Error loading page ${index + 1} (${failedImageName}).`);
+        UI.showError('Rendering Error', `Failed to render page ${index + 1} (${failedImageName}).`, true);
     };
 
     // Trigger the load
