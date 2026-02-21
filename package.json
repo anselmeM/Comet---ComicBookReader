@@ -4,7 +4,7 @@
   "description": "Comet - Comic Book Reader PWA",
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.js"
+    "test": "node --test"
   },
   "keywords": [
     "pwa",
