@@ -14,6 +14,22 @@ import { toggleBookmark, clearBookmarks } from './comet-bookmarks.js';
 import { makeFileKey } from './comet-progress.js';
 import { storeHandle, openFileFromHandle, supportsFileSystemAccess } from './comet-library.js';
 
+const COMIC_FILE_PICKER_TYPES = [
+    {
+        description: 'Comic Files',
+        accept: {
+            'application/vnd.comicbook+zip': ['.cbz'],
+            'application/vnd.comicbook-rar': ['.cbr'],
+            'application/x-cbz': ['.cbz'],
+            'application/x-cbr': ['.cbr'],
+            'application/zip': ['.cbz'],
+            'application/x-zip-compressed': ['.cbz'],
+            'application/x-rar-compressed': ['.cbr'],
+            'application/pdf': ['.pdf'],
+        },
+    },
+];
+
 /**
  * Sets up all application-wide event listeners.
  * This function is intended to be called once during application initialization.
@@ -33,19 +49,7 @@ export function setupEventListeners() {
         if (supportsFileSystemAccess) {
             try {
                 const [fileHandle] = await window.showOpenFilePicker({
-                    types: [{
-                        description: 'Comic Files',
-                        accept: {
-                            'application/vnd.comicbook+zip': ['.cbz'],
-                            'application/vnd.comicbook-rar': ['.cbr'],
-                            'application/x-cbz': ['.cbz'],
-                            'application/x-cbr': ['.cbr'],
-                            'application/zip': ['.cbz'],
-                            'application/x-zip-compressed': ['.cbz'],
-                            'application/x-rar-compressed': ['.cbr'],
-                            'application/pdf': ['.pdf']
-                        }
-                    }],
+                    types: COMIC_FILE_PICKER_TYPES,
                     multiple: false
                 });
                 const file = await fileHandle.getFile();
