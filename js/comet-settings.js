@@ -7,6 +7,7 @@ const SETTINGS_KEY = 'comet-settings';
 export const DEFAULTS = Object.freeze({
     mangaMode: false,
     twoPage: false,
+    smartCover: false,
     fitMode: 'best',
     pageBg: 'black',
     prefetchDepth: 2,
@@ -57,6 +58,14 @@ export function applySettings(DOM, State, UI) {
     // --- Two-Page Spread ---
     if (DOM.twoPageToggle) DOM.twoPageToggle.checked = s.twoPage;
     State.setIsTwoPageSpreadActive(s.twoPage);
+
+    // --- Smart Cover ---
+    const smartCoverToggle = document.getElementById('smartCoverToggle');
+    if (smartCoverToggle) {
+        smartCoverToggle.checked = s.smartCover;
+        smartCoverToggle.disabled = !s.twoPage; // only relevant when two-page is on
+    }
+    State.setIsSmartCoverActive(s.smartCover);
 
     // --- Fit Mode ---
     // Pre-select the correct radio without triggering a full re-render

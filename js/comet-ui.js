@@ -69,7 +69,6 @@ export function toggleHUD() { (DOM.hudOverlay && DOM.hudOverlay.classList.contai
 export function showMenuPanel() {
     if (DOM.menuPanel) {
         DOM.menuPanel.classList.add('visible');
-        // Move keyboard focus into the panel for accessibility
         const first = DOM.menuPanel.querySelector(
             'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
@@ -77,11 +76,52 @@ export function showMenuPanel() {
     }
     hideHUD(0);
     renderBookmarkList();
+    renderTableOfContents();
 }
 export function hideMenuPanel() {
     if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible');
-    // Return focus to the menu button that opened the panel
     DOM.menuButton?.focus();
+}
+
+// --- Jump-to-Page Input ---
+export function showPageJumpInput() {
+    const indicator = document.getElementById('pageIndicatorHud');
+    const input = document.getElementById('pageJumpInput');
+    if (!indicator || !input) return;
+    const { currentImageIndex, imageBlobs } = State.getState();
+    input.max = String(imageBlobs.length);
+    input.value = String(currentImageIndex + 1);
+    indicator.classList.add('hidden');
+    input.classList.remove('hidden');
+    input.focus();
+    input.select();
+}
+export function hidePageJumpInput() {
+    const indicator = document.getElementById('pageIndicatorHud');
+    const input = document.getElementById('pageJumpInput');
+    if (!indicator || !input) return;
+    input.classList.add('hidden');
+    indicator.classList.remove('hidden');
+}
+
+// --- Fullscreen ---
+export function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err =>
+            console.warn('Fullscreen request failed:', err)
+        );
+    } else {
+        document.exitFullscreen();
+    }
+}
+export function updateFullscreenIcon() {
+    const btn = document.getElementById('fullscreenButton');
+    if (!btn) return;
+    const isFs = !!document.fullscreenElement;
+    btn.innerHTML = isFs
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>`;
+    btn.setAttribute('aria-label', isFs ? 'Exit Fullscreen' : 'Enter Fullscreen');
 }
 
 
@@ -275,6 +315,37 @@ export function hideCorruptBanner() {
     document.getElementById('corruptBanner')?.classList.add('hidden');
 }
 
+/**
+ * Renders the Table of Contents (from ComicInfo.xml) in the Options panel.
+ * The section is shown only when chapters are present.
+ */
+export function renderTableOfContents() {
+    const section = document.getElementById('tocSection');
+    const list = document.getElementById('tocList');
+    if (!section || !list) return;
+    const toc = State.getTableOfContents();
+    if (!toc || toc.length === 0) { section.classList.add('hidden'); return; }
+    section.classList.remove('hidden');
+    list.innerHTML = toc.map(entry =>
+        '<button class="toc-item w-full text-left px-4 py-2 text-sm text-[#0d141c] dark:text-[#E7EDF4] ' +
+        'hover:bg-[#e7edf4] dark:hover:bg-gray-700 transition-colors" ' +
+        'data-index="' + entry.index + '">' +
+        '<span class="font-medium">' + entry.label + '</span>' +
+        '<span class="text-xs text-[#49739c] dark:text-gray-400 ml-2">p.' + (entry.index + 1) + '</span>' +
+        '</button>'
+    ).join('');
+
+    // Wire click handlers
+    list.querySelectorAll('.toc-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.index, 10);
+            if (!isNaN(idx)) {
+                displayPage(idx);
+                hideMenuPanel();
+            }
+        });
+    });
+}
 export function applyPageBackground(color) {
     const bg = { black: '#111111', gray: '#555555', white: '#ffffff' };
     if (DOM.imageContainer) {

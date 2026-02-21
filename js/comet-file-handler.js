@@ -88,6 +88,26 @@ async function handleCbzFile(file) {
         }
     }
     await finalizeAndDisplay(imageFiles);
+
+    // --- Parse ComicInfo.xml for Table of Contents ---
+    const comicInfoEntry = Object.entries(zip.files).find(
+        ([name]) => name.toLowerCase().endsWith('comicinfo.xml') && !name.startsWith('__MACOSX/')
+    );
+    if (comicInfoEntry) {
+        try {
+            const xmlText = await comicInfoEntry[1].async('string');
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            const pages = [...xmlDoc.querySelectorAll('Page[Bookmark]')];
+            const toc = pages.map(p => ({
+                label: p.getAttribute('Bookmark'),
+                index: parseInt(p.getAttribute('Image') ?? '0', 10)
+            })).filter(e => !isNaN(e.index));
+            State.setTableOfContents(toc);
+        } catch (e) {
+            console.warn('[CoC] Failed to parse ComicInfo.xml:', e);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------

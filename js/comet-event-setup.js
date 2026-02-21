@@ -163,6 +163,21 @@ export function setupEventListeners() {
     DOM.twoPageToggle?.addEventListener('change', () => {
         UI.toggleTwoPageMode();
         saveSettings({ twoPage: DOM.twoPageToggle.checked });
+        // Smart cover is only valid if two-page is active
+        const smartRow = document.getElementById('smartCoverRow');
+        const smartToggle = document.getElementById('smartCoverToggle');
+        if (smartRow && smartToggle) {
+            smartRow.classList.toggle('opacity-50', !DOM.twoPageToggle.checked);
+            smartToggle.disabled = !DOM.twoPageToggle.checked;
+        }
+    });
+
+    // When the state of the 'Smart Cover' toggle changes:
+    document.getElementById('smartCoverToggle')?.addEventListener('change', (e) => {
+        State.setIsSmartCoverActive(e.target.checked);
+        saveSettings({ smartCover: e.target.checked });
+        const { currentImageIndex } = State.getState();
+        if (currentImageIndex !== undefined) Nav.displayPage(currentImageIndex);
     });
 
     // When the 'Zoom In' button in the panel is clicked:
@@ -221,6 +236,31 @@ export function setupEventListeners() {
 
     // Corrupt-page banner dismiss button
     document.getElementById('corruptBannerDismiss')?.addEventListener('click', () => UI.hideCorruptBanner());
+
+    // Jump-to-page input events
+    const jumpInput = document.getElementById('pageJumpInput');
+    const indicator = document.getElementById('pageIndicatorHud');
+    indicator?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        UI.showPageJumpInput();
+    });
+    jumpInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const val = parseInt(jumpInput.value, 10);
+            const total = State.getState().imageBlobs.length;
+            if (!isNaN(val) && total > 0) {
+                Nav.displayPage(Math.max(0, Math.min(total - 1, val - 1)));
+            }
+            UI.hidePageJumpInput();
+        } else if (e.key === 'Escape') {
+            UI.hidePageJumpInput();
+        }
+    });
+    jumpInput?.addEventListener('blur', () => UI.hidePageJumpInput());
+
+    // Fullscreen events
+    document.getElementById('fullscreenButton')?.addEventListener('click', () => UI.toggleFullscreen());
+    document.addEventListener('fullscreenchange', () => UI.updateFullscreenIcon());
 
     // Swipe left on the options panel to close it
     let panelSwipeStartX = 0;

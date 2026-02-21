@@ -71,9 +71,9 @@ export function handleKeyDown(event) {
             }
             handled = true;
             break;
-        case 'f': // Add 'f' for 'best' fit maybe?
+        case 'f':
         case 'F':
-            UI.applyFitMode('best');
+            UI.toggleFullscreen();
             handled = true;
             break;
         case 'b':

@@ -97,9 +97,10 @@ export async function displayPage(index) {
         State.addObjectUrl(imageEntry1, url1);
     }
 
-    // --- Load Secondary Image (if Two Page Mode) ---
+    // --- Load Secondary Image (if Two Page Mode, and not a smart-cover solo page) ---
     let url2 = null;
-    if (isTwoPageSpreadActive && index + 1 < imageBlobs.length) {
+    const isSoloCoverPage = State.getIsSmartCoverActive() && index === 0;
+    if (isTwoPageSpreadActive && !isSoloCoverPage && index + 1 < imageBlobs.length) {
         const imageEntry2 = await loadImageBlob(index + 1);
         if (State.getState().currentImageIndex !== index) return; // Check navigation again
 
@@ -163,30 +164,34 @@ export async function displayPage(index) {
 
 export function nextPage() {
     const { imageBlobs, currentImageIndex, isTwoPageSpreadActive } = State.getState();
-    const step = isTwoPageSpreadActive ? 2 : 1;
+    const smartCover = State.getIsSmartCoverActive();
+    // When smart cover is on and we're on the cover, always step by 1 to land on page 1
+    const step = (isTwoPageSpreadActive && !(smartCover && currentImageIndex === 0)) ? 2 : 1;
 
     if (imageBlobs.length > 0 && currentImageIndex + step < imageBlobs.length) {
         displayPage(currentImageIndex + step);
     } else if (imageBlobs.length > 0 && isTwoPageSpreadActive && currentImageIndex + 1 < imageBlobs.length) {
-        UI.showMessage("You are at the end.");
+        UI.showMessage('You are at the end.');
         setTimeout(UI.hideMessage, State.BOUNDARY_MESSAGE_TIMEOUT);
     } else if (imageBlobs.length > 0) {
-        UI.showMessage("You are at the end.");
+        UI.showMessage('You are at the end.');
         setTimeout(UI.hideMessage, State.BOUNDARY_MESSAGE_TIMEOUT);
     }
 }
 
 export function prevPage() {
     const { imageBlobs, currentImageIndex, isTwoPageSpreadActive } = State.getState();
+    const smartCover = State.getIsSmartCoverActive();
     const step = isTwoPageSpreadActive ? 2 : 1;
 
     if (imageBlobs.length > 0 && currentImageIndex - step >= 0) {
-        displayPage(currentImageIndex - step);
+        // If smart cover is on and we'd land on page 0 via a 2-step, land on 1 instead
+        const target = currentImageIndex - step;
+        displayPage(smartCover && isTwoPageSpreadActive && target < 1 && currentImageIndex > 1 ? 1 : target);
     } else if (imageBlobs.length > 0 && currentImageIndex > 0) {
-        // If step would go below 0, go to page 0
         displayPage(0);
     } else if (imageBlobs.length > 0) {
-        UI.showMessage("You are at the beginning.");
+        UI.showMessage('You are at the beginning.');
         setTimeout(UI.hideMessage, State.BOUNDARY_MESSAGE_TIMEOUT);
     }
 }

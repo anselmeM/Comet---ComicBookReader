@@ -241,7 +241,14 @@
                         <path d="M19 12H5" />
                     </svg>
                 </button>
-                <span id="pageIndicatorHud" class="text-sm font-medium">0 / 0</span>
+                <div class="relative flex items-center justify-center min-w-16">
+                    <span id="pageIndicatorHud"
+                        class="text-sm font-medium cursor-pointer hover:text-[#3d98f4] transition-colors"
+                        title="Jump to page">0 / 0</span>
+                    <input id="pageJumpInput" type="number"
+                        class="hidden absolute inset-0 w-full bg-transparent text-center text-sm font-medium focus:outline-none"
+                        min="1">
+                </div>
                 <div class="flex items-center gap-1">
                     <!-- Bookmark toggle button -->
                     <button id="bookmarkButton" class="hud-icon" aria-label="Bookmark this page">
@@ -253,6 +260,16 @@
                         <svg id="bookmarkIconFilled" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                             viewBox="0 0 24 24" fill="#f59e0b" class="hidden">
                             <path d="M5 2h14a1 1 0 0 1 1 1v18l-7-3-7 3V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </button>
+                    <!-- Fullscreen button -->
+                    <button id="fullscreenButton" class="hud-icon" aria-label="Enter Fullscreen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
                         </svg>
                     </button>
                     <button id="menuButton" class="hud-icon" aria-label="Open Menu"> <svg
@@ -294,6 +311,18 @@
                     <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Display two pages side-by-side</p>
                 </div>
                 <label class="toggle-label"><input type="checkbox" id="twoPageToggle" />
+                    <div class="toggle-bg dark:bg-gray-600">
+                        <div class="toggle-switch"></div>
+                    </div>
+                </label>
+            </div>
+            <div id="smartCoverRow"
+                class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between opacity-50 transition-opacity">
+                <div class="flex flex-col justify-center grow mr-2">
+                    <p class="text-[#0d141c] dark:text-[#E7EDF4] text-base font-medium">Smart Cover</p>
+                    <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Treat first page as solo cover</p>
+                </div>
+                <label class="toggle-label"><input type="checkbox" id="smartCoverToggle" disabled />
                     <div class="toggle-bg dark:bg-gray-600">
                         <div class="toggle-switch"></div>
                     </div>
@@ -350,6 +379,10 @@
             <span class="text-[#0d141c] dark:text-[#E7EDF4] text-sm font-semibold w-4 text-center">
                 <span id="prefetchLabel">2</span>
             </span>
+        </div>
+        <div id="tocSection" class="hidden">
+            <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-3 pb-2">Chapters</h3>
+            <div id="tocList" class="flex flex-col"></div>
         </div>
         <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-3 pb-2">Bookmarks</h3>
         <div id="bookmarkList" class="flex flex-col"></div>

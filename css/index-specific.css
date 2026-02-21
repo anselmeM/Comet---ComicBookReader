@@ -99,6 +99,19 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
+#pageJumpInput {
+  color: inherit;
+  font-family: inherit;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+#pageJumpInput::-webkit-outer-spin-button,
+#pageJumpInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 #pageIndicatorHud {
   font-size: 0.875rem;
 }

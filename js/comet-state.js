@@ -6,6 +6,8 @@ let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, 
 let prefetchDepth = 2;
 let currentFileKey = '', currentFileName = '';
 let corruptPageCount = 0;
+let tableOfContents = [];
+let isSmartCoverActive = false;
 
 // Object URL Cache
 const OBJECT_URL_CACHE_LIMIT = 20;
@@ -63,6 +65,10 @@ export function getCurrentFileName() { return currentFileName; }
 export function setCurrentFile(key, name) { currentFileKey = key; currentFileName = name; }
 export function getCorruptPageCount() { return corruptPageCount; }
 export function incrementCorruptPageCount() { corruptPageCount++; }
+export function getTableOfContents() { return tableOfContents; }
+export function setTableOfContents(toc) { tableOfContents = Array.isArray(toc) ? toc : []; }
+export function getIsSmartCoverActive() { return isSmartCoverActive; }
+export function setIsSmartCoverActive(v) { isSmartCoverActive = !!v; }
 export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
 export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
 export function setIsPotentialSwipe(potential) { isPotentialSwipe = potential; }
@@ -149,5 +155,7 @@ export function resetAllState() {
     clearTapTimeout();
     currentFileKey = ''; currentFileName = '';
     corruptPageCount = 0;
+    tableOfContents = [];
+    // Note: isSmartCoverActive is intentionally NOT reset — it's a user preference
     // prefetchDepth is intentionally NOT reset — it's a user preference
 }
