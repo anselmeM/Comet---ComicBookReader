@@ -1,0 +1,16 @@
+{
+  "name": "comet-reader",
+  "version": "1.0.0",
+  "description": "Comet - Comic Book Reader PWA",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "pwa",
+    "comic-reader",
+    "cbz"
+  ],
+  "author": "",
+  "license": "MIT"
+}
