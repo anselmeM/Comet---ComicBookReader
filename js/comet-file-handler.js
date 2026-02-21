@@ -3,7 +3,22 @@ import * as UI from './comet-ui.js';
 import * as State from './comet-state.js';
 import { displayPage } from './comet-navigation.js';
 
-export async function handleFile(file) {
+// Supported image extensions within archive files (includes AVIF and SVG)
+const IMAGE_REGEX = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
+
+// CDN worker URLs for lazy-loaded libraries
+const PDFJS_WORKER_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+const LIBARCHIVE_WORKER_URL = 'https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/worker-bundle.js';
+
+// Initialization flags (each lib only needs setup once per session)
+let libarchiveInitialized = false;
+let pdfjsWorkerSet = false;
+
+// ---------------------------------------------------------------------------
+// Shared helpers
+// ---------------------------------------------------------------------------
+
+function closeMobileMenu() {
     const mobMenu = document.getElementById('mobileMenu');
     const hamButton = document.getElementById('hamburgerButton');
     if (mobMenu && mobMenu.classList.contains('open') && hamButton) {
@@ -11,38 +26,164 @@ export async function handleFile(file) {
         hamButton.setAttribute('aria-expanded', 'false');
         hamButton.innerHTML = `<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>`;
     }
+}
 
-    if (!file || !file.name.toLowerCase().endsWith('.cbz')) {
-        UI.showMessage('Error: Please select a valid .cbz file.');
-        setTimeout(UI.hideMessage, 3000); return;
+/**
+ * Sorts, stores, and displays an array of image entries.
+ * @param {Array} imageFiles
+ */
+async function finalizeAndDisplay(imageFiles) {
+    imageFiles.sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+    );
+
+    State.setOriginalImageBlobs([...imageFiles]);
+    State.setImageBlobs([...imageFiles]);
+    State.setCurrentImageIndex(0);
+
+    if (State.getState().imageBlobs.length > 0) {
+        State.setIsMangaModeActive(document.getElementById('mangaModeToggle')?.checked || false);
+        if (State.getState().isMangaModeActive) State.reverseImageBlobs();
+        await displayPage(0);
+    } else {
+        throw new Error('No images found in the file.');
     }
-    UI.showView('reader');
+}
+
+// ---------------------------------------------------------------------------
+// CBZ handler (ZIP-based, uses JSZip — already loaded globally)
+// ---------------------------------------------------------------------------
+
+async function handleCbzFile(file) {
     UI.showMessage('Loading ' + file.name + '...');
-    try {
-        const arrayBuffer = await file.arrayBuffer();
-        if (!window.JSZip) throw new Error("JSZip library not loaded.");
-        const zip = await JSZip.loadAsync(arrayBuffer);
-        let imageFiles = [];
-        for (const [filename, fileData] of Object.entries(zip.files)) {
-            if (!fileData.dir && /\.(jpe?g|png|gif|webp)$/i.test(filename) && !filename.startsWith('__MACOSX/')) {
-                imageFiles.push({ name: filename, fileData, blob: null });
+    const arrayBuffer = await file.arrayBuffer();
+    if (!window.JSZip) throw new Error('JSZip library not loaded.');
+
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const imageFiles = [];
+    for (const [filename, fileData] of Object.entries(zip.files)) {
+        if (!fileData.dir && IMAGE_REGEX.test(filename) && !filename.startsWith('__MACOSX/')) {
+            imageFiles.push({ name: filename, fileData, blob: null });
+        }
+    }
+    await finalizeAndDisplay(imageFiles);
+}
+
+// ---------------------------------------------------------------------------
+// CBR handler (RAR-based, uses libarchive.js loaded from CDN)
+// ---------------------------------------------------------------------------
+
+/**
+ * Recursively flattens the nested object returned by Archive.extractFiles()
+ * into a flat array of { name, file } pairs.
+ */
+function flattenArchiveFiles(obj, prefix = '') {
+    const result = [];
+    for (const [key, val] of Object.entries(obj)) {
+        const path = prefix ? `${prefix}/${key}` : key;
+        if (val instanceof File) {
+            result.push({ name: path, file: val });
+        } else if (val && typeof val === 'object') {
+            result.push(...flattenArchiveFiles(val, path));
+        }
+    }
+    return result;
+}
+
+async function handleCbrFile(file) {
+    UI.showMessage('Loading ' + file.name + '...');
+    if (typeof Archive === 'undefined') throw new Error('libarchive.js not loaded. Please check your internet connection.');
+
+    if (!libarchiveInitialized) {
+        Archive.init({ workerUrl: LIBARCHIVE_WORKER_URL });
+        libarchiveInitialized = true;
+    }
+
+    const archive = await Archive.open(file);
+    const extracted = await archive.extractFiles();
+
+    // File objects extend Blob, so they can be used directly as blobs
+    const imageFiles = flattenArchiveFiles(extracted)
+        .filter(({ name }) => IMAGE_REGEX.test(name) && !name.startsWith('__MACOSX/'))
+        .map(({ name, file: blob }) => ({ name, blob, fileData: null }));
+
+    await finalizeAndDisplay(imageFiles);
+}
+
+// ---------------------------------------------------------------------------
+// PDF handler (uses pdf.js loaded from CDN, renders pages lazily to canvas)
+// ---------------------------------------------------------------------------
+
+async function handlePdfFile(file) {
+    UI.showMessage('Loading ' + file.name + '...');
+    if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js not loaded. Please check your internet connection.');
+
+    if (!pdfjsWorkerSet) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+        pdfjsWorkerSet = true;
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pageCount = pdf.numPages;
+    const imageFiles = [];
+
+    // Create a lazy imageEntry for each PDF page.
+    // The fileData.async() renders the page on-demand (compatible with the
+    // existing lazy-loading system in comet-navigation.js).
+    for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
+        const paddedNum = String(pageNum).padStart(4, '0');
+        imageFiles.push({
+            name: `page_${paddedNum}.jpg`,
+            blob: null,
+            fileData: {
+                // eslint-disable-next-line no-dupe-keys
+                async async(type) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 2.0 });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    const ctx = canvas.getContext('2d');
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    return new Promise((resolve, reject) => {
+                        canvas.toBlob(
+                            blob => (blob ? resolve(blob) : reject(new Error('Canvas toBlob failed'))),
+                            'image/jpeg',
+                            0.92
+                        );
+                    });
+                }
             }
-        }
-        imageFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+        });
+    }
 
-        State.setOriginalImageBlobs([...imageFiles]);
-        State.setImageBlobs([...imageFiles]);
-        State.setCurrentImageIndex(0);
+    await finalizeAndDisplay(imageFiles);
+}
 
-        if (State.getState().imageBlobs.length > 0) {
-            State.setIsMangaModeActive(document.getElementById('mangaModeToggle')?.checked || false);
-            if (State.getState().isMangaModeActive) State.reverseImageBlobs();
-            await displayPage(0);
-        } else {
-            throw new Error('No images found in the CBZ file.');
-        }
+// ---------------------------------------------------------------------------
+// Main entry point — dispatches by file extension
+// ---------------------------------------------------------------------------
+
+export async function handleFile(file) {
+    closeMobileMenu();
+
+    const ext = file?.name?.toLowerCase().split('.').pop();
+    const supported = ['cbz', 'cbr', 'pdf'];
+
+    if (!file || !supported.includes(ext)) {
+        UI.showMessage('Error: Please select a valid .cbz, .cbr, or .pdf file.');
+        setTimeout(UI.hideMessage, 3000);
+        return;
+    }
+
+    UI.showView('reader');
+    try {
+        if (ext === 'cbz') await handleCbzFile(file);
+        else if (ext === 'cbr') await handleCbrFile(file);
+        else if (ext === 'pdf') await handlePdfFile(file);
     } catch (err) {
-        console.error("Error processing CBZ:", err);
+        console.error('Error processing file:', err);
         UI.showMessage(`Error: ${err.message}`);
         setTimeout(() => { UI.hideMessage(); UI.showView('upload'); }, 3000);
     }

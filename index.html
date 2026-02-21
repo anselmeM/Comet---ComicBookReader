@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com; font-src https://fonts.gstatic.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com; font-src https://fonts.gstatic.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comet - CBZ Web Reader</title>
 
@@ -48,11 +49,13 @@
         })();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libarchivejs@2.0.2/dist/libarchive.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
 
 <body>
 
-    <input type="file" id="fileInput" accept=".cbz" class="hidden">
+    <input type="file" id="fileInput" accept=".cbz,.cbr,.pdf" class="hidden">
 
     <div id="uploadView" class="view active">
         <header
@@ -161,7 +164,10 @@
                             <div class="flex flex-col gap-2 text-center">
                                 <h1
                                     class="text-gray-700 dark:text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
-                                    Drag and drop your CBZ files here</h1>
+                                    Drag and drop your comic files here</h1>
+                                <p
+                                    class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-normal leading-normal">
+                                    Supports CBZ, CBR &amp; PDF</p>
                                 <h2
                                     class="text-gray-600 dark:text-white text-sm sm:text-base md:text-lg font-normal leading-normal">
                                     Or</h2>
