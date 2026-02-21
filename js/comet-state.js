@@ -8,6 +8,8 @@ let currentFileKey = '', currentFileName = '';
 let corruptPageCount = 0;
 let tableOfContents = [];
 let isSmartCoverActive = false;
+let isSmartSplitActive = false;
+let isVerticalScrollActive = false;
 
 // Object URL Cache
 const OBJECT_URL_CACHE_LIMIT = 20;
@@ -69,6 +71,10 @@ export function getTableOfContents() { return tableOfContents; }
 export function setTableOfContents(toc) { tableOfContents = Array.isArray(toc) ? toc : []; }
 export function getIsSmartCoverActive() { return isSmartCoverActive; }
 export function setIsSmartCoverActive(v) { isSmartCoverActive = !!v; }
+export function getIsSmartSplitActive() { return isSmartSplitActive; }
+export function setIsSmartSplitActive(v) { isSmartSplitActive = !!v; }
+export function getIsVerticalScrollActive() { return isVerticalScrollActive; }
+export function setIsVerticalScrollActive(v) { isVerticalScrollActive = !!v; }
 export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
 export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
 export function setIsPotentialSwipe(potential) { isPotentialSwipe = potential; }

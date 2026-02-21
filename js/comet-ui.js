@@ -1,10 +1,12 @@
 // js/comet-ui.js
 import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
-import { displayPage } from './comet-navigation.js';
+import { displayPage, loadImageBlob } from './comet-navigation.js';
 import { isBookmarked, getBookmarks } from './comet-bookmarks.js';
-import { getAllProgress } from './comet-progress.js';
+import { getAllProgress, saveProgress } from './comet-progress.js';
 import { getHandle } from './comet-library.js';
+
+let verticalObserver = null;
 
 // --- View Management ---
 // ... (showView, showUploadView - unchanged) ...
@@ -182,20 +184,6 @@ export function applyFitMode(modeValue) {
     if (!DOM.comicImage || !DOM.imageContainer) return;
     State.setFitMode(modeValue);
 
-    const isTwoPage = State.getState().isTwoPageSpreadActive;
-    const imgs = isTwoPage ? [DOM.comicImage, DOM.comicImage2] : [DOM.comicImage];
-
-    // Reset styles
-    imgs.forEach(img => {
-        if (!img) return;
-        img.style.width = 'auto'; img.style.height = 'auto';
-        img.style.maxWidth = 'none'; img.style.maxHeight = 'none';
-        img.style.flex = ''; // Reset flex
-    });
-
-    // Reset scroll before applying mode
-    DOM.imageContainer.scrollLeft = 0; DOM.imageContainer.scrollTop = 0;
-
     // Wait for load if not complete (simple check on first image)
     if (!DOM.comicImage.naturalWidth || DOM.comicImage.naturalWidth === 0) {
         if (!DOM.comicImage.complete && DOM.comicImage.src && !DOM.comicImage.src.startsWith("file:")) {
@@ -205,10 +193,25 @@ export function applyFitMode(modeValue) {
         return;
     }
 
+    const isTwoPage = State.getState().isTwoPageSpreadActive;
+    const imgs = isTwoPage ? [DOM.comicImage, DOM.comicImage2] : [DOM.comicImage];
+
+    // Reset styles
+    imgs.forEach(img => {
+        if (!img) return;
+        img.style.width = 'auto'; img.style.height = 'auto';
+        img.style.maxWidth = 'none'; img.style.maxHeight = 'none';
+        // Note: we let tailwind handle flex/object-contain
+    });
+
+    // Reset scroll before applying mode
+    DOM.imageContainer.scrollLeft = 0; DOM.imageContainer.scrollTop = 0;
+
     const mode = State.getState().fitMode;
 
-    if (isTwoPage) {
+    if (isTwoPage && DOM.comicImage2.src && DOM.comicImage2.src !== window.location.href) {
         DOM.comicImage2.classList.remove('hidden');
+        DOM.comicImage2.style.display = '';
         switch (mode) {
             case 'best':
                 imgs.forEach(img => { img.style.maxWidth = '50%'; img.style.maxHeight = '100%'; });
@@ -225,6 +228,7 @@ export function applyFitMode(modeValue) {
         }
     } else {
         DOM.comicImage2.classList.add('hidden');
+        DOM.comicImage2.style.display = 'none';
         switch (mode) {
             case 'best': DOM.comicImage.style.maxWidth = '100%'; DOM.comicImage.style.maxHeight = '100%'; break;
             case 'width': DOM.comicImage.style.width = '100%'; DOM.comicImage.style.height = 'auto'; break;
@@ -240,6 +244,85 @@ export function applyFitMode(modeValue) {
         const radio = label.querySelector('input');
         if (radio) { label.classList.toggle('checked', radio.value === State.getState().fitMode); radio.checked = radio.value === State.getState().fitMode; }
     });
+}
+
+// ---> Vertical Scroll Functions <---
+export function toggleVerticalScroll(isActive) {
+    const vc = document.getElementById('verticalScrollContainer');
+    if (!vc) return;
+    if (isActive) {
+        DOM.imageContainer.classList.add('hidden');
+        vc.classList.remove('hidden');
+        renderVerticalScroll();
+    } else {
+        vc.classList.add('hidden');
+        DOM.imageContainer.classList.remove('hidden');
+        if (verticalObserver) {
+            verticalObserver.disconnect();
+            verticalObserver = null;
+        }
+        vc.innerHTML = '';
+        displayPage(State.getState().currentImageIndex || 0);
+    }
+}
+
+export function renderVerticalScroll() {
+    const vc = document.getElementById('verticalScrollContainer');
+    if (!vc) return;
+    vc.innerHTML = '';
+
+    const { imageBlobs, currentImageIndex } = State.getState();
+    if (!imageBlobs || imageBlobs.length === 0) return;
+
+    if (verticalObserver) verticalObserver.disconnect();
+
+    verticalObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const idx = parseInt(entry.target.dataset.index, 10);
+            if (entry.isIntersecting) {
+                if (!entry.target.dataset.loaded) {
+                    loadImageBlob(idx).then(imgEntry => {
+                        if (imgEntry && imgEntry.blob) {
+                            let url = State.getCachedObjectUrl(imgEntry);
+                            if (!url) {
+                                url = URL.createObjectURL(imgEntry.blob);
+                                State.addObjectUrl(imgEntry, url);
+                            }
+                            entry.target.src = url;
+                            entry.target.dataset.loaded = 'true';
+                        }
+                    });
+                }
+
+                if (entry.intersectionRatio > 0.5) {
+                    State.setCurrentImageIndex(idx);
+                    updateBookmarkIndicator(idx);
+                    const indicator = document.getElementById('pageIndicatorHud');
+                    if (indicator) indicator.textContent = `${idx + 1} / ${imageBlobs.length}`;
+
+                    const fileKey = State.getCurrentFileKey();
+                    if (fileKey) saveProgress(fileKey, State.getCurrentFileName(), idx, imageBlobs.length);
+                }
+            }
+        });
+    }, { root: vc, rootMargin: '100% 0px', threshold: [0, 0.5] });
+
+    imageBlobs.forEach((_, i) => {
+        const img = document.createElement('img');
+        img.className = 'w-full max-w-[800px] mx-auto block min-h-[50vh] object-contain';
+        img.dataset.index = i;
+        vc.appendChild(img);
+        verticalObserver.observe(img);
+    });
+
+    const targetImg = vc.querySelector(`img[data-index="${currentImageIndex}"]`);
+    if (targetImg) {
+        setTimeout(() => targetImg.scrollIntoView(), 100);
+    }
+
+    // Hide loading overlays since the vertical scroll container is now rendered
+    hideSkeleton();
+    hideMessage();
 }
 
 // ---> REVISED: changeZoom <---
@@ -272,17 +355,19 @@ export function changeZoom(factor) {
 // ... (applyMangaMode, updateUI - unchanged) ...
 export function applyMangaMode() {
     if (!DOM.mangaModeToggle || !State.getState().imageBlobs.length) return;
-    State.setIsMangaModeActive(DOM.mangaModeToggle.checked);
-    const currentName = State.getState().imageBlobs[State.getState().currentImageIndex]?.name;
-    State.setImageBlobs([...State.getState().originalImageBlobs]);
-    if (State.getState().isMangaModeActive) State.reverseImageBlobs();
-    let newIdx = 0;
-    if (currentName) {
-        newIdx = State.getState().imageBlobs.findIndex(img => img.name === currentName);
-        if (newIdx === -1) newIdx = 0;
+    const isManga = DOM.mangaModeToggle.checked;
+    State.setIsMangaModeActive(isManga);
+
+    // Visually toggle left/right image ordering in two-page spread via flexbox
+    if (DOM.imageContainer) {
+        if (isManga) {
+            DOM.imageContainer.classList.add('flex-row-reverse');
+        } else {
+            DOM.imageContainer.classList.remove('flex-row-reverse');
+        }
     }
-    State.setCurrentImageIndex(-1);
-    displayPage(newIdx); // Call displayPage from navigation
+
+    displayPage(State.getState().currentImageIndex);
 }
 
 export function toggleTwoPageMode() {

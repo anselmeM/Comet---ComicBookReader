@@ -10,7 +10,7 @@ import { saveProgress } from './comet-progress.js';
  * @param {number} index
  * @returns {Promise<Object|null>}
  */
-async function loadImageBlob(index) {
+export async function loadImageBlob(index) {
     const { imageBlobs } = State.getState();
     if (index < 0 || index >= imageBlobs.length) return null;
 
@@ -24,6 +24,54 @@ async function loadImageBlob(index) {
     if (imageEntry.fileData) {
         try {
             imageEntry.blob = await imageEntry.fileData.async("blob");
+
+            if (State.getIsSmartSplitActive() && imageEntry.blob) {
+                const url = URL.createObjectURL(imageEntry.blob);
+                const img = new Image();
+                try {
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+                    // Define 'wide' as aspect ratio > 1.2
+                    if (img.width > img.height * 1.2) {
+                        const halfWidth = Math.floor(img.width / 2);
+                        const createHalf = (x) => new Promise(res => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = halfWidth; canvas.height = img.height;
+                            canvas.getContext('2d').drawImage(img, x, 0, halfWidth, img.height, 0, 0, halfWidth, img.height);
+                            canvas.toBlob(res, 'image/jpeg', 0.95);
+                        });
+                        const b1 = await createHalf(0);
+                        const b2 = await createHalf(halfWidth);
+                        const isManga = State.getState().isMangaModeActive;
+
+                        // In manga mode, the right half is read first
+                        imageEntry.blob = isManga ? b2 : b1;
+                        imageEntry.name = imageEntry.name + '_part1';
+
+                        const newEntry = {
+                            name: imageEntry.name.replace('part1', 'part2'),
+                            blob: isManga ? b1 : b2,
+                            fileData: null
+                        };
+
+                        const { imageBlobs, currentImageIndex } = State.getState();
+                        const myIdx = imageBlobs.indexOf(imageEntry);
+                        if (myIdx !== -1) {
+                            imageBlobs.splice(myIdx + 1, 0, newEntry);
+                            if (currentImageIndex > myIdx) {
+                                State.setCurrentImageIndex(currentImageIndex + 1);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Failed to split wide image', err);
+                } finally {
+                    URL.revokeObjectURL(url);
+                }
+            }
         } catch (e) {
             console.error("Failed to lazy load image at index " + index, e);
             imageEntry.corrupt = true;
@@ -100,7 +148,9 @@ export async function displayPage(index) {
     // --- Load Secondary Image (if Two Page Mode, and not a smart-cover solo page) ---
     let url2 = null;
     const isSoloCoverPage = State.getIsSmartCoverActive() && index === 0;
-    if (isTwoPageSpreadActive && !isSoloCoverPage && index + 1 < imageBlobs.length) {
+    const currentBlobsLength = State.getState().imageBlobs.length;
+
+    if (isTwoPageSpreadActive && !isSoloCoverPage && index + 1 < currentBlobsLength) {
         const imageEntry2 = await loadImageBlob(index + 1);
         if (State.getState().currentImageIndex !== index) return; // Check navigation again
 
@@ -118,27 +168,31 @@ export async function displayPage(index) {
     DOM.imageContainer.scrollTop = 0;
 
     DOM.comicImage.style.opacity = 0;
-    DOM.comicImage.src = url1;
 
-    // Handle second image
     if (DOM.comicImage2) {
         if (url2) {
             DOM.comicImage2.style.opacity = 0;
-            DOM.comicImage2.src = url2;
             DOM.comicImage2.classList.remove('hidden');
+            DOM.comicImage2.style.display = '';
         } else {
             DOM.comicImage2.src = "";
             DOM.comicImage2.classList.add('hidden');
+            DOM.comicImage2.style.display = 'none';
         }
     }
 
-    // Wait for load(s) to apply fit
+    // Assign event listeners BEFORE setting the src, to prevent race conditions with fast local Blob URLs.
     DOM.comicImage.onload = () => {
         UI.hideSkeleton(); // Remove shimmer overlay once first image renders
         if (DOM.comicImage) {
             DOM.comicImage.style.opacity = 1;
             if (DOM.comicImage2 && url2) DOM.comicImage2.style.opacity = 1;
-            UI.applyFitMode(State.getState().fitMode);
+
+            // Give the browser layout engine a split second to paint before applying fit mode
+            requestAnimationFrame(() => {
+                if (DOM.comicImage) DOM.comicImage.style.display = 'block';
+                UI.applyFitMode(State.getState().fitMode);
+            });
         }
         UI.hideMessage();
 
@@ -156,10 +210,27 @@ export async function displayPage(index) {
     };
 
     DOM.comicImage.onerror = () => {
-        const failedImageName = imageEntry1.name || "unknown image";
+        const failedImageName = imageEntry1?.name || "unknown image";
         console.error("Browser failed to render image:", failedImageName, "at index:", index, "src:", DOM.comicImage.src);
+        UI.hideSkeleton();
+        UI.hideMessage();
+        DOM.comicImage.style.opacity = 1; // Ensure broken icon is visible instead of a black screen
         UI.showMessage(`Error loading page ${index + 1} (${failedImageName}).`);
     };
+
+    // Trigger the load
+    if (DOM.comicImage.src === url1) {
+        // Browser won't fire onload if the string is identical. Manually trigger.
+        DOM.comicImage.onload();
+    } else {
+        DOM.comicImage.src = url1;
+    }
+
+    if (DOM.comicImage2 && url2) {
+        if (DOM.comicImage2.src !== url2) {
+            DOM.comicImage2.src = url2;
+        }
+    }
 }
 
 export function nextPage() {

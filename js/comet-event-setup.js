@@ -9,7 +9,7 @@ import { handleFile } from './comet-file-handler.js';
 import { handleKeyDown } from './comet-keyboard-handler.js';
 import { setupMouseListeners } from './comet-mouse-handler.js';
 import { setupTouchListeners } from './comet-touch-handler.js';
-import { saveSettings } from './comet-settings.js';
+import { saveSettings, saveFileSettings } from './comet-settings.js';
 import { toggleBookmark, clearBookmarks } from './comet-bookmarks.js';
 import { makeFileKey } from './comet-progress.js';
 import { storeHandle, openFileFromHandle, supportsFileSystemAccess } from './comet-library.js';
@@ -157,12 +157,14 @@ export function setupEventListeners() {
     DOM.mangaModeToggle?.addEventListener('change', () => {
         UI.applyMangaMode();
         saveSettings({ mangaMode: DOM.mangaModeToggle.checked });
+        saveFileSettings(State.getCurrentFileKey(), { mangaMode: DOM.mangaModeToggle.checked });
     });
 
     // When the state of the 'Two-Page Spread' toggle changes:
     DOM.twoPageToggle?.addEventListener('change', () => {
         UI.toggleTwoPageMode();
         saveSettings({ twoPage: DOM.twoPageToggle.checked });
+        saveFileSettings(State.getCurrentFileKey(), { twoPage: DOM.twoPageToggle.checked });
         // Smart cover is only valid if two-page is active
         const smartRow = document.getElementById('smartCoverRow');
         const smartToggle = document.getElementById('smartCoverToggle');
@@ -176,8 +178,55 @@ export function setupEventListeners() {
     document.getElementById('smartCoverToggle')?.addEventListener('change', (e) => {
         State.setIsSmartCoverActive(e.target.checked);
         saveSettings({ smartCover: e.target.checked });
+        saveFileSettings(State.getCurrentFileKey(), { smartCover: e.target.checked });
         const { currentImageIndex } = State.getState();
         if (currentImageIndex !== undefined) Nav.displayPage(currentImageIndex);
+    });
+
+    // When the state of the 'Smart Split' toggle changes:
+    document.getElementById('smartSplitToggle')?.addEventListener('change', (e) => {
+        State.setIsSmartSplitActive(e.target.checked);
+        saveSettings({ smartSplit: e.target.checked });
+        saveFileSettings(State.getCurrentFileKey(), { smartSplit: e.target.checked });
+        const { currentImageIndex } = State.getState();
+        if (currentImageIndex !== undefined) Nav.displayPage(currentImageIndex);
+    });
+
+    // When the state of the 'Vertical Scroll' toggle changes:
+    document.getElementById('verticalScrollToggle')?.addEventListener('change', (e) => {
+        State.setIsVerticalScrollActive(e.target.checked);
+        saveSettings({ verticalScroll: e.target.checked });
+        saveFileSettings(State.getCurrentFileKey(), { verticalScroll: e.target.checked });
+        UI.toggleVerticalScroll(e.target.checked);
+    });
+
+    // When the state of the Fit Mode 'Fit best' toggle changes:
+    DOM.fitLabels?.forEach(label => {
+        const radio = label.querySelector('input');
+        if (!radio) return;
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                saveSettings({ fitMode: e.target.value });
+                saveFileSettings(State.getCurrentFileKey(), { fitMode: e.target.value });
+                UI.applyFitMode(e.target.value);
+            }
+        });
+    });
+
+    // Page Background change
+    document.getElementById('bgDarkRadio')?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            saveSettings({ pageBg: 'black' });
+            saveFileSettings(State.getCurrentFileKey(), { pageBg: 'black' });
+            UI.applyPageBackground('black');
+        }
+    });
+    document.getElementById('bgLightRadio')?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            saveSettings({ pageBg: 'white' });
+            saveFileSettings(State.getCurrentFileKey(), { pageBg: 'white' });
+            UI.applyPageBackground('white');
+        }
     });
 
     // When the 'Zoom In' button in the panel is clicked:

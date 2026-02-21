@@ -8,6 +8,8 @@ export const DEFAULTS = Object.freeze({
     mangaMode: false,
     twoPage: false,
     smartCover: false,
+    smartSplit: false,
+    verticalScroll: false,
     fitMode: 'best',
     pageBg: 'black',
     prefetchDepth: 2,
@@ -41,15 +43,49 @@ export function saveSettings(patch) {
 }
 
 /**
+ * Loads specific overrides for a single file, based on its unique key.
+ * @param {string} fileKey 
+ * @returns {object|null}
+ */
+export function loadFileSettings(fileKey) {
+    if (!fileKey) return null;
+    try {
+        const raw = localStorage.getItem(`${SETTINGS_KEY}-${fileKey}`);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null; // LocalStorage unavailable
+    }
+}
+
+/**
+ * Saves specific overrides for a single file.
+ * @param {string} fileKey 
+ * @param {object} patch 
+ */
+export function saveFileSettings(fileKey, patch) {
+    if (!fileKey) return;
+    try {
+        const current = loadFileSettings(fileKey) || {};
+        localStorage.setItem(`${SETTINGS_KEY}-${fileKey}`, JSON.stringify({ ...current, ...patch }));
+    } catch {
+        // LocalStorage unavailable
+    }
+}
+
+/**
  * Reads stored settings and syncs all UI controls + state to match.
  * Call once during app initialisation, after DOM is ready.
  * @param {object} DOM   - the comet-dom module
  * @param {object} State - the comet-state module
  * @param {object} UI    - the comet-ui module
+ * @param {object} fileOverrides - optional file-specific settings to merge
  * @returns {object} the loaded settings
  */
-export function applySettings(DOM, State, UI) {
-    const s = loadSettings();
+export function applySettings(DOM, State, UI, fileOverrides = null) {
+    let s = loadSettings();
+    if (fileOverrides) {
+        s = { ...s, ...fileOverrides };
+    }
 
     // --- Manga Mode ---
     if (DOM.mangaModeToggle) DOM.mangaModeToggle.checked = s.mangaMode;
@@ -66,6 +102,19 @@ export function applySettings(DOM, State, UI) {
         smartCoverToggle.disabled = !s.twoPage; // only relevant when two-page is on
     }
     State.setIsSmartCoverActive(s.smartCover);
+
+    // --- Smart Split ---
+    const smartSplitToggle = document.getElementById('smartSplitToggle');
+    if (smartSplitToggle) smartSplitToggle.checked = s.smartSplit;
+    State.setIsSmartSplitActive(s.smartSplit);
+
+    // --- Vertical Scroll ---
+    const verticalScrollToggle = document.getElementById('verticalScrollToggle');
+    if (verticalScrollToggle) verticalScrollToggle.checked = s.verticalScroll;
+    State.setIsVerticalScrollActive(s.verticalScroll);
+    if (s.verticalScroll && UI.toggleVerticalScroll) {
+        UI.toggleVerticalScroll(s.verticalScroll);
+    }
 
     // --- Fit Mode ---
     // Pre-select the correct radio without triggering a full re-render

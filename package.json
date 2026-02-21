@@ -12,5 +12,8 @@
     "cbz"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.37.5"
+  }
 }
