@@ -44,7 +44,10 @@ export function setupEventListeners() {
                 storeHandle(fileKey, fileHandle); // fire-and-forget — stores handle in IndexedDB
                 handleFile(file);
             } catch (err) {
-                if (err.name !== 'AbortError') console.error('File picker error:', err);
+                if (err.name !== 'AbortError') {
+                    console.error('File picker error (falling back to generic input):', err);
+                    DOM.fileInput.click();
+                }
                 // AbortError = user cancelled — silently ignore
             }
         } else {
