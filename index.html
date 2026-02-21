@@ -267,6 +267,11 @@
             </div>
         </div>
         <div id="readerMessage" class="hidden"><span>Loading...</span></div>
+        <!-- Amber banner shown when one or more pages fail to decode -->
+        <div id="corruptBanner" class="hidden" role="alert">
+            <span id="corruptBannerText"></span>
+            <button id="corruptBannerDismiss" aria-label="Dismiss warning">&times;</button>
+        </div>
     </div>
 
     <div id="menuPanel" class="panel dark:bg-[#1A2633] dark:text-[#E7EDF4]">

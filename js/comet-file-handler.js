@@ -219,6 +219,10 @@ export async function handleFile(file) {
             UI.showMessage('Resumed at page ' + (progress.lastPage + 1) + ' of ' + total);
             setTimeout(UI.hideMessage, 3000);
         }
+
+        // --- Show corrupt-page notice if any pages failed to decode ---
+        const corruptCount = State.getCorruptPageCount();
+        if (corruptCount > 0) UI.showCorruptBanner(corruptCount);
     } catch (err) {
         console.error('Error processing file:', err);
         UI.showMessage('Error: ' + err.message);

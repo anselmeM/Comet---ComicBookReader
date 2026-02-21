@@ -101,14 +101,31 @@ export function setupEventListeners() {
     });
 
     // When an item is dropped onto the drop zone:
-    DOM.dropZone?.addEventListener('drop', (e) => {
-        e.preventDefault(); // Prevent default browser behavior.
-        DOM.dropZone.classList.remove('dragging'); // Remove the visual feedback class.
-        // Check if files were included in the drop data.
-        if (e.dataTransfer.files.length > 0) {
-            // Pass the first dropped file to the file handler.
-            handleFile(e.dataTransfer.files[0]);
+    DOM.dropZone?.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        DOM.dropZone.classList.remove('dragging');
+        const item = e.dataTransfer.items?.[0];
+        if (!item || item.kind !== 'file') return;
+
+        // Prefer File System Access API (Chromium) to get a storable handle
+        if (supportsFileSystemAccess && typeof item.getAsFileSystemHandle === 'function') {
+            try {
+                const handle = await item.getAsFileSystemHandle();
+                if (handle && handle.kind === 'file') {
+                    const file = await handle.getFile();
+                    const fileKey = makeFileKey(file);
+                    storeHandle(fileKey, handle); // persist for Library reopen
+                    handleFile(file);
+                    return;
+                }
+            } catch (err) {
+                // Fallback if getAsFileSystemHandle fails unexpectedly
+                console.warn('[drop] getAsFileSystemHandle failed, using fallback:', err);
+            }
         }
+        // Firefox / fallback: plain File object
+        const file = item.getAsFile() ?? e.dataTransfer.files[0];
+        if (file) handleFile(file);
     });
 
     // SECTION: HUD (Heads-Up Display) and Menu Event Listeners
@@ -201,6 +218,9 @@ export function setupEventListeners() {
         UI.updateBookmarkIndicator(State.getState().currentImageIndex);
         UI.renderBookmarkList();
     });
+
+    // Corrupt-page banner dismiss button
+    document.getElementById('corruptBannerDismiss')?.addEventListener('click', () => UI.hideCorruptBanner());
 
     // Swipe left on the options panel to close it
     let panelSwipeStartX = 0;

@@ -1,29 +1,44 @@
 // --- Configuration ---
-const CACHE_NAME = 'comet-reader-cache-v6'; // Cache name UPDATED
+const CACHE_NAME = 'comet-reader-cache-v7'; // Bumped: includes all new JS modules
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-// const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900'; // Removed
 
 // List of files that constitute your "App Shell" - must be available offline.
 const urlsToCache = [
-  './', // Cache the root directory (often serves index.html)
+  './',
   './index.html',
   './features.html',
   './pricing.html',
   './support.html',
   './terms.html',
   './privacy.html',
-  './css/global.css', // Corrected CSS path
-  './css/static-pages.css', // Corrected CSS path
-  './css/dark-theme.css', // Corrected CSS path
-  './css/index-specific.css', // Corrected CSS path
+  './offline.html',
+  './manifest.json',
+  // CSS
+  './css/global.css',
+  './css/static-pages.css',
+  './css/dark-theme.css',
+  './css/index-specific.css',
+  // Core JS modules
+  './js/comet-reader.js',
+  './js/comet-state.js',
+  './js/comet-dom.js',
+  './js/comet-navigation.js',
+  './js/comet-ui.js',
+  './js/comet-event-setup.js',
+  './js/comet-file-handler.js',
+  './js/comet-keyboard-handler.js',
+  './js/comet-mouse-handler.js',
+  './js/comet-touch-handler.js',
+  './js/comet-settings.js',
+  './js/comet-progress.js',
+  './js/comet-bookmarks.js',
+  './js/comet-library.js',
+  // Other JS
   './js/global-ui.js',
   './js/pwa-init.js',
-  './js/comet-reader.js',
-  './offline.html',
+  // External CDN
   JSZIP_URL,
-  // GOOGLE_FONTS_URL, // Removed as recommended
-  './manifest.json',
-  // All necessary icons from your icons folder:
+  // Icons
   './icons/android-chrome-192x192.png',
   './icons/android-chrome-512x512.png',
   './icons/apple-touch-icon.png',
@@ -37,6 +52,7 @@ const urlsToCache = [
   './icons/icon-384x384.png'
 ];
 
+
 // --- Installation Event ---
 self.addEventListener('install', event => {
   console.log(`[Service Worker] Installing v${CACHE_NAME}...`);
@@ -45,10 +61,10 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('[Service Worker] Caching App Shell...');
         const requests = urlsToCache.map(url => {
-            if (url.startsWith('http')) { // For external URLs like CDNs
-                return new Request(url, { mode: 'cors' });
-            }
-            return new Request(url); // For local assets
+          if (url.startsWith('http')) { // For external URLs like CDNs
+            return new Request(url, { mode: 'cors' });
+          }
+          return new Request(url); // For local assets
         });
         return cache.addAll(requests);
       })
@@ -76,8 +92,8 @@ self.addEventListener('activate', event => {
         })
       );
     }).then(() => {
-        console.log('[Service Worker] Old caches cleaned up. Claiming clients...');
-        return self.clients.claim();
+      console.log('[Service Worker] Old caches cleaned up. Claiming clients...');
+      return self.clients.claim();
     })
   );
 });
@@ -94,12 +110,12 @@ self.addEventListener('fetch', event => {
           return cachedResponse;
         }
         return fetch(event.request).then(networkResponse => {
-            return networkResponse;
+          return networkResponse;
         }).catch(error => {
-            console.warn('[Service Worker] Fetch failed for:', event.request.url, error);
-            if (event.request.mode === 'navigate') {
-              return caches.match('./offline.html');
-            }
+          console.warn('[Service Worker] Fetch failed for:', event.request.url, error);
+          if (event.request.mode === 'navigate') {
+            return caches.match('./offline.html');
+          }
         });
       })
   );

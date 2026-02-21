@@ -5,6 +5,7 @@ let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
 let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, hudTimer = null;
 let prefetchDepth = 2;
 let currentFileKey = '', currentFileName = '';
+let corruptPageCount = 0;
 
 // Object URL Cache
 const OBJECT_URL_CACHE_LIMIT = 20;
@@ -60,6 +61,8 @@ export function setPrefetchDepth(n) { prefetchDepth = Math.max(1, Math.min(5, pa
 export function getCurrentFileKey() { return currentFileKey; }
 export function getCurrentFileName() { return currentFileName; }
 export function setCurrentFile(key, name) { currentFileKey = key; currentFileName = name; }
+export function getCorruptPageCount() { return corruptPageCount; }
+export function incrementCorruptPageCount() { corruptPageCount++; }
 export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
 export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
 export function setIsPotentialSwipe(potential) { isPotentialSwipe = potential; }
@@ -145,5 +148,6 @@ export function resetAllState() {
     lastTapTime = 0;
     clearTapTimeout();
     currentFileKey = ''; currentFileName = '';
+    corruptPageCount = 0;
     // prefetchDepth is intentionally NOT reset — it's a user preference
 }

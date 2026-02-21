@@ -256,6 +256,25 @@ export function showSkeleton() { DOM.imageContainer?.classList.add('loading'); }
 /** Hides the shimmer placeholder once the first page renders. */
 export function hideSkeleton() { DOM.imageContainer?.classList.remove('loading'); }
 
+/**
+ * Shows the amber corrupt-page banner at the bottom of the reader.
+ * @param {number} count  Number of pages that failed to decode.
+ */
+export function showCorruptBanner(count) {
+    const banner = document.getElementById('corruptBanner');
+    const text = document.getElementById('corruptBannerText');
+    if (!banner || !text || count <= 0) return;
+    const pages = count === 1 ? 'page' : 'pages';
+    const were = count === 1 ? 'was' : 'were';
+    text.textContent = '\u26A0\uFE0F ' + count + ' ' + pages + " couldn't be decoded and " + were + ' skipped.';
+    banner.classList.remove('hidden');
+}
+
+/** Hides the corrupt-page banner. */
+export function hideCorruptBanner() {
+    document.getElementById('corruptBanner')?.classList.add('hidden');
+}
+
 export function applyPageBackground(color) {
     const bg = { black: '#111111', gray: '#555555', white: '#ffffff' };
     if (DOM.imageContainer) {

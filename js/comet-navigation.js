@@ -27,6 +27,7 @@ async function loadImageBlob(index) {
         } catch (e) {
             console.error("Failed to lazy load image at index " + index, e);
             imageEntry.corrupt = true;
+            State.incrementCorruptPageCount(); // track for post-load banner
             return null;
         }
     }
