@@ -5,7 +5,7 @@ let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
 let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, hudTimer = null;
 
 // Object URL Cache
-const OBJECT_URL_CACHE_LIMIT = 10;
+const OBJECT_URL_CACHE_LIMIT = 20;
 const objectUrlCache = new Map(); // imageEntry -> objectUrl
 
 // Constants

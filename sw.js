@@ -1,5 +1,5 @@
 // --- Configuration ---
-const CACHE_NAME = 'comet-reader-cache-v5'; // Cache name UPDATED
+const CACHE_NAME = 'comet-reader-cache-v6'; // Cache name UPDATED
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
 // const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?display=swap&family=Manrope%3Awght%40400%3B500%3B700%3B800&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900'; // Removed
 
@@ -16,9 +16,10 @@ const urlsToCache = [
   './css/static-pages.css', // Corrected CSS path
   './css/dark-theme.css', // Corrected CSS path
   './css/index-specific.css', // Corrected CSS path
-  './Js/global-ui.js', // Corrected JS path (with 'Js')
-  './Js/pwa-init.js', // Corrected JS path (with 'Js')
-  './Js/comet-reader.js', // Corrected JS path (with 'Js')
+  './js/global-ui.js',
+  './js/pwa-init.js',
+  './js/comet-reader.js',
+  './offline.html',
   JSZIP_URL,
   // GOOGLE_FONTS_URL, // Removed as recommended
   './manifest.json',
@@ -96,10 +97,9 @@ self.addEventListener('fetch', event => {
             return networkResponse;
         }).catch(error => {
             console.warn('[Service Worker] Fetch failed for:', event.request.url, error);
-            // Optional: Return a fallback page for navigation requests if offline and not cached
-            // if (event.request.mode === 'navigate') {
-            //   return caches.match('./offline.html'); 
-            // }
+            if (event.request.mode === 'navigate') {
+              return caches.match('./offline.html');
+            }
         });
       })
   );

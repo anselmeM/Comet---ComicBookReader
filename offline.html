@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline – Comet Reader</title>
+    <style>
+        :root {
+            --bg: #111827;
+            --card: #1f2937;
+            --accent: #6366f1;
+            --text: #f9fafb;
+            --muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.65rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .logo {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="icon">🌐✈️</div>
+        <h1>You're Offline</h1>
+        <p>
+            Comet couldn't reach the network.<br>
+            Already-opened files will still work — just reconnect and try again.
+        </p>
+        <button class="btn" onclick="window.location.reload()">Try Again</button>
+        <div class="logo">☄️ Comet Reader</div>
+    </div>
+</body>
+
+</html>

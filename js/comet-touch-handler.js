@@ -17,7 +17,6 @@ const TAP_THRESHOLD = 10; // Max pixels moved to still be a tap
 // --- Action Handlers ---
 
 function doDoubleTap() {
-    console.log("Action: Double Tap");
     if (UI.isZoomed()) {
         UI.applyFitMode('best');
     } else {
@@ -26,7 +25,6 @@ function doDoubleTap() {
 }
 
 function doSingleTap(coords) {
-    console.log("Action: Single Tap");
     if (DOM.menuPanel && DOM.menuPanel.classList.contains('visible')) return;
     if (UI.isZoomed()) {
         UI.toggleHUD();
@@ -43,7 +41,6 @@ function doSingleTap(coords) {
 }
 
 function doSwipe(direction) {
-    console.log("Action: Swipe", direction);
     const isManga = State.getState().isMangaModeActive;
     if (direction === 'left') {
         isManga ? Nav.prevPage() : Nav.nextPage();
@@ -74,9 +71,7 @@ function handleTouchStart(event) {
     startX = currentX = touch.clientX;
     startY = currentY = touch.clientY;
     startTime = new Date().getTime();
-    touchState = 'DOWN'; // Set state to 'DOWN'
-
-    console.log("Touch Start:", startX, startY);
+    touchState = 'DOWN';
 
     // If zoomed, prepare for potential panning
     if (UI.isZoomed()) {
@@ -104,20 +99,17 @@ function handleTouchMove(event) {
         if (Math.abs(deltaX) > TAP_THRESHOLD || Math.abs(deltaY) > TAP_THRESHOLD) {
             // If zoomed, prioritize panning
             if (UI.isZoomed()) {
-                console.log("Touch Move: Starting PAN");
                 touchState = 'PANNING';
                 DOM.imageContainer.style.cursor = 'grabbing'; // Visual feedback
             }
             // If not zoomed, and horizontal movement is dominant, start swiping
             else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                console.log("Touch Move: Starting SWIPE");
                 touchState = 'SWIPING';
             }
-            // If not zoomed and vertical movement is dominant, let the browser scroll (don't preventDefault)
+            // If not zoomed and vertical movement is dominant, let the browser scroll
             else {
-                 console.log("Touch Move: Vertical scroll - ignoring");
-                 touchState = 'IDLE'; // Treat as ended to avoid issues
-                 return;
+                touchState = 'IDLE';
+                return;
             }
         } else {
             return; // Not moved enough yet, wait.
@@ -136,17 +128,13 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
-    // Ensure it's the end of our single touch sequence
     if (touchState === 'IDLE') {
         return;
     }
 
     const endTime = new Date().getTime();
-    const duration = endTime - startTime;
     const deltaX = currentX - startX;
     const deltaY = currentY - startY;
-
-    console.log("Touch End: State=", touchState, "dX=", deltaX, "dY=", deltaY);
 
     // Get the state *before* resetting
     const currentState = touchState;
@@ -158,18 +146,15 @@ function handleTouchEnd(event) {
 
     // 1. Was it Panning?
     if (currentState === 'PANNING') {
-        console.log("Touch End: Finalizing Pan");
         event.preventDefault(); // Ensure click is stopped after pan
         return;
     }
 
     // 2. Was it Swiping?
     if (currentState === 'SWIPING') {
-        // Check if the swipe met the criteria
         if (Math.abs(deltaX) > State.SWIPE_THRESHOLD && Math.abs(deltaY) < State.VERTICAL_THRESHOLD) {
-            console.log("Touch End: Finalizing Swipe");
             doSwipe(deltaX < 0 ? 'left' : 'right');
-            event.preventDefault(); // Ensure click is stopped after swipe
+            event.preventDefault();
             lastTapTime = 0; // A swipe resets double tap tracking
             return;
         }
@@ -177,37 +162,30 @@ function handleTouchEnd(event) {
     }
 
     // 3. Was it a Tap? (State was 'DOWN' or an invalid 'SWIPING')
-    // Check if movement was minimal
     if (Math.abs(deltaX) <= TAP_THRESHOLD && Math.abs(deltaY) <= TAP_THRESHOLD) {
-         // It's a tap. Now check for double tap.
-         console.log("Touch End: Processing Tap...");
-         event.preventDefault(); // *Crucial* - Prevent ghost clicks!
+        event.preventDefault(); // Prevent ghost clicks
 
-         if ((endTime - lastTapTime) < State.DOUBLE_TAP_DELAY) {
-             // DOUBLE TAP!
-             console.log("Touch End: DOUBLE TAP!");
-             clearTimeout(singleTapTimeout); // Cancel any pending single tap
-             singleTapTimeout = null;
-             lastTapTime = 0; // Reset tap time
-             doDoubleTap();
-         } else {
-             // SINGLE TAP! Schedule it.
-             console.log("Touch End: SINGLE TAP (pending)...");
-             lastTapTime = endTime; // Record time for *next* potential tap
-             const tapCoords = { x: currentX, y: currentY };
-             singleTapTimeout = setTimeout(() => {
-                 // Only run if not cancelled by a double tap
-                 if (lastTapTime !== 0) { // Check if it wasn't reset
-                     doSingleTap(tapCoords);
-                     lastTapTime = 0; // Reset after it runs
-                 }
-             }, State.DOUBLE_TAP_DELAY + 50); // Add a small buffer to delay
-         }
-         return;
+        if ((endTime - lastTapTime) < State.DOUBLE_TAP_DELAY) {
+            // DOUBLE TAP
+            clearTimeout(singleTapTimeout);
+            singleTapTimeout = null;
+            lastTapTime = 0;
+            doDoubleTap();
+        } else {
+            // SINGLE TAP — schedule it
+            lastTapTime = endTime;
+            const tapCoords = { x: currentX, y: currentY };
+            singleTapTimeout = setTimeout(() => {
+                if (lastTapTime !== 0) {
+                    doSingleTap(tapCoords);
+                    lastTapTime = 0;
+                }
+            }, State.DOUBLE_TAP_DELAY + 50);
+        }
+        return;
     }
 
-    // If it wasn't a pan, swipe, or tap, it was likely an invalid gesture. Do nothing.
-    console.log("Touch End: Invalid gesture, ignoring.");
+    // Invalid gesture — do nothing.
 }
 
 
@@ -218,6 +196,5 @@ export function setupTouchListeners() {
     DOM.imageContainer?.addEventListener('touchstart', handleTouchStart, { passive: false });
     DOM.imageContainer?.addEventListener('touchmove', handleTouchMove, { passive: false });
     DOM.imageContainer?.addEventListener('touchend', handleTouchEnd, { passive: false });
-    // It's good practice to handle cancel as well
     DOM.imageContainer?.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 }
