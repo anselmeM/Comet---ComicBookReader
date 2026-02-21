@@ -2,6 +2,7 @@
 import * as UI from './comet-ui.js';
 import * as State from './comet-state.js';
 import { displayPage } from './comet-navigation.js';
+import { makeFileKey, getProgress } from './comet-progress.js';
 
 // Supported image extensions within archive files (includes AVIF and SVG)
 const IMAGE_REGEX = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
@@ -197,14 +198,27 @@ export async function handleFile(file) {
         return;
     }
 
+    // Stamp current file identity on state (used by progress + bookmarks)
+    const fileKey = makeFileKey(file);
+    State.setCurrentFile(fileKey, file.name);
+
     UI.showView('reader');
     try {
         if (ext === 'cbz') await handleCbzFile(file);
         else if (ext === 'cbr') await handleCbrFile(file);
         else if (ext === 'pdf') await handlePdfFile(file);
+
+        // --- Resume reading progress ---
+        const progress = getProgress(fileKey);
+        const total = State.getState().imageBlobs.length;
+        if (progress && progress.lastPage > 0 && progress.lastPage < total) {
+            await displayPage(progress.lastPage);
+            UI.showMessage('Resumed at page ' + (progress.lastPage + 1) + ' of ' + total);
+            setTimeout(UI.hideMessage, 3000);
+        }
     } catch (err) {
         console.error('Error processing file:', err);
-        UI.showMessage(`Error: ${err.message}`);
+        UI.showMessage('Error: ' + err.message);
         setTimeout(() => { UI.hideMessage(); UI.showView('upload'); }, 3000);
     }
 }

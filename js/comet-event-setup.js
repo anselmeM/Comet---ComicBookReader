@@ -2,13 +2,15 @@
 
 // Import necessary DOM elements, UI functions, state variables, and specific event handlers.
 // This modular approach keeps the codebase organized.
-import * as DOM from './comet-dom.js'; // For accessing DOM elements
-import * as UI from './comet-ui.js';   // For UI manipulation functions (showing/hiding elements, applying modes)
-import * as State from './comet-state.js'; // For application state (like zoom step)
-import { handleFile } from './comet-file-handler.js'; // For processing selected/dropped files
-import { handleKeyDown } from './comet-keyboard-handler.js'; // For keyboard navigation/actions
-import { setupMouseListeners } from './comet-mouse-handler.js'; // For mouse-specific interactions (like panning, clicking for next/prev page)
-import { setupTouchListeners } from './comet-touch-handler.js'; // For touch-specific interactions
+import * as DOM from './comet-dom.js';
+import * as UI from './comet-ui.js';
+import * as State from './comet-state.js';
+import { handleFile } from './comet-file-handler.js';
+import { handleKeyDown } from './comet-keyboard-handler.js';
+import { setupMouseListeners } from './comet-mouse-handler.js';
+import { setupTouchListeners } from './comet-touch-handler.js';
+import { saveSettings } from './comet-settings.js';
+import { toggleBookmark, clearBookmarks } from './comet-bookmarks.js';
 
 /**
  * Sets up all application-wide event listeners.
@@ -113,29 +115,69 @@ export function setupEventListeners() {
 
     // When the state of the 'Manga Mode' toggle changes:
     // Apply the selected manga mode (e.g., right-to-left reading).
-    DOM.mangaModeToggle?.addEventListener('change', UI.applyMangaMode);
+    DOM.mangaModeToggle?.addEventListener('change', () => {
+        UI.applyMangaMode();
+        saveSettings({ mangaMode: DOM.mangaModeToggle.checked });
+    });
 
     // When the state of the 'Two-Page Spread' toggle changes:
-    // Toggle the two-page display mode.
-    DOM.twoPageToggle?.addEventListener('change', UI.toggleTwoPageMode);
+    DOM.twoPageToggle?.addEventListener('change', () => {
+        UI.toggleTwoPageMode();
+        saveSettings({ twoPage: DOM.twoPageToggle.checked });
+    });
 
     // When the 'Zoom In' button in the panel is clicked:
-    // Call the changeZoom function from the UI module with a positive zoom step.
     DOM.zoomInButtonPanel?.addEventListener('click', () => UI.changeZoom(State.ZOOM_STEP));
 
     // When the 'Zoom Out' button in the panel is clicked:
-    // Call the changeZoom function with a reciprocal of the zoom step (to zoom out).
     DOM.zoomOutButtonPanel?.addEventListener('click', () => UI.changeZoom(1 / State.ZOOM_STEP));
 
-    // For each 'fit-label' element (likely radio button labels for fit modes):
+    // For each 'fit-label' element:
     DOM.fitLabels?.forEach(label => {
-        // Find the actual radio input element within the label.
         const radio = label.querySelector('input[type="radio"]');
         if (radio) {
-            // Add a click listener to the label (improves usability, as clicking label checks radio).
-            // When clicked, apply the fit mode corresponding to the radio button's value.
-            label.addEventListener('click', () => UI.applyFitMode(radio.value));
+            label.addEventListener('click', () => {
+                UI.applyFitMode(radio.value);
+                saveSettings({ fitMode: radio.value });
+            });
         }
+    });
+
+    // Background colour swatches
+    ['bgBlack', 'bgGray', 'bgWhite'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', (e) => {
+            const color = e.currentTarget.dataset.color;
+            UI.applyPageBackground(color);
+            saveSettings({ pageBg: color });
+        });
+    });
+
+    // Pre-fetch depth slider
+    document.getElementById('prefetchSlider')?.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        State.setPrefetchDepth(val);
+        const label = document.getElementById('prefetchLabel');
+        if (label) label.textContent = val;
+        saveSettings({ prefetchDepth: val });
+    });
+
+    // HUD bookmark button — toggle bookmark for current page
+    document.getElementById('bookmarkButton')?.addEventListener('click', () => {
+        const fileKey = State.getCurrentFileKey();
+        if (!fileKey) return;
+        const { currentImageIndex } = State.getState();
+        toggleBookmark(fileKey, currentImageIndex);
+        UI.updateBookmarkIndicator(currentImageIndex);
+        UI.renderBookmarkList();
+    });
+
+    // Options panel — clear all bookmarks for current file
+    document.getElementById('clearBookmarksButton')?.addEventListener('click', () => {
+        const fileKey = State.getCurrentFileKey();
+        if (!fileKey) return;
+        clearBookmarks(fileKey);
+        UI.updateBookmarkIndicator(State.getState().currentImageIndex);
+        UI.renderBookmarkList();
     });
 
     // SECTION: Input-Specific Listeners (Delegated to other modules)

@@ -3,6 +3,8 @@
 // Core State
 let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
 let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, hudTimer = null;
+let prefetchDepth = 2;
+let currentFileKey = '', currentFileName = '';
 
 // Object URL Cache
 const OBJECT_URL_CACHE_LIMIT = 20;
@@ -53,6 +55,11 @@ export function setFitMode(mode) { fitMode = mode; }
 export function setIsMangaModeActive(active) { isMangaModeActive = active; }
 export function setIsTwoPageSpreadActive(active) { isTwoPageSpreadActive = active; }
 export function setHudTimer(timer) { hudTimer = timer; }
+export function getPrefetchDepth() { return prefetchDepth; }
+export function setPrefetchDepth(n) { prefetchDepth = Math.max(1, Math.min(5, parseInt(n, 10) || 2)); }
+export function getCurrentFileKey() { return currentFileKey; }
+export function getCurrentFileName() { return currentFileName; }
+export function setCurrentFile(key, name) { currentFileKey = key; currentFileName = name; }
 export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
 export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
 export function setIsPotentialSwipe(potential) { isPotentialSwipe = potential; }
@@ -135,6 +142,8 @@ export function resetAllState() {
     resetSwipeState();
     resetPanState();
     didDrag = false;
-    lastTapTime = 0; // <-- Reset new state
-    clearTapTimeout(); // <-- Reset new state
+    lastTapTime = 0;
+    clearTapTimeout();
+    currentFileKey = ''; currentFileName = '';
+    // prefetchDepth is intentionally NOT reset — it's a user preference
 }

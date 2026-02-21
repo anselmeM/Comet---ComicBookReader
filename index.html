@@ -176,6 +176,11 @@
                             </button>
                         </div>
                     </div>
+                    <!-- Recent Files section (hidden until there is history) -->
+                    <div id="recentFilesSection" class="hidden w-full mt-6 px-2">
+                        <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-base font-bold mb-3">Recent Files</h3>
+                        <div id="recentFilesList" class="flex flex-col gap-3"></div>
+                    </div>
                 </div>
             </div>
             <footer
@@ -235,14 +240,28 @@
                     </svg>
                 </button>
                 <span id="pageIndicatorHud" class="text-sm font-medium">0 / 0</span>
-                <button id="menuButton" class="hud-icon" aria-label="Open Menu"> <svg xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                        <circle cx="5" cy="12" r="1" />
-                    </svg>
-                </button>
+                <div class="flex items-center gap-1">
+                    <!-- Bookmark toggle button -->
+                    <button id="bookmarkButton" class="hud-icon" aria-label="Bookmark this page">
+                        <svg id="bookmarkIconOutline" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 2h14a1 1 0 0 1 1 1v18l-7-3-7 3V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                        <svg id="bookmarkIconFilled" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                            viewBox="0 0 24 24" fill="#f59e0b" class="hidden">
+                            <path d="M5 2h14a1 1 0 0 1 1 1v18l-7-3-7 3V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </button>
+                    <button id="menuButton" class="hud-icon" aria-label="Open Menu"> <svg
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="19" cy="12" r="1" />
+                            <circle cx="5" cy="12" r="1" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
         <div id="readerMessage" class="hidden"><span>Loading...</span></div>
@@ -304,6 +323,34 @@
                     type="radio" name="fitMode" value="height" />Height</label>
             <label class="fit-label dark:border-gray-600 dark:text-white dark:checked:border-[#3d98f4]"><input
                     type="radio" name="fitMode" value="original" />Original</label>
+        </div>
+        <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-5 pb-2">Background</h3>
+        <div class="flex gap-3 px-4 pb-4">
+            <button id="bgBlack" data-color="black" title="Black"
+                class="w-10 h-10 rounded-full bg-[#111111] ring-offset-2 ring-[#3d98f4] ring-offset-white dark:ring-offset-[#1A2633] hover:scale-110 transition-transform"
+                aria-label="Black background"></button>
+            <button id="bgGray" data-color="gray" title="Gray"
+                class="w-10 h-10 rounded-full bg-[#555555] ring-offset-2 ring-[#3d98f4] ring-offset-white dark:ring-offset-[#1A2633] hover:scale-110 transition-transform"
+                aria-label="Gray background"></button>
+            <button id="bgWhite" data-color="white" title="White"
+                class="w-10 h-10 rounded-full bg-white border border-gray-300 ring-offset-2 ring-[#3d98f4] ring-offset-white dark:ring-offset-[#1A2633] hover:scale-110 transition-transform"
+                aria-label="White background"></button>
+        </div>
+        <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-3 pb-2">Pre-fetch</h3>
+        <div class="flex items-center gap-3 px-4 pb-4">
+            <input id="prefetchSlider" type="range" min="1" max="5" value="2"
+                class="flex-1 accent-[#3d98f4] cursor-pointer" aria-label="Pre-fetch depth" />
+            <span class="text-[#0d141c] dark:text-[#E7EDF4] text-sm font-semibold w-4 text-center">
+                <span id="prefetchLabel">2</span>
+            </span>
+        </div>
+        <h3 class="text-[#0d141c] dark:text-[#E7EDF4] text-lg font-bold px-4 pt-3 pb-2">Bookmarks</h3>
+        <div id="bookmarkList" class="flex flex-col"></div>
+        <div class="px-4 pb-5">
+            <button id="clearBookmarksButton"
+                class="text-xs text-[#49739c] dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                Clear all bookmarks
+            </button>
         </div>
     </div>
 

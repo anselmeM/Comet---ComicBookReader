@@ -2,6 +2,7 @@
 import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
 import * as UI from './comet-ui.js';
+import { saveProgress } from './comet-progress.js';
 
 /**
  * Lazily loads the blob for the image at the given index.
@@ -39,8 +40,9 @@ async function loadImageBlob(index) {
  */
 function prefetchAdjacentPages(currentIndex) {
     const { imageBlobs } = State.getState();
-    // Pre-fetch next 2 pages and previous 1 page
-    const indicesToPrefetch = [currentIndex + 1, currentIndex + 2, currentIndex - 1];
+    const depth = State.getPrefetchDepth();
+    const indicesToPrefetch = [currentIndex - 1]; // always pre-fetch 1 back
+    for (let i = 1; i <= depth; i++) indicesToPrefetch.push(currentIndex + i);
     for (const idx of indicesToPrefetch) {
         if (idx >= 0 && idx < imageBlobs.length) {
             const entry = imageBlobs[idx];
@@ -136,6 +138,15 @@ export async function displayPage(index) {
             UI.applyFitMode(State.getState().fitMode);
         }
         UI.hideMessage();
+
+        // Save reading progress
+        const { imageBlobs } = State.getState();
+        const fileKey = State.getCurrentFileKey();
+        const fileName = State.getCurrentFileName();
+        if (fileKey) saveProgress(fileKey, fileName, index, imageBlobs.length);
+
+        // Update bookmark star in HUD
+        UI.updateBookmarkIndicator(index);
 
         // Kick off background pre-fetch once the page is visibly rendered
         prefetchAdjacentPages(index);

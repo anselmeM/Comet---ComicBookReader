@@ -1,10 +1,9 @@
 // js/comet-ui.js
 import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
-// We need to import displayPage directly if applyMangaMode calls it.
-// Let's defer that and assume it's handled or reorganize later if needed.
-// For now, let's import it from comet-navigation.js
 import { displayPage } from './comet-navigation.js';
+import { isBookmarked, getBookmarks } from './comet-bookmarks.js';
+import { getAllProgress } from './comet-progress.js';
 
 // --- View Management ---
 // ... (showView, showUploadView - unchanged) ...
@@ -24,6 +23,7 @@ export function showUploadView() {
     if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible');
     hideMessage();
     document.body.style.overflow = '';
+    renderRecentFiles();
 }
 
 // --- Message Handling ---
@@ -65,7 +65,7 @@ export function hideHUD(delay = 4000) {
     }
 }
 export function toggleHUD() { (DOM.hudOverlay && DOM.hudOverlay.classList.contains('visible')) ? hideHUD(0) : showHUD(); }
-export function showMenuPanel() { if (DOM.menuPanel) DOM.menuPanel.classList.add('visible'); hideHUD(0); }
+export function showMenuPanel() { if (DOM.menuPanel) DOM.menuPanel.classList.add('visible'); hideHUD(0); renderBookmarkList(); }
 export function hideMenuPanel() { if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible'); }
 
 
@@ -74,7 +74,7 @@ export function isZoomed() {
     if (!DOM.imageContainer) return false;
     // Check if scroll dimensions exceed client dimensions (add a small tolerance)
     return DOM.imageContainer.scrollWidth > DOM.imageContainer.clientWidth + 1 ||
-           DOM.imageContainer.scrollHeight > DOM.imageContainer.clientHeight + 1;
+        DOM.imageContainer.scrollHeight > DOM.imageContainer.clientHeight + 1;
 }
 
 /**
@@ -96,9 +96,9 @@ function centerImageIfZoomed() {
         DOM.imageContainer.scrollLeft = overflowX > 0 ? overflowX / 2 : 0;
         DOM.imageContainer.scrollTop = overflowY > 0 ? overflowY / 2 : 0;
     } else if (DOM.imageContainer) {
-         // If not zoomed, ensure scroll is reset
-         DOM.imageContainer.scrollLeft = 0;
-         DOM.imageContainer.scrollTop = 0;
+        // If not zoomed, ensure scroll is reset
+        DOM.imageContainer.scrollLeft = 0;
+        DOM.imageContainer.scrollTop = 0;
     }
 }
 
@@ -235,6 +235,92 @@ export function toggleTwoPageMode() {
     displayPage(State.getState().currentImageIndex);
 }
 
+export function applyPageBackground(color) {
+    const bg = { black: '#111111', gray: '#555555', white: '#ffffff' };
+    if (DOM.imageContainer) {
+        DOM.imageContainer.style.backgroundColor = bg[color] ?? bg.black;
+    }
+    // Update swatch ring
+    ['bgBlack', 'bgGray', 'bgWhite'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.toggle('ring-2', btn.dataset.color === color);
+    });
+}
+
+/**
+ * Updates the HUD bookmark button (filled star = bookmarked, outline = not).
+ * @param {number} pageIndex
+ */
+export function updateBookmarkIndicator(pageIndex) {
+    const btn = document.getElementById('bookmarkButton');
+    if (!btn) return;
+    const fileKey = State.getCurrentFileKey();
+    const bookmarked = fileKey ? isBookmarked(fileKey, pageIndex) : false;
+    document.getElementById('bookmarkIconOutline')?.classList.toggle('hidden', bookmarked);
+    document.getElementById('bookmarkIconFilled')?.classList.toggle('hidden', !bookmarked);
+    btn.setAttribute('aria-label', bookmarked ? 'Remove bookmark' : 'Bookmark this page');
+}
+
+/**
+ * Renders the bookmark jump-list inside the Options panel.
+ * Called every time the menu panel opens.
+ */
+export function renderBookmarkList() {
+    const list = document.getElementById('bookmarkList');
+    if (!list) return;
+    const fileKey = State.getCurrentFileKey();
+    if (!fileKey) {
+        list.innerHTML = '<p class="text-sm text-[#49739c] dark:text-gray-400 px-4 pb-3">Open a file to use bookmarks.</p>';
+        return;
+    }
+    const pages = getBookmarks(fileKey);
+    if (pages.length === 0) {
+        list.innerHTML = '<p class="text-sm text-[#49739c] dark:text-gray-400 px-4 pb-3">No bookmarks yet. Tap \u2605 while reading to add one.</p>';
+        return;
+    }
+    list.innerHTML = pages.map(idx =>
+        '<button class="bm-jump flex items-center gap-2 w-full px-4 py-2 text-sm text-left ' +
+        'text-[#0d141c] dark:text-[#E7EDF4] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded" ' +
+        'data-page="' + idx + '">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="#f59e0b"><path d="M5 2h14a1 1 0 0 1 1 1v18l-7-3-7 3V3a1 1 0 0 1 1-1z"/></svg>' +
+        'Page ' + (idx + 1) +
+        '</button>'
+    ).join('');
+    list.querySelectorAll('.bm-jump').forEach(btn => {
+        btn.addEventListener('click', () => {
+            displayPage(parseInt(btn.dataset.page, 10));
+            hideMenuPanel();
+        });
+    });
+}
+
+/**
+ * Renders the recent-files history list on the upload screen.
+ * Called on init and each time the user returns to the upload view.
+ */
+export function renderRecentFiles() {
+    const section = document.getElementById('recentFilesSection');
+    if (!section) return;
+    const history = getAllProgress();
+    if (history.length === 0) { section.classList.add('hidden'); return; }
+    section.classList.remove('hidden');
+    const listEl = section.querySelector('#recentFilesList');
+    if (!listEl) return;
+    listEl.innerHTML = history.map(entry => {
+        const pct = entry.totalPages > 0
+            ? Math.min(100, Math.round((entry.lastPage + 1) / entry.totalPages * 100))
+            : 0;
+        return '<div class="flex flex-col gap-1">' +
+            '<div class="flex justify-between items-center gap-2">' +
+            '<span class="text-sm font-medium text-[#0d141c] dark:text-[#E7EDF4] truncate">' + entry.fileName + '</span>' +
+            '<span class="text-xs text-[#49739c] dark:text-gray-400 shrink-0">p.' + (entry.lastPage + 1) + ' / ' + entry.totalPages + '</span>' +
+            '</div>' +
+            '<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">' +
+            '<div class="bg-[#3d98f4] h-1.5 rounded-full" style="width:' + pct + '%"></div>' +
+            '</div></div>';
+    }).join('');
+}
+
 export function updateUI() {
     if (DOM.pageIndicatorHud) {
         const { currentImageIndex, imageBlobs, isTwoPageSpreadActive } = State.getState();
@@ -242,9 +328,9 @@ export function updateUI() {
         if (total === 0) {
             DOM.pageIndicatorHud.textContent = `0 / 0`;
         } else if (isTwoPageSpreadActive && currentImageIndex + 1 < total) {
-             DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1}-${currentImageIndex + 2} / ${total}`;
+            DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1}-${currentImageIndex + 2} / ${total}`;
         } else {
-             DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1} / ${total}`;
+            DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1} / ${total}`;
         }
     }
 }
