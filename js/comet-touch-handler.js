@@ -51,6 +51,8 @@ function doSwipe(direction) {
 }
 
 function doPan(deltaX, deltaY) {
+    // Deprecated for zoomed state in favor of native scrolling
+    // Kept if needed for other contexts, but effectively unused if we allow native scroll
     DOM.imageContainer.scrollLeft = initialScrollLeft - deltaX;
     DOM.imageContainer.scrollTop = initialScrollTop - deltaY;
 }
@@ -74,17 +76,14 @@ function handleTouchStart(event) {
     startTime = new Date().getTime();
     touchState = 'DOWN';
 
-    // If zoomed, prepare for potential panning
-    if (UI.isZoomed()) {
-        initialScrollLeft = DOM.imageContainer.scrollLeft;
-        initialScrollTop = DOM.imageContainer.scrollTop;
-    }
-    // Don't preventDefault yet, allow potential 'click' unless we move
+    // If zoomed, we want to allow native scrolling.
+    // We DON'T preventDefault here.
+    // We still track startX/Y to detect taps vs scrolls.
 }
 
 function handleTouchMove(event) {
     // Only act if we started with a single touch and are in a 'DOWN' or 'MOVING' state
-    if (event.touches.length !== 1 || (touchState !== 'DOWN' && touchState !== 'PANNING' && touchState !== 'SWIPING')) {
+    if (event.touches.length !== 1 || (touchState !== 'DOWN' && touchState !== 'SWIPING')) {
         return;
     }
 
@@ -94,41 +93,47 @@ function handleTouchMove(event) {
     const deltaX = currentX - startX;
     const deltaY = currentY - startY;
 
-    // If we are in 'DOWN' state, decide if we start panning or swiping
-    if (touchState === 'DOWN') {
-        // If moved beyond the tap threshold
+    // If zoomed, let the browser handle scrolling (native momentum)
+    if (UI.isZoomed()) {
+        // We do NOT preventDefault.
+        // We do NOT enter 'PANNING' state (we stay in DOWN or transition to a pseudo-scroll state if we wanted to track it)
+        // If the user moves significantly, we assume it's a scroll, so it's NOT a tap.
         if (Math.abs(deltaX) > TAP_THRESHOLD || Math.abs(deltaY) > TAP_THRESHOLD) {
-            // If zoomed, prioritize panning
-            if (UI.isZoomed()) {
-                touchState = 'PANNING';
-                DOM.imageContainer.style.cursor = 'grabbing'; // Visual feedback
-            }
-            // If not zoomed, and horizontal movement is dominant, start swiping
-            else if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            touchState = 'SCROLLING_NATIVE';
+        }
+        return;
+    }
+
+    // If NOT zoomed, logic for swiping pages
+    if (touchState === 'DOWN') {
+        if (Math.abs(deltaX) > TAP_THRESHOLD || Math.abs(deltaY) > TAP_THRESHOLD) {
+            // If horizontal movement is dominant, start swiping
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 touchState = 'SWIPING';
-            }
-            // If not zoomed and vertical movement is dominant, let the browser scroll
-            else {
+            } else {
+                // Vertical movement when NOT zoomed?
+                // Probably just ignore or let native vertical scroll happen if applicable
+                // But typically fit-to-screen has no vertical scroll.
                 touchState = 'IDLE';
                 return;
             }
         } else {
-            return; // Not moved enough yet, wait.
+            return; // Waiting for threshold
         }
     }
 
-    // If we are panning, update scroll and prevent default
-    if (touchState === 'PANNING') {
-        doPan(deltaX, deltaY);
-        event.preventDefault();
-    }
-    // If we are swiping, prevent default (we'll act on touchend)
-    else if (touchState === 'SWIPING') {
-        event.preventDefault();
+    if (touchState === 'SWIPING') {
+        event.preventDefault(); // Prevent browser nav gestures
     }
 }
 
 function handleTouchEnd(event) {
+    // If we were native scrolling, we just reset and exit.
+    if (touchState === 'SCROLLING_NATIVE') {
+        touchState = 'IDLE';
+        return;
+    }
+
     if (touchState === 'IDLE') {
         return;
     }
@@ -143,15 +148,7 @@ function handleTouchEnd(event) {
     touchState = 'IDLE';
     DOM.imageContainer.style.cursor = UI.isZoomed() ? 'grab' : 'pointer';
 
-    // --- Decide the Action ---
-
-    // 1. Was it Panning?
-    if (currentState === 'PANNING') {
-        event.preventDefault(); // Ensure click is stopped after pan
-        return;
-    }
-
-    // 2. Was it Swiping?
+    // 1. Was it Swiping?
     if (currentState === 'SWIPING') {
         if (Math.abs(deltaX) > State.SWIPE_THRESHOLD && Math.abs(deltaY) < State.VERTICAL_THRESHOLD) {
             doSwipe(deltaX < 0 ? 'left' : 'right');
@@ -159,12 +156,14 @@ function handleTouchEnd(event) {
             lastTapTime = 0; // A swipe resets double tap tracking
             return;
         }
-        // If it didn't meet swipe criteria, it might have been a tap - fall through.
     }
 
-    // 3. Was it a Tap? (State was 'DOWN' or an invalid 'SWIPING')
-    if (Math.abs(deltaX) <= TAP_THRESHOLD && Math.abs(deltaY) <= TAP_THRESHOLD) {
-        event.preventDefault(); // Prevent ghost clicks
+    // 2. Was it a Tap? (State was 'DOWN' and we didn't move enough to scroll/swipe)
+    // Note: If we are zoomed, 'SCROLLING_NATIVE' handles the case where we moved.
+    // So if we are still in 'DOWN', it means we didn't move much -> Tap.
+    if (currentState === 'DOWN' && Math.abs(deltaX) <= TAP_THRESHOLD && Math.abs(deltaY) <= TAP_THRESHOLD) {
+        // If preventing default on touchEnd is necessary to prevent ghost clicks:
+        if (event.cancelable) event.preventDefault();
 
         if ((endTime - lastTapTime) < State.DOUBLE_TAP_DELAY) {
             // DOUBLE TAP
@@ -185,8 +184,6 @@ function handleTouchEnd(event) {
         }
         return;
     }
-
-    // Invalid gesture — do nothing.
 }
 
 
