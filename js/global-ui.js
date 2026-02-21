@@ -9,9 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const themeIconMoon = document.getElementById('themeIconMoon');
     const themeIconSun = document.getElementById('themeIconSun');
-    const installButton = document.getElementById('installAppBtn'); // PWA Install Button ID
     const htmlElement = document.documentElement;
-    let deferredPrompt; // Stores the PWA prompt event
 
     // --- Mobile Menu Logic ---
     function setupMobileMenu() {
@@ -82,56 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- PWA Install Prompt Logic ---
-    function setupPWAInstall() {
-        console.log("Global UI: Setting up PWA Install handler.");
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log("Global UI: 'beforeinstallprompt' event fired.");
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            // Update UI notify the user they can install the PWA
-            if (installButton) {
-                installButton.style.display = 'flex'; // Or 'block', match your CSS
-                console.log("Global UI: PWA Install button shown.");
-            } else {
-                 console.warn("Global UI: PWA Install button (#installAppBtn) not found, cannot show prompt button.");
-            }
-        });
-
-        if (installButton) {
-            installButton.addEventListener('click', async () => {
-                console.log("Global UI: Install button clicked.");
-                if (deferredPrompt) {
-                    // Hide our user interface that shows our A2HS button
-                    installButton.style.display = 'none';
-                    // Show the prompt
-                    deferredPrompt.prompt();
-                    // Wait for the user to respond to the prompt
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`Global UI: User response to install prompt: ${outcome}`);
-                    // We can't use it again, clear it
-                    deferredPrompt = null;
-                } else {
-                     console.log("Global UI: deferredPrompt not available or already used.");
-                }
-            });
-        }
-
-        window.addEventListener('appinstalled', () => {
-             console.log('Global UI: PWA was installed');
-             // Optionally hide the install button or show a 'thanks' message
-             if(installButton) installButton.style.display = 'none';
-             deferredPrompt = null;
-        });
-    }
-
     // --- Initialize All UI Components ---
     setupMobileMenu();
     setupThemeToggle();
-    setupPWAInstall();
 
     console.log("Global UI: Initialization complete.");
 });
