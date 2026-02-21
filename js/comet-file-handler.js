@@ -82,10 +82,11 @@ async function finalizeAndDisplay(imageFiles) {
 async function handleCbzFile(file) {
     UI.showSkeleton();
     UI.showMessage('Loading ' + file.name + '...');
-    const arrayBuffer = await file.arrayBuffer();
+    // OPTIMIZATION: Pass the File object (Blob) directly to JSZip to avoid
+    // loading the entire file into an ArrayBuffer in memory first.
     if (!window.JSZip) throw new Error('JSZip library not loaded.');
 
-    const zip = await JSZip.loadAsync(arrayBuffer);
+    const zip = await JSZip.loadAsync(file);
     const imageFiles = [];
     for (const [filename, fileData] of Object.entries(zip.files)) {
         if (!fileData.dir && IMAGE_REGEX.test(filename) && !filename.startsWith('__MACOSX/')) {
