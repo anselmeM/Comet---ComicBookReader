@@ -2,7 +2,7 @@
 
 // Core State
 let imageBlobs = [], originalImageBlobs = [], currentImageIndex = 0;
-let fitMode = 'best', isMangaModeActive = false, hudTimer = null;
+let fitMode = 'best', isMangaModeActive = false, isTwoPageSpreadActive = false, hudTimer = null;
 
 // Object URL Cache
 const OBJECT_URL_CACHE_LIMIT = 10;
@@ -36,7 +36,7 @@ let tapTimeout = null; // Timer to handle single tap action
 export function getState() {
     return {
         imageBlobs, originalImageBlobs, currentImageIndex,
-        fitMode, isMangaModeActive,
+        fitMode, isMangaModeActive, isTwoPageSpreadActive,
         hudTimer, touchStartX, touchEndX, touchStartY, touchEndY,
         isPotentialSwipe, isDragging, dragStartX, dragStartY,
         initialScrollLeft, initialScrollTop, didDrag,
@@ -51,6 +51,7 @@ export function setOriginalImageBlobs(blobs) { originalImageBlobs = blobs; }
 export function setCurrentImageIndex(index) { currentImageIndex = index; }
 export function setFitMode(mode) { fitMode = mode; }
 export function setIsMangaModeActive(active) { isMangaModeActive = active; }
+export function setIsTwoPageSpreadActive(active) { isTwoPageSpreadActive = active; }
 export function setHudTimer(timer) { hudTimer = timer; }
 export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
 export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
@@ -130,7 +131,7 @@ export function resetPanState() {
 export function resetAllState() {
     imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
     clearObjectUrlCache();
-    fitMode = 'best'; isMangaModeActive = false; hudTimer = null;
+    fitMode = 'best'; isMangaModeActive = false; isTwoPageSpreadActive = false; hudTimer = null;
     resetSwipeState();
     resetPanState();
     didDrag = false;

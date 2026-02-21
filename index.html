@@ -217,7 +217,9 @@
     </div>
 
     <div id="readerView" class="view">
-        <div id="imageContainer"> <img id="comicImage" src="" alt="Comic Page">
+        <div id="imageContainer">
+            <img id="comicImage" src="" alt="Comic Page">
+            <img id="comicImage2" src="" alt="Comic Page" class="hidden">
         </div>
         <div id="hudOverlay" class="hud-overlay">
             <div class="hud-bar top">
@@ -259,11 +261,9 @@
             <div class="flex items-center gap-4 px-2 min-h-[72px] py-2 justify-between">
                 <div class="flex flex-col justify-center grow mr-2">
                     <p class="text-[#0d141c] dark:text-[#E7EDF4] text-base font-medium">Two-Page Spread</p>
-                    <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Display two pages (Desktop Soon!)
-                    </p>
+                    <p class="text-[#49739c] dark:text-gray-400 text-sm font-normal">Display two pages side-by-side</p>
                 </div>
-                <label class="toggle-label opacity-50 cursor-not-allowed"><input type="checkbox" id="twoPageToggle"
-                        disabled />
+                <label class="toggle-label"><input type="checkbox" id="twoPageToggle" />
                     <div class="toggle-bg dark:bg-gray-600">
                         <div class="toggle-switch"></div>
                     </div>
