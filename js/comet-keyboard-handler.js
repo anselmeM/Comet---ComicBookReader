@@ -3,6 +3,7 @@ import * as DOM from './comet-dom.js';
 import * as State from './comet-state.js';
 import * as UI from './comet-ui.js';
 import * as Nav from './comet-navigation.js';
+import { toggleBookmark } from './comet-bookmarks.js';
 
 /**
  * Handles keydown events when the reader view is active.
@@ -14,13 +15,26 @@ export function handleKeyDown(event) {
         return;
     }
 
-    // If the menu panel is visible, only handle 'Escape'
+    // If the menu panel is visible, handle Escape + Tab focus trap
     if (DOM.menuPanel && DOM.menuPanel.classList.contains('visible')) {
         if (event.key === 'Escape') {
             UI.hideMenuPanel();
-            event.preventDefault(); // Prevent any default browser action for Escape
+            event.preventDefault();
+        } else if (event.key === 'Tab') {
+            const focusable = [...DOM.menuPanel.querySelectorAll(
+                'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )].filter(el => el.offsetParent !== null);
+            if (focusable.length > 0) {
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    last.focus(); event.preventDefault();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    first.focus(); event.preventDefault();
+                }
+            }
         }
-        return; // Stop further processing if menu is open
+        return;
     }
 
     let handled = false;
@@ -62,6 +76,18 @@ export function handleKeyDown(event) {
             UI.applyFitMode('best');
             handled = true;
             break;
+        case 'b':
+        case 'B': {
+            const fileKey = State.getCurrentFileKey();
+            if (fileKey) {
+                const { currentImageIndex } = State.getState();
+                toggleBookmark(fileKey, currentImageIndex);
+                UI.updateBookmarkIndicator(currentImageIndex);
+                UI.renderBookmarkList();
+            }
+            handled = true;
+            break;
+        }
     }
 
     // If we handled the key, prevent its default action (like scrolling)

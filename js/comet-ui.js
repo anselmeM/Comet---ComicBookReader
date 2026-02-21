@@ -4,6 +4,7 @@ import * as State from './comet-state.js';
 import { displayPage } from './comet-navigation.js';
 import { isBookmarked, getBookmarks } from './comet-bookmarks.js';
 import { getAllProgress } from './comet-progress.js';
+import { getHandle } from './comet-library.js';
 
 // --- View Management ---
 // ... (showView, showUploadView - unchanged) ...
@@ -65,8 +66,23 @@ export function hideHUD(delay = 4000) {
     }
 }
 export function toggleHUD() { (DOM.hudOverlay && DOM.hudOverlay.classList.contains('visible')) ? hideHUD(0) : showHUD(); }
-export function showMenuPanel() { if (DOM.menuPanel) DOM.menuPanel.classList.add('visible'); hideHUD(0); renderBookmarkList(); }
-export function hideMenuPanel() { if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible'); }
+export function showMenuPanel() {
+    if (DOM.menuPanel) {
+        DOM.menuPanel.classList.add('visible');
+        // Move keyboard focus into the panel for accessibility
+        const first = DOM.menuPanel.querySelector(
+            'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (first) setTimeout(() => first.focus(), 50);
+    }
+    hideHUD(0);
+    renderBookmarkList();
+}
+export function hideMenuPanel() {
+    if (DOM.menuPanel) DOM.menuPanel.classList.remove('visible');
+    // Return focus to the menu button that opened the panel
+    DOM.menuButton?.focus();
+}
 
 
 // --- Zoom & Fit ---
@@ -235,6 +251,11 @@ export function toggleTwoPageMode() {
     displayPage(State.getState().currentImageIndex);
 }
 
+/** Shows a shimmer placeholder while a file is being parsed. */
+export function showSkeleton() { DOM.imageContainer?.classList.add('loading'); }
+/** Hides the shimmer placeholder once the first page renders. */
+export function hideSkeleton() { DOM.imageContainer?.classList.remove('loading'); }
+
 export function applyPageBackground(color) {
     const bg = { black: '#111111', gray: '#555555', white: '#ffffff' };
     if (DOM.imageContainer) {
@@ -296,9 +317,9 @@ export function renderBookmarkList() {
 
 /**
  * Renders the recent-files history list on the upload screen.
- * Called on init and each time the user returns to the upload view.
+ * Async so it can check IndexedDB for stored file handles.
  */
-export function renderRecentFiles() {
+export async function renderRecentFiles() {
     const section = document.getElementById('recentFilesSection');
     if (!section) return;
     const history = getAllProgress();
@@ -313,24 +334,50 @@ export function renderRecentFiles() {
         return '<div class="flex flex-col gap-1">' +
             '<div class="flex justify-between items-center gap-2">' +
             '<span class="text-sm font-medium text-[#0d141c] dark:text-[#E7EDF4] truncate">' + entry.fileName + '</span>' +
-            '<span class="text-xs text-[#49739c] dark:text-gray-400 shrink-0">p.' + (entry.lastPage + 1) + ' / ' + entry.totalPages + '</span>' +
-            '</div>' +
+            '<div class="flex items-center gap-2 shrink-0">' +
+            '<span class="text-xs text-[#49739c] dark:text-gray-400">p.' + (entry.lastPage + 1) + ' / ' + entry.totalPages + '</span>' +
+            '<button class="lib-reopen hidden text-xs font-semibold text-[#3d98f4] hover:text-blue-700 transition-colors" ' +
+            'data-filekey="' + entry.key + '">Open</button>' +
+            '</div></div>' +
             '<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">' +
             '<div class="bg-[#3d98f4] h-1.5 rounded-full" style="width:' + pct + '%"></div>' +
             '</div></div>';
     }).join('');
+
+    // Asynchronously reveal "Open" buttons for entries with stored handles
+    for (const entry of history) {
+        const btn = listEl.querySelector('[data-filekey="' + entry.key + '"]');
+        if (!btn) continue;
+        const handle = await getHandle(entry.key);
+        if (handle) {
+            btn.classList.remove('hidden');
+            btn.addEventListener('click', () => {
+                document.dispatchEvent(new CustomEvent('comet:reopen', { detail: { fileKey: entry.key } }));
+            });
+        }
+    }
 }
 
 export function updateUI() {
     if (DOM.pageIndicatorHud) {
         const { currentImageIndex, imageBlobs, isTwoPageSpreadActive } = State.getState();
         const total = imageBlobs.length;
+        let text = '';
         if (total === 0) {
-            DOM.pageIndicatorHud.textContent = `0 / 0`;
+            text = '0 / 0';
         } else if (isTwoPageSpreadActive && currentImageIndex + 1 < total) {
-            DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1}-${currentImageIndex + 2} / ${total}`;
+            text = (currentImageIndex + 1) + '-' + (currentImageIndex + 2) + ' / ' + total;
         } else {
-            DOM.pageIndicatorHud.textContent = `${currentImageIndex + 1} / ${total}`;
+            text = (currentImageIndex + 1) + ' / ' + total;
+        }
+        DOM.pageIndicatorHud.textContent = text;
+
+        // ARIA live announcement for screen readers
+        const announcer = document.getElementById('a11yAnnouncer');
+        if (announcer && total > 0) {
+            announcer.textContent = isTwoPageSpreadActive && currentImageIndex + 1 < total
+                ? 'Pages ' + (currentImageIndex + 1) + ' and ' + (currentImageIndex + 2) + ' of ' + total
+                : 'Page ' + (currentImageIndex + 1) + ' of ' + total;
         }
     }
 }

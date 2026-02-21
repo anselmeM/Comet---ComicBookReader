@@ -132,6 +132,7 @@ export async function displayPage(index) {
 
     // Wait for load(s) to apply fit
     DOM.comicImage.onload = () => {
+        UI.hideSkeleton(); // Remove shimmer overlay once first image renders
         if (DOM.comicImage) {
             DOM.comicImage.style.opacity = 1;
             if (DOM.comicImage2 && url2) DOM.comicImage2.style.opacity = 1;

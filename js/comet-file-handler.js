@@ -75,6 +75,7 @@ async function finalizeAndDisplay(imageFiles) {
 // ---------------------------------------------------------------------------
 
 async function handleCbzFile(file) {
+    UI.showSkeleton();
     UI.showMessage('Loading ' + file.name + '...');
     const arrayBuffer = await file.arrayBuffer();
     if (!window.JSZip) throw new Error('JSZip library not loaded.');
@@ -111,6 +112,7 @@ function flattenArchiveFiles(obj, prefix = '') {
 }
 
 async function handleCbrFile(file) {
+    UI.showSkeleton();
     UI.showMessage('Loading ' + file.name + '...');
     await loadScript(LIBARCHIVE_URL);
     if (typeof Archive === 'undefined') throw new Error('libarchive.js failed to load.');
@@ -136,6 +138,7 @@ async function handleCbrFile(file) {
 // ---------------------------------------------------------------------------
 
 async function handlePdfFile(file) {
+    UI.showSkeleton();
     UI.showMessage('Loading ' + file.name + '...');
     await loadScript(PDFJS_URL);
     if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js failed to load.');

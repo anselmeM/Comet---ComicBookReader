@@ -11,6 +11,8 @@ import { setupMouseListeners } from './comet-mouse-handler.js';
 import { setupTouchListeners } from './comet-touch-handler.js';
 import { saveSettings } from './comet-settings.js';
 import { toggleBookmark, clearBookmarks } from './comet-bookmarks.js';
+import { makeFileKey } from './comet-progress.js';
+import { storeHandle, openFileFromHandle, supportsFileSystemAccess } from './comet-library.js';
 
 /**
  * Sets up all application-wide event listeners.
@@ -26,9 +28,29 @@ export function setupEventListeners() {
 
     // SECTION: File Input and Drop Zone Event Listeners
 
-    // When the 'Select File' button is clicked, programmatically click the hidden file input.
-    // This allows for custom styling of the file selection trigger.
-    DOM.selectFileButton?.addEventListener('click', () => DOM.fileInput.click());
+    // Select File button — use File System Access API when available, hidden input as fallback
+    DOM.selectFileButton?.addEventListener('click', async () => {
+        if (supportsFileSystemAccess) {
+            try {
+                const [fileHandle] = await window.showOpenFilePicker({
+                    types: [{
+                        description: 'Comic Files',
+                        accept: { 'application/octet-stream': ['.cbz', '.cbr', '.pdf'] }
+                    }],
+                    multiple: false
+                });
+                const file = await fileHandle.getFile();
+                const fileKey = makeFileKey(file);
+                storeHandle(fileKey, fileHandle); // fire-and-forget — stores handle in IndexedDB
+                handleFile(file);
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error('File picker error:', err);
+                // AbortError = user cancelled — silently ignore
+            }
+        } else {
+            DOM.fileInput.click();
+        }
+    });
 
     // When the header upload button (desktop) is clicked, also trigger the hidden file input.
     DOM.uploadButtonHeader?.addEventListener('click', () => DOM.fileInput.click());
@@ -178,6 +200,28 @@ export function setupEventListeners() {
         clearBookmarks(fileKey);
         UI.updateBookmarkIndicator(State.getState().currentImageIndex);
         UI.renderBookmarkList();
+    });
+
+    // Swipe left on the options panel to close it
+    let panelSwipeStartX = 0;
+    DOM.menuPanel?.addEventListener('touchstart', (e) => {
+        panelSwipeStartX = e.touches[0].clientX;
+    }, { passive: true });
+    DOM.menuPanel?.addEventListener('touchend', (e) => {
+        // Panel slides from the right; a right-swipe (positive deltaX) closes it
+        if (e.changedTouches[0].clientX - panelSwipeStartX > 60) UI.hideMenuPanel();
+    }, { passive: true });
+
+    // Library re-open: dispatched by renderRecentFiles Open buttons
+    document.addEventListener('comet:reopen', async (e) => {
+        const file = await openFileFromHandle(e.detail.fileKey);
+        if (file) {
+            handleFile(file);
+        } else {
+            UI.showView('upload');
+            UI.showMessage('File permission denied — please select the file again.');
+            setTimeout(UI.hideMessage, 3500);
+        }
     });
 
     // SECTION: Input-Specific Listeners (Delegated to other modules)
