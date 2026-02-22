@@ -89,7 +89,7 @@ async function handleCbzFile(file) {
     const zip = await JSZip.loadAsync(file);
     const imageFiles = [];
     for (const [filename, fileData] of Object.entries(zip.files)) {
-        if (!fileData.dir && IMAGE_REGEX.test(filename) && !filename.startsWith('__MACOSX/')) {
+        if (!fileData.dir && IMAGE_REGEX.test(filename) && !filename.startsWith('__MACOSX/') && !filename.split(/[/\\]/).includes('..')) {
             imageFiles.push({ name: filename, fileData, blob: null });
         }
     }
@@ -153,7 +153,7 @@ async function handleCbrFile(file) {
 
     // File objects extend Blob, so they can be used directly as blobs
     const imageFiles = flattenArchiveFiles(extracted)
-        .filter(({ name }) => IMAGE_REGEX.test(name) && !name.startsWith('__MACOSX/'))
+        .filter(({ name }) => IMAGE_REGEX.test(name) && !name.startsWith('__MACOSX/') && !name.split(/[/\\]/).includes('..'))
         .map(({ name, file: blob }) => ({ name, blob, fileData: null }));
 
     await finalizeAndDisplay(imageFiles);
