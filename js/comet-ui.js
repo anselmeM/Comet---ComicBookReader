@@ -209,9 +209,23 @@ function updateZoomStateUI(center = false) {
         if (isZoomed()) {
             DOM.imageContainer.style.overflow = 'auto'; // Allow scrolling
             DOM.imageContainer.style.cursor = 'grab';   // Indicate grabbable
+
+            // Fix for cut-off content: remove flex centering on container
+            DOM.imageContainer.classList.remove('justify-center', 'items-center');
+
+            // Add margin: auto to images to center them if they are smaller than viewport in one dimension
+            if (DOM.comicImage) DOM.comicImage.classList.add('m-auto');
+            if (DOM.comicImage2) DOM.comicImage2.classList.add('m-auto');
         } else {
             DOM.imageContainer.style.overflow = 'hidden';// Hide scrollbars
             DOM.imageContainer.style.cursor = 'pointer'; // Indicate clickable
+
+            // Restore flex centering for fit-to-screen modes
+            DOM.imageContainer.classList.add('justify-center', 'items-center');
+
+            // Remove margin: auto (let flexbox handle it)
+            if (DOM.comicImage) DOM.comicImage.classList.remove('m-auto');
+            if (DOM.comicImage2) DOM.comicImage2.classList.remove('m-auto');
         }
         if (center) {
             centerImageIfZoomed();
