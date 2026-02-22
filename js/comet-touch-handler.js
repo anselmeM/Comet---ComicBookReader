@@ -20,7 +20,7 @@ function doDoubleTap() {
     if (UI.isZoomed()) {
         UI.applyFitMode('best');
     } else {
-        UI.changeZoom(2.5);
+        UI.changeZoom(State.DOUBLE_TAP_ZOOM_SCALE);
     }
 }
 
