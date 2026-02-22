@@ -208,6 +208,7 @@ function updateZoomStateUI(center = false) {
     setTimeout(() => {
         if (isZoomed()) {
             DOM.imageContainer.style.overflow = 'auto'; // Allow scrolling
+            DOM.imageContainer.style.touchAction = 'manipulation'; // Allow native pan/zoom, disable tap delay
             DOM.imageContainer.style.cursor = 'grab';   // Indicate grabbable
 
             // Fix for cut-off content: remove flex centering on container
@@ -218,6 +219,7 @@ function updateZoomStateUI(center = false) {
             if (DOM.comicImage2) DOM.comicImage2.classList.add('m-auto');
         } else {
             DOM.imageContainer.style.overflow = 'hidden';// Hide scrollbars
+            DOM.imageContainer.style.touchAction = ''; // Reset to default
             DOM.imageContainer.style.cursor = 'pointer'; // Indicate clickable
 
             // Restore flex centering for fit-to-screen modes
