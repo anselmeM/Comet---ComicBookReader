@@ -124,6 +124,15 @@ export function addObjectUrl(imageEntry, url) {
                 URL.revokeObjectURL(oldUrl);
             }
             objectUrlCache.delete(oldEntry);
+
+            // OPTIMIZATION: Release memory for the decompressed blob if it can be re-loaded.
+            // We skip this for:
+            // 1. Entries without fileData (e.g. CBR/RAR files where we extracted everything upfront).
+            // 2. Entries that appear to be split parts (ending in '_part1') to avoid re-splitting/duplication bugs in loadImageBlob.
+            const isSplitPart1 = oldEntry.name && oldEntry.name.endsWith('_part1');
+            if (oldEntry.fileData && !isSplitPart1) {
+                oldEntry.blob = null;
+            }
         }
     }
 }
