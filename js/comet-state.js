@@ -22,6 +22,7 @@ export const BOUNDARY_MESSAGE_TIMEOUT = 2500;
 export const SWIPE_THRESHOLD = 50;
 export const VERTICAL_THRESHOLD = 75;
 export const DOUBLE_TAP_DELAY = 300; // Milliseconds to wait for a second tap
+export const DOUBLE_TAP_ZOOM_SCALE = 2.5;
 
 // Pan State
 let isDragging = false;
