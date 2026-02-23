@@ -23,10 +23,6 @@ export const SWIPE_THRESHOLD = 50;
 export const VERTICAL_THRESHOLD = 75;
 export const DOUBLE_TAP_DELAY = 300; // Milliseconds to wait for a second tap
 
-// Swipe State
-let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;
-let isPotentialSwipe = false;
-
 // Pan State
 let isDragging = false;
 let dragStartX = 0, dragStartY = 0;
@@ -44,8 +40,8 @@ export function getState() {
     return {
         imageBlobs, originalImageBlobs, currentImageIndex,
         fitMode, isMangaModeActive, isTwoPageSpreadActive,
-        hudTimer, touchStartX, touchEndX, touchStartY, touchEndY,
-        isPotentialSwipe, isDragging, dragStartX, dragStartY,
+        hudTimer,
+        isDragging, dragStartX, dragStartY,
         initialScrollLeft, initialScrollTop, didDrag,
         lastTapTime, // <-- Export new state
         tapTimeout   // <-- Export new state
@@ -75,9 +71,6 @@ export function getIsSmartSplitActive() { return isSmartSplitActive; }
 export function setIsSmartSplitActive(v) { isSmartSplitActive = !!v; }
 export function getIsVerticalScrollActive() { return isVerticalScrollActive; }
 export function setIsVerticalScrollActive(v) { isVerticalScrollActive = !!v; }
-export function setTouchStart(x, y) { touchStartX = x; touchStartY = y; touchEndX = x; touchEndY = y; }
-export function setTouchEnd(x, y) { touchEndX = x; touchEndY = y; }
-export function setIsPotentialSwipe(potential) { isPotentialSwipe = potential; }
 export function setIsDragging(dragging) { isDragging = dragging; }
 export function setDragStart(x, y) { dragStartX = x; dragStartY = y; }
 export function setInitialScroll(left, top) { initialScrollLeft = left; initialScrollTop = top; }
@@ -141,10 +134,6 @@ export function clearObjectUrlCache() {
 }
 
 export function reverseImageBlobs() { imageBlobs.reverse(); }
-export function resetSwipeState() {
-    isPotentialSwipe = false;
-    touchStartX = 0; touchEndX = 0; touchStartY = 0; touchEndY = 0;
-}
 export function resetPanState() {
     isDragging = false;
     dragStartX = 0; dragStartY = 0;
@@ -154,7 +143,6 @@ export function resetAllState() {
     imageBlobs = []; originalImageBlobs = []; currentImageIndex = 0;
     clearObjectUrlCache();
     fitMode = 'best'; isMangaModeActive = false; isTwoPageSpreadActive = false; hudTimer = null;
-    resetSwipeState();
     resetPanState();
     didDrag = false;
     lastTapTime = 0;
