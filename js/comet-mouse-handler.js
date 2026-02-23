@@ -23,6 +23,12 @@ function handleMouseDown(event) {
         State.setInitialScroll(DOM.imageContainer.scrollLeft, DOM.imageContainer.scrollTop);
         DOM.imageContainer.style.cursor = 'grabbing';
         State.setDidDrag(false); // Reset 'didDrag'
+
+        // Attach listeners for drag lifecycle only when needed
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUpOrLeave);
+        document.addEventListener('mouseleave', handleMouseUpOrLeave);
+
         event.preventDefault(); // Prevent text selection, etc.
     }
 }
@@ -60,6 +66,11 @@ function handleMouseUpOrLeave(event) {
             DOM.imageContainer.style.cursor = 'pointer';
         }
     }
+
+    // Clean up listeners
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUpOrLeave);
+    document.removeEventListener('mouseleave', handleMouseUpOrLeave);
 }
 
 /**
@@ -109,10 +120,8 @@ export function handleImageClick(event) {
  */
 export function setupMouseListeners() {
     DOM.imageContainer?.addEventListener('mousedown', handleMouseDown);
-    // Attach move/up/leave to the document to catch drags outside the container
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUpOrLeave);
-    document.addEventListener('mouseleave', handleMouseUpOrLeave);
+    // Note: mousemove, mouseup, and mouseleave are now attached dynamically in handleMouseDown
+
     // Keep the click listener on the container itself
     DOM.imageContainer?.addEventListener('click', handleImageClick);
 }
