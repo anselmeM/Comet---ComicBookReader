@@ -6,8 +6,6 @@ import { setupEventListeners } from './comet-event-setup.js';
 import { applySettings } from './comet-settings.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Comet Reader Logic: Initializing...");
-
     // Check if we have the core elements to run
     if (!DOM.checkCriticalElements()) {
         console.log("Not on index.html or core elements missing, skipping reader initialization.");
@@ -28,6 +26,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     DOM.imageContainer.style.overflow = 'hidden';
     DOM.imageContainer.style.cursor = 'pointer';
-
-    console.log("Comet Reader: Initialization COMPLETE.");
 });
