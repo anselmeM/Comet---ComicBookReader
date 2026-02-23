@@ -20,7 +20,7 @@ const urlsToCache = [
   './css/static-pages.css',
   './css/dark-theme.css',
   './css/index-specific.css',
-  // Core JS modules
+  // JavaScript Modules
   './js/comet-reader.js',
   './js/comet-state.js',
   './js/comet-dom.js',
@@ -35,7 +35,6 @@ const urlsToCache = [
   './js/comet-progress.js',
   './js/comet-bookmarks.js',
   './js/comet-library.js',
-  // Other JS
   './js/global-ui.js',
   './js/pwa-init.js',
   // External CDN
