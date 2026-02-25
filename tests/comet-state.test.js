@@ -15,12 +15,12 @@ test('comet-state: setCurrentImageIndex', async (t) => {
 
     await t.test('should overwrite previous currentImageIndex', () => {
         setCurrentImageIndex(2);
-        const { currentImageIndex: firstSet } = getState();
-        assert.strictEqual(firstSet, 2);
+        const { currentImageIndex: initialImageIndex } = getState();
+        assert.strictEqual(initialImageIndex, 2);
 
         setCurrentImageIndex(10);
-        const { currentImageIndex: secondSet } = getState();
-        assert.strictEqual(secondSet, 10);
+        const { currentImageIndex: updatedImageIndex } = getState();
+        assert.strictEqual(updatedImageIndex, 10);
     });
 });
 
