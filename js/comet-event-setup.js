@@ -23,9 +23,6 @@ import { storeHandle, openFileFromHandle, supportsFileSystemAccess } from './com
  * is unexpectedly missing, though critical elements should be checked elsewhere (e.g., in comet-dom.js).
  */
 export function setupEventListeners() {
-    // Log to console for debugging or to confirm initialization.
-    console.log("Setting up all event listeners...");
-
     // SECTION: File Input and Drop Zone Event Listeners
 
     // Select File button — use File System Access API when available, hidden input as fallback
@@ -358,7 +355,4 @@ export function setupEventListeners() {
     // Add a global keydown listener to handle keyboard shortcuts and navigation.
     // The actual key handling logic is in 'comet-keyboard-handler.js'.
     document.addEventListener('keydown', handleKeyDown);
-
-    // Log to console for debugging or to confirm completion.
-    console.log("Event listeners setup complete.");
 }
